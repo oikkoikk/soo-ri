@@ -5,11 +5,21 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
+    "ci:all": "pnpm ci:type && pnpm ci:lint && pnpm ci:format && pnpm ci:knip && pnpm build",
+    "ci:format": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "ci:knip": "knip",
+    "ci:lint": "eslint .",
+    "ci:type": "tsc --noEmit",
+    "clean": "rimraf dist",
     "dev": "vite",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "knip": "knip",
     "lint": "eslint .",
+    "precommit": "lint-staged",
     "prepare": "husky",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.0.0",
