@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [assigned]
+
+jobs:
+  quality:
+    name: Check quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm ci:type
+
+      - name: Check formatting
+        run: pnpm ci:format
+
+      - name: Lint
+        run: pnpm ci:lint
+
+      - name: Dead code analysis
+        run: pnpm ci:knip
+
+      - name: Build
+        run: pnpm build
