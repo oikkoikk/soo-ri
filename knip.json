@@ -6,15 +6,5 @@
   "ignoreBinaries": ["rimraf"],
   "ignore": ["**/*.d.ts"],
   "ignoreExportsUsedInFile": true,
-  "paths": { "@/*": ["src/*"] },
-  "rules": {
-    "binaries": "error",
-    "dependencies": "error",
-    "devDependencies": "error",
-    "exports": "error",
-    "files": "error",
-    "nsExports": "error",
-    "nsTypes": "error",
-    "types": "error"
-  }
+  "paths": { "@/*": ["src/*"] }
 }
