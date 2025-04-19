@@ -8,6 +8,7 @@
     "dev": "vite",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "eslint .",
+    "prepare": "husky",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
     "typescript": "~5.7.2",
