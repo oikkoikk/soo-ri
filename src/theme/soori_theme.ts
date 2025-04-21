@@ -54,3 +54,5 @@ export const SOORITheme = {
     },
   },
 }
+
+export type SOORITheme = typeof SOORITheme
