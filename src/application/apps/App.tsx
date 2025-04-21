@@ -1,11 +1,11 @@
-import { Route, Routes } from 'react-router'
+import { BrowserRouter } from 'react-router'
 
-import { HomePage } from '@/presentation/pages/pages'
+import { Router } from '@/application/routers/routers'
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-    </Routes>
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   )
 }
