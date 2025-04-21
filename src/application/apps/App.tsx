@@ -2,8 +2,7 @@ import { ThemeProvider } from '@emotion/react'
 import { BrowserRouter } from 'react-router'
 
 import { Router } from '@/application/routers/routers'
-import { GlobalStyle } from '@/theme/styles/styles'
-import { SOORITheme } from '@/theme/theme'
+import { SOORITheme, GlobalStyle } from '@/theme/theme'
 
 export function App() {
   return (
