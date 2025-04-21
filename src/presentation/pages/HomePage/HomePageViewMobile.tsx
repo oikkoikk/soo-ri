@@ -12,10 +12,10 @@ export function HomePageViewMobile() {
       {/* TODO: 카카오 아이콘 추가 */}
       {/* TODO: 카카오 로그인 페이지로 연결 */}
       <KakaoLoginButton to="/kakao">
-        <span>카카오 로그인</span>
+        <ButtonText theme={theme}>카카오 로그인</ButtonText>
       </KakaoLoginButton>
       <RepairModeButton to="/repair">
-        <span>수리자 모드 바로가기</span>
+        <ButtonText theme={theme}>수리자 모드 바로가기</ButtonText>
       </RepairModeButton>
     </Container>
   )
@@ -51,8 +51,6 @@ const KakaoLoginButton = styled(Link)`
   text-decoration: none;
   border: none;
   cursor: pointer;
-  color: #000;
-  font-weight: 500;
 `
 
 const RepairModeButton = styled(Link)`
@@ -66,6 +64,10 @@ const RepairModeButton = styled(Link)`
   text-decoration: none;
   border: none;
   cursor: pointer;
-  color: #000;
-  font-weight: 500;
+`
+
+const ButtonText = styled.span`
+  ${({ theme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
 `
