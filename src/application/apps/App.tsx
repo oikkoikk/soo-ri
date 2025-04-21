@@ -2,13 +2,13 @@ import { ThemeProvider } from '@emotion/react'
 import { BrowserRouter } from 'react-router'
 
 import { Router } from '@/application/routers/routers'
-import { GlobalStyle } from '@/theme/styles/GlobalStyle'
-import { theme } from '@/theme/theme'
+import { GlobalStyle } from '@/theme/styles/styles'
+import { SOORITheme } from '@/theme/theme'
 
 export function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={SOORITheme}>
         <GlobalStyle />
         <Router />
       </ThemeProvider>
