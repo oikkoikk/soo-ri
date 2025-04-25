@@ -1,8 +1,20 @@
+import { ComponentType } from 'react'
+
+import { HomePageView, RepairsPageView } from '@/presentation/pages/pages'
+
 export const ROUTES = {
   HOME: '/',
   REPAIRS: '/repairs',
-  KAKAO: '/kakao',
 } as const
+
+export const ROUTE_PAGES: Record<RoutePath, ComponentType> = {
+  [ROUTES.HOME]: HomePageView,
+  [ROUTES.REPAIRS]: RepairsPageView,
+}
+
+export type RouteKey = keyof typeof ROUTES
+
+export type RoutePath = (typeof ROUTES)[RouteKey]
 
 /**
  * 라우트 경로를 생성하는 함수
@@ -11,15 +23,17 @@ export const ROUTES = {
  * @param queryParams 쿼리 매개변수 객체 (예: ?key=value)
  * @returns 완성된 URL 경로
  */
+
 export const buildRoute = (
-  routeName: keyof typeof ROUTES,
+  routeName: RouteKey,
   pathParams: Record<string, string> = {},
   queryParams: Record<string, string> = {}
 ): string => {
   let path = ROUTES[routeName] as string
 
   Object.entries(pathParams).forEach(([key, value]) => {
-    path = path.replace(`:${key}`, encodeURIComponent(value))
+    const paramRegex = new RegExp(`:${key}`, 'g')
+    path = path.replace(paramRegex, encodeURIComponent(value))
   })
 
   const queryString = Object.entries(queryParams)

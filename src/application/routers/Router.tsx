@@ -1,14 +1,14 @@
 import { Route, Routes as RouterRoutes } from 'react-router'
 
-import { HomePageView, RepairsPageView } from '@/presentation/pages/pages'
-
-import { ROUTES } from './routes'
+import { ROUTES, ROUTE_PAGES } from './routes'
 
 export function Router() {
   return (
     <RouterRoutes>
-      <Route path={ROUTES.HOME} element={<HomePageView />} />
-      <Route path={ROUTES.REPAIRS} element={<RepairsPageView />} />
+      {Object.entries(ROUTES).map(([key, path]) => {
+        const Page = ROUTE_PAGES[path]
+        return <Route key={key} path={path} element={<Page />} />
+      })}
     </RouterRoutes>
   )
 }
