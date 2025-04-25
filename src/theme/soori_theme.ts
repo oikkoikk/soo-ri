@@ -24,6 +24,13 @@ export const SOORITheme = {
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
+    subtitleMedium: {
+      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontWeight: 500, // Medium
+      fontSize: '17px',
+      lineHeight: '22px',
+      letterSpacing: '-0.41px',
+    },
     bodyLarge: {
       fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
       fontWeight: 500, // Medium
@@ -37,6 +44,13 @@ export const SOORITheme = {
       fontSize: '15px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
+    },
+    bodySmall: {
+      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontWeight: 300, // Regular
+      fontSize: '13px',
+      lineHeight: '18px',
+      letterSpacing: '-0.08px',
     },
     labelMedium: {
       fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
