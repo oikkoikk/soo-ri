@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 import { atom, useAtom } from 'jotai'
 import { useSearchParams } from 'react-router'
@@ -14,6 +14,8 @@ interface TabItem {
   id: TabId
   label: string
 }
+
+const AUTH_SESSION_KEY = 'repair-shop-auth-session'
 
 const repairsAtom = atom<RepairModel[]>([])
 const searchKeywordAtom = atom<string>('')
@@ -34,7 +36,13 @@ export function useRepairViewModel() {
   const [authCode, setAuthCode] = useAtom(authCodeAtom)
   const [searchParams] = useSearchParams()
 
-  const modalOpenedRef = useRef<boolean>(false)
+  const checkAuthSession = (): boolean => {
+    return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true'
+  }
+
+  const saveAuthSession = (): void => {
+    sessionStorage.setItem(AUTH_SESSION_KEY, 'true')
+  }
 
   const filteredRepairs = repairs
     .filter((repair) => {
@@ -98,23 +106,12 @@ export function useRepairViewModel() {
 
     setRepairs(sampleRepairs)
 
-    if (searchParams.get('id') && !modalOpenedRef.current) {
+    const isAuthenticated = checkAuthSession()
+
+    if (searchParams.get('id') && !isAuthenticated) {
       setModalOpened(true)
-      modalOpenedRef.current = true
     }
   }, [searchParams, setRepairs, setModalOpened])
-
-  useEffect(() => {
-    if (!modalOpened) {
-      const timer = setTimeout(() => {
-        modalOpenedRef.current = false
-      }, 300)
-
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [modalOpened])
 
   return {
     repairs,
@@ -139,9 +136,14 @@ export function useRepairViewModel() {
 
     submitAuthCode: () => {
       if (authCode.length === 4) {
-        setModalOpened(false)
-        setAuthCode('')
-        return true
+        // TODO: 실제 인증 로직 구현
+        if (authCode === '1234') {
+          saveAuthSession()
+          setModalOpened(false)
+          setAuthCode('')
+          return true
+        }
+        alert('인증 코드가 올바르지 않습니다.')
       }
       return false
     },
