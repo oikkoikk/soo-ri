@@ -74,7 +74,7 @@ const Tab = styled.div<{ active: boolean; theme: SOORITheme }>`
   align-items: center;
   justify-content: center;
   ${({ theme }) => css`
-    ...${theme.typography.labelMedium};
+    ${theme.typography.labelMedium};
   `}
   color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.onSurfaceVariant)};
   border-bottom: 0.8px solid ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.outline)};
