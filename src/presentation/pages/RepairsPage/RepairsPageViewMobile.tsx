@@ -55,7 +55,11 @@ export function RepairsPageViewMobile() {
                 })()}
               </MainContent>
               <CTAButtonContainer>
-                <CTAButton onClick={viewModel.createRepair} theme={theme} aria-label="새 정비 작업 시작하기">
+                <CTAButton
+                  onClick={() => void navigate(buildRoute('REPAIR_CREATE'))}
+                  theme={theme}
+                  aria-label="새 정비 작업 시작하기"
+                >
                   + 새 정비 작업 시작
                 </CTAButton>
               </CTAButtonContainer>
