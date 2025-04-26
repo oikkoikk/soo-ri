@@ -1,2 +1,3 @@
-export * from './HomePage/HomePage'
-export * from './RepairsPage/RepairsPage'
+export * from './HomePage/HomePageView'
+export * from './RepairDetailPage/RepairDetailPageView'
+export * from './RepairsPage/RepairsPageView'
