@@ -146,10 +146,6 @@ export function useRepairViewModel() {
       return false
     },
 
-    goBack: () => {
-      window.history.back()
-    },
-
     createRepair: () => {
       alert('새 정비 작업을 시작합니다.')
     },
