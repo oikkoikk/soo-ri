@@ -15,7 +15,7 @@ export function RepairsPageViewMobile() {
   return (
     <>
       {(() => {
-        if (viewModel.isModalOpen) {
+        if (viewModel.modalOpened) {
           return (
             <AuthModal
               authCode={viewModel.authCode}
@@ -36,7 +36,11 @@ export function RepairsPageViewMobile() {
                   }}
                   tabs={viewModel.tabItems}
                 />
-                <SearchBar searchTerm={viewModel.searchTerm} setSearchTerm={viewModel.updateSearchTerm} theme={theme} />
+                <SearchBar
+                  searchKeyword={viewModel.searchKeyword}
+                  setSearchKeyword={viewModel.updateSearchKeyword}
+                  theme={theme}
+                />
               </StickyTop>
               <MainContent role="main">
                 {(() => {
@@ -48,7 +52,7 @@ export function RepairsPageViewMobile() {
                 })()}
               </MainContent>
               <CTAButtonContainer>
-                <CTAButton onClick={viewModel.startNewRepair} theme={theme} aria-label="새 정비 작업 시작하기">
+                <CTAButton onClick={viewModel.createRepair} theme={theme} aria-label="새 정비 작업 시작하기">
                   + 새 정비 작업 시작
                 </CTAButton>
               </CTAButtonContainer>
@@ -107,12 +111,12 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
 }
 
 interface SearchBarProps {
-  searchTerm: string
-  setSearchTerm: (term: string) => void
+  searchKeyword: string
+  setSearchKeyword: (term: string) => void
   theme: SOORITheme
 }
 
-const SearchBar = ({ searchTerm, setSearchTerm, theme }: SearchBarProps) => {
+const SearchBar = ({ searchKeyword, setSearchKeyword, theme }: SearchBarProps) => {
   return (
     <SearchBarOuterContainer theme={theme}>
       <SearchBarInnerContainer theme={theme}>
@@ -123,9 +127,9 @@ const SearchBar = ({ searchTerm, setSearchTerm, theme }: SearchBarProps) => {
           theme={theme}
           type="text"
           placeholder="정비 내역 검색"
-          value={searchTerm}
+          value={searchKeyword}
           onChange={(e) => {
-            setSearchTerm(e.target.value)
+            setSearchKeyword(e.target.value)
           }}
           aria-label="정비 내역 검색"
         />
