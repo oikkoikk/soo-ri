@@ -224,6 +224,11 @@ const ModalInput = styled.input`
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
   width: 100%;
   text-align: center;
+  &:focus {
+    outline: none;
+    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
+  }
+&
 `
 
 const ModalCTAButton = styled.button`
@@ -233,6 +238,10 @@ const ModalCTAButton = styled.button`
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
   height: 44px;
   padding: 0px 16px;
+  &:focus {
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
 `
 
 const Container = styled.main`
