@@ -38,7 +38,11 @@ export function GlobalStyle() {
         }
 
         button {
-          all: unset;
+          background: none;
+          border: none;
+          padding: 0;
+          font: inherit;
+          color: inherit;
           cursor: pointer;
         }
 
