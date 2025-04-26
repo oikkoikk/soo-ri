@@ -39,6 +39,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-misused-spread': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'import/order': [
         'error',

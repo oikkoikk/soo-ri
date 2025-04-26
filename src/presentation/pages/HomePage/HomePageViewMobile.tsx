@@ -1,20 +1,25 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { SOORITheme } from '@/theme/theme'
 
 export function HomePageViewMobile() {
   const theme = useTheme()
+  const [searchParams] = useSearchParams()
+
+  const userId = searchParams.get('id') ?? ''
+
   return (
     <Container theme={theme}>
       <Title theme={theme}>전동보장구 관리 서비스</Title>
       {/* TODO: 카카오 아이콘 추가 */}
       {/* TODO: 카카오 로그인 페이지로 연결 */}
-      <KakaoLoginButton to="/kakao">
+      <KakaoLoginButton to={{}}>
         <ButtonText theme={theme}>카카오 로그인</ButtonText>
       </KakaoLoginButton>
-      <RepairModeButton to="/repair">
+      <RepairModeButton to={buildRoute('REPAIRS', {}, { id: userId })} theme={theme}>
         <ButtonText theme={theme}>수리자 모드 바로가기</ButtonText>
       </RepairModeButton>
     </Container>
@@ -59,7 +64,7 @@ const RepairModeButton = styled(Link)`
   justify-content: center;
   width: 100%;
   height: 48px;
-  background-color: #ffffff;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
   border-radius: 6px;
   text-decoration: none;
   border: none;

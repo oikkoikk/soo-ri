@@ -1,0 +1,375 @@
+import { css, useTheme } from '@emotion/react'
+import styled from '@emotion/styled'
+
+import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
+import { RepairModel } from '@/domain/models/models'
+import { Header, Tabs } from '@/presentation/components/components'
+import { SOORITheme } from '@/theme/soori_theme'
+
+import { TabId, useRepairViewModel } from './RepairsPageViewModel'
+
+export function RepairsPageViewMobile() {
+  const theme = useTheme()
+  const viewModel = useRepairViewModel()
+
+  return (
+    <>
+      {(() => {
+        if (viewModel.isModalOpen) {
+          return (
+            <AuthModal
+              authCode={viewModel.authCode}
+              setAuthCode={viewModel.updateAuthCode}
+              onSubmit={viewModel.processAuthSubmission}
+              theme={theme}
+            />
+          )
+        } else {
+          return (
+            <Container>
+              <StickyTop theme={theme}>
+                <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
+                <Tabs
+                  activeTab={viewModel.activeTab as string}
+                  setActiveTab={(tabId: string) => {
+                    viewModel.changeTab(tabId as TabId)
+                  }}
+                  tabs={viewModel.tabItems}
+                />
+                <SearchBar searchTerm={viewModel.searchTerm} setSearchTerm={viewModel.updateSearchTerm} theme={theme} />
+              </StickyTop>
+              {(() => {
+                if (viewModel.activeTab === TabId.REPAIRS) {
+                  return <RepairHistoryList repairHistory={viewModel.filteredRepairs} theme={theme} />
+                } else {
+                  return <Vehicle />
+                }
+              })()}
+              <CTAButtonContainer>
+                <CTAButton onClick={viewModel.startNewRepair} theme={theme}>
+                  + 새 정비 작업 시작
+                </CTAButton>
+              </CTAButtonContainer>
+            </Container>
+          )
+        }
+      })()}
+    </>
+  )
+}
+
+interface AuthModalProps {
+  authCode: string
+  setAuthCode: (code: string) => void
+  onSubmit: () => void
+  theme: SOORITheme
+}
+
+const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSubmit()
+    }
+  }
+
+  return (
+    <Modal theme={theme}>
+      <ModalContent theme={theme}>
+        <ModalTitle theme={theme}>인증번호를 입력하세요</ModalTitle>
+        <ModalDescription theme={theme}>
+          인증번호를 모르는 경우 정비이력 업데이트 권한을 부여받은 기관에 문의바랍니다.
+        </ModalDescription>
+        <StyledInput
+          type="password"
+          pattern="[0-9]*"
+          inputMode="numeric"
+          maxLength={4}
+          value={authCode}
+          onChange={(e) => {
+            setAuthCode(e.target.value)
+          }}
+          onKeyDown={handleKeyDown}
+          theme={theme}
+        />
+        <StyledButton onClick={onSubmit} theme={theme}>
+          확인
+        </StyledButton>
+      </ModalContent>
+    </Modal>
+  )
+}
+
+interface SearchBarProps {
+  searchTerm: string
+  setSearchTerm: (term: string) => void
+  theme: SOORITheme
+}
+
+const SearchBar = ({ searchTerm, setSearchTerm, theme }: SearchBarProps) => {
+  return (
+    <SearchBarOuterContainer theme={theme}>
+      <SearchBarInnerContainer theme={theme}>
+        <Search color={theme.colors.onSurfaceVariant} />
+        <SearchInput
+          type="text"
+          placeholder="정비 내역 검색"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+          }}
+          theme={theme}
+        />
+      </SearchBarInnerContainer>
+    </SearchBarOuterContainer>
+  )
+}
+
+interface RepairHistoryListProps {
+  repairHistory: RepairModel[]
+  theme: SOORITheme
+}
+
+const RepairHistoryList = ({ repairHistory, theme }: RepairHistoryListProps) => {
+  return (
+    <>
+      {repairHistory.map((repair) => (
+        <RepairHistoryItem key={repair.id} repair={repair} theme={theme} />
+      ))}
+    </>
+  )
+}
+
+interface RepairItemProps {
+  repair: RepairModel
+  theme: SOORITheme
+}
+
+const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
+  return (
+    <RepairCard theme={theme}>
+      <RepairCardHeader theme={theme}>
+        <ReapairDateContainer>
+          <Calendar color={theme.colors.onSurfaceVariant} />
+          <RepairDate theme={theme}>{repair.repairedAtDisplayString}</RepairDate>
+        </ReapairDateContainer>
+        <RepairPriceContainer>
+          <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>{' '}
+          <ChevronRight color={theme.colors.primary} />
+        </RepairPriceContainer>
+      </RepairCardHeader>
+      <RepairTypeBadge theme={theme}>{repair.type}</RepairTypeBadge>
+      <RepairShop theme={theme}>담당기관: {repair.shopLabel}</RepairShop>
+    </RepairCard>
+  )
+}
+
+const Vehicle = () => {
+  return <></>
+}
+
+// 스타일 컴포넌트 정의
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: ${({ theme }: { theme: SOORITheme }) => theme.colors.outlineVariant};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const ModalContent = styled.div`
+  width: 270px;
+  height: 184px;
+  background: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  border-radius: 14px;
+  text-align: center;
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+`
+
+const ModalTitle = styled.p`
+  ${({ theme }) => css`
+    ...${theme.typography.subtitleMedium};
+  `}
+  padding: 19px 16px 0px 16px;
+  margin: 0;
+`
+
+const ModalDescription = styled.p`
+  ${({ theme }) => css`
+    ...${theme.typography.bodySmall};
+  `}
+  padding: 0px 16px 15px 16px;
+  margin: 0;
+`
+
+const StyledInput = styled.input`
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  height: 44px;
+  padding: 11px 0px;
+  border: none;
+  border-top: 0.3px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.3px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  width: 100%;
+  text-align: center;
+`
+
+const StyledButton = styled.button`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyMedium};
+    color: ${theme.colors.primary};
+  `}
+  height: 22px;
+  padding: 11px 16px;
+`
+
+const Container = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
+`
+
+const StickyTop = styled.div`
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+`
+
+const SearchBarOuterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 46px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
+  padding: 8px 11px;
+  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+`
+
+const SearchBarInnerContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 7px 10px;
+  border-radius: 12px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+`
+
+const SearchInput = styled.input`
+  flex: 1;
+  height: 16px;
+  border: none;
+  padding: 8px;
+  background-color: transparent;
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const CTAButtonContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80px;
+  padding: 12px 25px;
+  z-index: 5;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
+  border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+`
+
+const CTAButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyLarge};
+  `}
+`
+
+const RepairCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+  gap: 11px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  padding: 15px 21px;
+  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+`
+
+const RepairCardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 15px;
+`
+
+const ReapairDateContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+`
+
+const RepairDate = styled.span`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+`
+
+const RepairPriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+
+const RepairPrice = styled.p`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
+`
+
+const RepairTypeBadge = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 16px;
+  margin: 1px 0px;
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  border-radius: 4px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.labelSmall};
+  `}
+`
+
+const RepairShop = styled.p`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  height: 15px;
+`
