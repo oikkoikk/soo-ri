@@ -16,7 +16,7 @@ export function HomePageViewMobile() {
       <Title theme={theme}>전동보장구 관리 서비스</Title>
       {/* TODO: 카카오 아이콘 추가 */}
       {/* TODO: 카카오 로그인 페이지로 연결 */}
-      <KakaoLoginButton to={buildRoute('KAKAO')}>
+      <KakaoLoginButton to={{}}>
         <ButtonText theme={theme}>카카오 로그인</ButtonText>
       </KakaoLoginButton>
       <RepairModeButton to={buildRoute('REPAIRS', {}, { id: userId })} theme={theme}>
