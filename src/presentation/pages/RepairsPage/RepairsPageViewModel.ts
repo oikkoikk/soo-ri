@@ -145,9 +145,5 @@ export function useRepairViewModel() {
       }
       return false
     },
-
-    createRepair: () => {
-      alert('새 정비 작업을 시작합니다.')
-    },
   }
 }
