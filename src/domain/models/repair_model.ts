@@ -1,10 +1,12 @@
 interface Repair {
-  id: string
-  repairedAt: Date
-  price: number
-  type: string
-  shopLabel: string
-  shopCode: string
+  id?: string
+  repairedAt?: Date
+  price?: number
+  type?: string
+  shopLabel?: string
+  shopCode?: string
+  problem?: string
+  action?: string
 }
 
 export class RepairModel implements Repair {
@@ -14,14 +16,18 @@ export class RepairModel implements Repair {
   readonly type: string
   readonly shopLabel: string
   readonly shopCode: string
+  readonly problem: string
+  readonly action: string
 
   constructor(model: Repair) {
-    this.id = model.id
-    this.repairedAt = new Date(model.repairedAt)
-    this.price = model.price
-    this.type = model.type
-    this.shopLabel = model.shopLabel
-    this.shopCode = model.shopCode
+    this.id = model.id ?? ''
+    this.repairedAt = new Date(model.repairedAt ?? new Date())
+    this.price = model.price ?? 0
+    this.type = model.type ?? ''
+    this.shopLabel = model.shopLabel ?? ''
+    this.shopCode = model.shopCode ?? ''
+    this.problem = model.problem ?? ''
+    this.action = model.action ?? ''
   }
 
   get repairedAtDisplayString(): string {
