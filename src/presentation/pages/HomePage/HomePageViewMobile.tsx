@@ -51,9 +51,6 @@ const KakaoLoginButton = styled(Link)`
   height: 48px;
   background-color: #fee500;
   border-radius: 6px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.secondary};
   }
@@ -70,9 +67,6 @@ const RepairModeButton = styled(Link)`
   height: 48px;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
   border-radius: 6px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
   &:focus-visible {
     outline: 2px solid ${({ theme }) => theme.colors.secondary};
   }
