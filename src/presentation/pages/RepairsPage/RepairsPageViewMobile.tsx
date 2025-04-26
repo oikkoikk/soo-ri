@@ -38,7 +38,7 @@ export function RepairsPageViewMobile() {
                 />
                 <SearchBar searchTerm={viewModel.searchTerm} setSearchTerm={viewModel.updateSearchTerm} theme={theme} />
               </StickyTop>
-              <MainContent>
+              <MainContent role="main">
                 {(() => {
                   if (viewModel.activeTab === TabId.REPAIRS) {
                     return <RepairHistoryList repairHistory={viewModel.filteredRepairs} theme={theme} />
@@ -83,7 +83,8 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
         <ModalDescription theme={theme} id="auth-description">
           인증번호를 모르는 경우 정비이력 업데이트 권한을 부여받은 기관에 문의바랍니다.
         </ModalDescription>
-        <StyledInput
+        <ModalInput
+          autoFocus
           theme={theme}
           type="password"
           pattern="[0-9]*"
@@ -97,9 +98,9 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
           autoComplete="one-time-code"
           aria-describedby="auth-description"
         />
-        <StyledButton onClick={onSubmit} theme={theme} aria-label="인증번호 확인">
+        <ModalCTAButton onClick={onSubmit} theme={theme} aria-label="인증번호 확인">
           확인
-        </StyledButton>
+        </ModalCTAButton>
       </ModalContent>
     </Modal>
   )
@@ -155,7 +156,7 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
   return (
-    <RepairCard theme={theme} tabIndex={0}>
+    <RepairCard theme={theme} role="listitem" tabIndex={0}>
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
           <CalendarIcon aria-hidden="true">
@@ -218,7 +219,7 @@ const ModalDescription = styled.p`
   padding: 0px 16px 15px 16px;
 `
 
-const StyledInput = styled.input`
+const ModalInput = styled.input`
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
   height: 44px;
   padding: 11px 0px;
@@ -230,13 +231,13 @@ const StyledInput = styled.input`
   text-align: center;
 `
 
-const StyledButton = styled.button`
+const ModalCTAButton = styled.button`
   ${({ theme }: { theme: SOORITheme }) => css`
     ...${theme.typography.bodyMedium};
     color: ${theme.colors.primary};
   `}
-  height: 22px;
-  padding: 11px 16px;
+  height: 44px;
+  padding: 0px 16px;
 `
 
 const Container = styled.main`
