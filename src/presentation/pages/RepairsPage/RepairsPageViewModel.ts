@@ -1,24 +1,22 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { atom, useAtom } from 'jotai'
 import { useSearchParams } from 'react-router'
 
 import { RepairModel } from '@/domain/models/models'
 
-// 탭 ID를 열거형으로 정의
 export enum TabId {
   REPAIRS = 'repairs',
   VEHICLE = 'vehicle',
 }
 
-// 탭 아이템 타입 정의
 interface TabItem {
   id: TabId
   label: string
 }
 
 const repairsAtom = atom<RepairModel[]>([])
-const searchTermAtom = atom<string>('')
+const searchKeywordAtom = atom<string>('')
 const activeTabAtom = atom<TabId>(TabId.REPAIRS)
 const modalOpenedAtom = atom<boolean>(false)
 const authCodeAtom = atom<string>('')
@@ -30,16 +28,18 @@ const tabItems: TabItem[] = [
 
 export function useRepairViewModel() {
   const [repairs, setRepairs] = useAtom(repairsAtom)
-  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom)
+  const [searchKeyword, setSearchKeyword] = useAtom(searchKeywordAtom)
   const [activeTab, setActiveTab] = useAtom(activeTabAtom)
-  const [isModalOpen, setIsModalOpen] = useAtom(modalOpenedAtom)
+  const [modalOpened, setModalOpened] = useAtom(modalOpenedAtom)
   const [authCode, setAuthCode] = useAtom(authCodeAtom)
   const [searchParams] = useSearchParams()
 
+  const modalOpenedRef = useRef<boolean>(false)
+
   const filteredRepairs = repairs
     .filter((repair) => {
-      if (!searchTerm) return true
-      return repair.type.includes(searchTerm) || repair.shopLabel.includes(searchTerm)
+      if (!searchKeyword) return true
+      return repair.type.includes(searchKeyword) || repair.shopLabel.includes(searchKeyword)
     })
     .sort((a, b) => b.repairedAt.getTime() - a.repairedAt.getTime())
 
@@ -98,22 +98,35 @@ export function useRepairViewModel() {
 
     setRepairs(sampleRepairs)
 
-    if (searchParams.get('id')) {
-      setIsModalOpen(true)
+    if (searchParams.get('id') && !modalOpenedRef.current) {
+      setModalOpened(true)
+      modalOpenedRef.current = true
     }
-  }, [searchParams, setRepairs, setIsModalOpen])
+  }, [searchParams, setRepairs, setModalOpened])
+
+  useEffect(() => {
+    if (!modalOpened) {
+      const timer = setTimeout(() => {
+        modalOpenedRef.current = false
+      }, 300)
+
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [modalOpened])
 
   return {
     repairs,
     filteredRepairs,
     tabItems,
-    searchTerm,
+    searchKeyword,
     activeTab,
-    isModalOpen,
+    modalOpened,
     authCode,
 
-    updateSearchTerm: (term: string) => {
-      setSearchTerm(term)
+    updateSearchKeyword: (term: string) => {
+      setSearchKeyword(term)
     },
 
     changeTab: (tabId: TabId) => {
@@ -126,7 +139,7 @@ export function useRepairViewModel() {
 
     processAuthSubmission: () => {
       if (authCode.length === 4) {
-        setIsModalOpen(false)
+        setModalOpened(false)
         setAuthCode('')
         return true
       }
@@ -137,7 +150,7 @@ export function useRepairViewModel() {
       window.history.back()
     },
 
-    startNewRepair: () => {
+    createRepair: () => {
       alert('새 정비 작업을 시작합니다.')
     },
   }
