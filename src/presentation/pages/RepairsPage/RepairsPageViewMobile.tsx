@@ -1,7 +1,8 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
@@ -12,6 +13,7 @@ import { TabId, useRepairViewModel } from './RepairsPageViewModel'
 export function RepairsPageViewMobile() {
   const theme = useTheme()
   const viewModel = useRepairViewModel()
+  const navigate = useNavigate()
 
   return (
     <>
@@ -29,7 +31,7 @@ export function RepairsPageViewMobile() {
           return (
             <Container>
               <StickyTop theme={theme}>
-                <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
+                <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={() => void navigate(-1)} />
                 <Tabs
                   activeTab={viewModel.activeTab as string}
                   setActiveTab={(tabId: string) => {
@@ -161,7 +163,7 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
   return (
-    <RepairCard to={'/'} theme={theme} tabIndex={0}>
+    <RepairCard to={buildRoute('REPAIR_DETAIL', { id: repair.id })} theme={theme} tabIndex={0}>
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
           <CalendarIcon aria-hidden="true">

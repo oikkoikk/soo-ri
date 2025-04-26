@@ -1,15 +1,17 @@
 import { ComponentType } from 'react'
 
-import { HomePageView, RepairsPageView } from '@/presentation/pages/pages'
+import { HomePageView, RepairsPageView, RepairDetailPageView } from '@/presentation/pages/pages'
 
 export const ROUTES = {
   HOME: '/',
   REPAIRS: '/repairs',
+  REPAIR_DETAIL: '/repairs/:id',
 } as const
 
 export const ROUTE_PAGES: Record<RoutePath, ComponentType> = {
   [ROUTES.HOME]: HomePageView,
   [ROUTES.REPAIRS]: RepairsPageView,
+  [ROUTES.REPAIR_DETAIL]: RepairDetailPageView,
 }
 
 export type RouteKey = keyof typeof ROUTES
