@@ -16,17 +16,15 @@ export function HomePageViewMobile() {
       <Title theme={theme}>전동보장구 관리 서비스</Title>
       {/* TODO: 카카오 아이콘 추가 */}
       {/* TODO: 카카오 로그인 페이지로 연결 */}
-      <KakaoLoginButton to={{}}>
-        <ButtonText theme={theme}>카카오 로그인</ButtonText>
-      </KakaoLoginButton>
+      <KakaoLoginButton to={{}}>카카오 로그인</KakaoLoginButton>
       <RepairModeButton to={buildRoute('REPAIRS', {}, { id: userId })} theme={theme}>
-        <ButtonText theme={theme}>수리자 모드 바로가기</ButtonText>
+        수리자 모드 바로가기
       </RepairModeButton>
     </Container>
   )
 }
 
-const Container = styled.div`
+const Container = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,6 +54,12 @@ const KakaoLoginButton = styled(Link)`
   text-decoration: none;
   border: none;
   cursor: pointer;
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+  }
+  ${({ theme }) => css`
+    ...${theme.typography.bodyMedium};
+  `}
 `
 
 const RepairModeButton = styled(Link)`
@@ -69,9 +73,9 @@ const RepairModeButton = styled(Link)`
   text-decoration: none;
   border: none;
   cursor: pointer;
-`
-
-const ButtonText = styled.span`
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondary};
+  }
   ${({ theme }) => css`
     ...${theme.typography.bodyMedium};
   `}
