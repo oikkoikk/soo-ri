@@ -2,6 +2,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useNavigate } from 'react-router'
 
+import { ROUTES } from '@/application/routers/routes'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
@@ -19,7 +20,7 @@ export function RepairCreatePageViewMobile() {
           title="전동보장구 정비사항 작성"
           description="PM2024007 • 라이언"
           onBack={() => {
-            void navigate(-1)
+            void navigate(ROUTES.REPAIRS)
           }}
         />
       </StickyTop>
