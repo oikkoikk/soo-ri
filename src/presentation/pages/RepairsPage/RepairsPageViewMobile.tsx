@@ -19,14 +19,7 @@ export function RepairsPageViewMobile() {
     <>
       {(() => {
         if (viewModel.modalOpened) {
-          return (
-            <AuthModal
-              authCode={viewModel.authCode}
-              setAuthCode={viewModel.updateAuthCode}
-              onSubmit={viewModel.processAuthSubmission}
-              theme={theme}
-            />
-          )
+          return <AuthModal />
         } else {
           return (
             <Container>
@@ -39,16 +32,12 @@ export function RepairsPageViewMobile() {
                   }}
                   tabs={viewModel.tabItems}
                 />
-                <SearchBar
-                  searchKeyword={viewModel.searchKeyword}
-                  setSearchKeyword={viewModel.updateSearchKeyword}
-                  theme={theme}
-                />
+                <SearchBar />
               </StickyTop>
               <MainContent role="main">
                 {(() => {
                   if (viewModel.activeTab === TabId.REPAIRS) {
-                    return <RepairHistoryList repairHistory={viewModel.filteredRepairs} theme={theme} />
+                    return <RepairHistoryList />
                   } else {
                     return <Vehicle />
                   }
@@ -71,17 +60,13 @@ export function RepairsPageViewMobile() {
   )
 }
 
-interface AuthModalProps {
-  authCode: string
-  setAuthCode: (code: string) => void
-  onSubmit: () => void
-  theme: SOORITheme
-}
+const AuthModal = () => {
+  const theme = useTheme()
+  const viewModel = useRepairViewModel()
 
-const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      onSubmit()
+      viewModel.submitAuthCode()
     }
   }
 
@@ -101,15 +86,15 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
           pattern="[0-9]*"
           inputMode="numeric"
           maxLength={4}
-          value={authCode}
+          value={viewModel.authCode}
           onChange={(e) => {
-            setAuthCode(e.target.value)
+            viewModel.updateAuthCode(e.target.value)
           }}
           onKeyDown={handleKeyDown}
           autoComplete="one-time-code"
           aria-describedby="auth-description"
         />
-        <ModalCTAButton onClick={onSubmit} theme={theme} aria-label="인증번호 확인">
+        <ModalCTAButton onClick={viewModel.submitAuthCode} theme={theme} aria-label="인증번호 확인">
           확인
         </ModalCTAButton>
       </ModalContent>
@@ -117,13 +102,10 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
   )
 }
 
-interface SearchBarProps {
-  searchKeyword: string
-  setSearchKeyword: (term: string) => void
-  theme: SOORITheme
-}
+const SearchBar = () => {
+  const theme = useTheme()
+  const viewModel = useRepairViewModel()
 
-const SearchBar = ({ searchKeyword, setSearchKeyword, theme }: SearchBarProps) => {
   return (
     <SearchBarOuterContainer theme={theme}>
       <SearchBarInnerContainer theme={theme}>
@@ -134,9 +116,9 @@ const SearchBar = ({ searchKeyword, setSearchKeyword, theme }: SearchBarProps) =
           theme={theme}
           type="text"
           placeholder="정비 내역 검색"
-          value={searchKeyword}
+          value={viewModel.searchKeyword}
           onChange={(e) => {
-            setSearchKeyword(e.target.value)
+            viewModel.updateSearchKeyword(e.target.value)
           }}
           aria-label="정비 내역 검색"
         />
@@ -145,16 +127,13 @@ const SearchBar = ({ searchKeyword, setSearchKeyword, theme }: SearchBarProps) =
   )
 }
 
-interface RepairHistoryListProps {
-  repairHistory: RepairModel[]
-  theme: SOORITheme
-}
+const RepairHistoryList = () => {
+  const viewModel = useRepairViewModel()
 
-const RepairHistoryList = ({ repairHistory, theme }: RepairHistoryListProps) => {
   return (
     <RepairList aria-label="정비 이력 목록">
-      {repairHistory.map((repair) => (
-        <RepairHistoryItem key={repair.id} repair={repair} theme={theme} />
+      {viewModel.filteredRepairs.map((repair) => (
+        <RepairHistoryItem key={repair.id} repair={repair} />
       ))}
     </RepairList>
   )
@@ -162,10 +141,11 @@ const RepairHistoryList = ({ repairHistory, theme }: RepairHistoryListProps) => 
 
 interface RepairItemProps {
   repair: RepairModel
-  theme: SOORITheme
 }
 
-const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
+const RepairHistoryItem = ({ repair }: RepairItemProps) => {
+  const theme = useTheme()
+
   return (
     <RepairCard to={buildRoute('REPAIR_DETAIL', { id: repair.id })} theme={theme} tabIndex={0}>
       <RepairCardHeader theme={theme}>

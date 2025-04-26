@@ -21,16 +21,40 @@ export function RepairDetailPageViewMobile() {
         />
       </StickyTop>
       <MainContent role="main">
-        <Section>
-          <SectionTitle>접수 문제</SectionTitle>
-          <TextArea disabled value={'파손부위 점검 후 수리 요청'} rows={5} />
-        </Section>
-        <Section>
-          <SectionTitle>수리사항</SectionTitle>
-          <TextArea disabled value={'브레이크 및 타이어 휠 파손 확인 후 교체 조치'} rows={5} />
-        </Section>
+        <ProblemSection />
+        <ActionSection />
       </MainContent>
     </Container>
+  )
+}
+
+const ProblemSection = () => {
+  return (
+    <Section>
+      <SectionTitle id="problem-title">접수 문제</SectionTitle>
+      <TextArea
+        readOnly
+        value={'파손부위 점검 후 수리 요청'}
+        rows={7}
+        aria-labelledby="problem-title"
+        aria-readonly="true"
+      />
+    </Section>
+  )
+}
+
+const ActionSection = () => {
+  return (
+    <Section>
+      <SectionTitle id="repair-title">수리사항</SectionTitle>
+      <TextArea
+        readOnly
+        value={'브레이크 및 타이어 휠 파손 확인 후 교체 조치'}
+        rows={7}
+        aria-labelledby="repair-title"
+        aria-readonly="true"
+      />
+    </Section>
   )
 }
 
@@ -62,8 +86,8 @@ const Section = styled.div`
 const SectionTitle = styled.h2`
   ${({ theme }) => css`
     ${theme.typography.labelMedium};
-    color: ${theme.colors.primary};
   `}
+  color: ${({ theme }) => theme.colors.primary};
 `
 
 const TextArea = styled.textarea`

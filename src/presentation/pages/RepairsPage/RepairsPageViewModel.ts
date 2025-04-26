@@ -137,7 +137,7 @@ export function useRepairViewModel() {
       setAuthCode(code)
     },
 
-    processAuthSubmission: () => {
+    submitAuthCode: () => {
       if (authCode.length === 4) {
         setModalOpened(false)
         setAuthCode('')
