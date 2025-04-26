@@ -1,5 +1,6 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
+import { Link } from 'react-router'
 
 import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
@@ -160,7 +161,7 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
   return (
-    <RepairCard theme={theme} role="listitem" tabIndex={0}>
+    <RepairCard to={'/'} theme={theme} tabIndex={0}>
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
           <CalendarIcon aria-hidden="true">
@@ -211,14 +212,14 @@ const ModalContent = styled.div`
 
 const ModalTitle = styled.h2`
   ${({ theme }) => css`
-    ...${theme.typography.subtitleMedium};
+    ${theme.typography.subtitleMedium};
   `}
   padding: 19px 16px 0px 16px;
 `
 
 const ModalDescription = styled.p`
   ${({ theme }) => css`
-    ...${theme.typography.bodySmall};
+    ${theme.typography.bodySmall};
   `}
   padding: 0px 16px 15px 16px;
 `
@@ -237,9 +238,9 @@ const ModalInput = styled.input`
 
 const ModalCTAButton = styled.button`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyMedium};
-    color: ${theme.colors.primary};
+    ${theme.typography.bodyMedium};
   `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
   height: 44px;
   padding: 0px 16px;
 `
@@ -306,7 +307,7 @@ const SearchInput = styled.input`
   padding: 8px;
   background-color: transparent;
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
 
@@ -340,7 +341,7 @@ const CTAButton = styled.button`
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyLarge};
+    ${theme.typography.bodyLarge};
   `}
 `
 
@@ -350,7 +351,7 @@ const RepairList = styled.ul`
   margin: 0;
 `
 
-const RepairCard = styled.li`
+const RepairCard = styled(Link)`
   display: flex;
   flex-direction: column;
   height: 100px;
@@ -375,7 +376,7 @@ const RepairDateContainer = styled.div`
 
 const RepairDate = styled.span`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
 `
@@ -388,7 +389,7 @@ const RepairPriceContainer = styled.div`
 
 const RepairPrice = styled.p`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
 `
 
@@ -403,13 +404,13 @@ const RepairTypeBadge = styled.span`
   border-radius: 4px;
   border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.labelSmall};
+    ${theme.typography.labelSmall};
   `}
 `
 
 const RepairShop = styled.p`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
   height: 15px;

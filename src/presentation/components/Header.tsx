@@ -72,14 +72,14 @@ const HeaderText = styled.div`
 
 const HeaderTitle = styled.h1`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.subtitleLarge};
+    ${theme.typography.subtitleLarge};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `
 
 const HeaderDescription = styled.p`
   ${({ theme }: { theme: SOORITheme }) => css`
-    ...${theme.typography.labelSmall};
+    ${theme.typography.labelSmall};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `

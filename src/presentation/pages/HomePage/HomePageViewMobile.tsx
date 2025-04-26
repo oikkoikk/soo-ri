@@ -38,9 +38,9 @@ const Container = styled.main`
 
 const Title = styled.h1`
   ${({ theme }) => css`
-    ...${theme.typography.titleLarge};
-    color: ${theme.colors.onSurface};
+    ${theme.typography.titleLarge};
   `}
+  color: ${({ theme }) => theme.colors.onSurface};
 `
 
 const KakaoLoginButton = styled(Link)`
@@ -55,7 +55,7 @@ const KakaoLoginButton = styled(Link)`
     outline: 2px solid ${({ theme }) => theme.colors.secondary};
   }
   ${({ theme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
 `
 
@@ -71,6 +71,6 @@ const RepairModeButton = styled(Link)`
     outline: 2px solid ${({ theme }) => theme.colors.secondary};
   }
   ${({ theme }) => css`
-    ...${theme.typography.bodyMedium};
+    ${theme.typography.bodyMedium};
   `}
 `

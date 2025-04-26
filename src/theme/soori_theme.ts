@@ -12,56 +12,56 @@ export const SOORITheme = {
   },
   typography: {
     titleLarge: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 700, // Bold
       fontSize: '20px',
       lineHeight: '30px',
       letterSpacing: '0px',
     },
     subtitleLarge: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 600, // Semibold
       fontSize: '20px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
     subtitleMedium: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 500, // Medium
       fontSize: '17px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
     bodyLarge: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 500, // Medium
       fontSize: '20px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
     bodyMedium: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 400, // Regular
       fontSize: '15px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
     bodySmall: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 300, // Regular
       fontSize: '13px',
       lineHeight: '18px',
       letterSpacing: '-0.08px',
     },
     labelMedium: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 500, // Medium
       fontSize: '13px',
       lineHeight: '22px',
       letterSpacing: '-0.41px',
     },
     labelSmall: {
-      fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+      fontFamily: 'Pretendard Variable',
       fontWeight: 400, // Regular
       fontSize: '12px',
       lineHeight: '22px',
