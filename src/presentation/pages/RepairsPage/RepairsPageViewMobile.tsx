@@ -38,15 +38,17 @@ export function RepairsPageViewMobile() {
                 />
                 <SearchBar searchTerm={viewModel.searchTerm} setSearchTerm={viewModel.updateSearchTerm} theme={theme} />
               </StickyTop>
-              {(() => {
-                if (viewModel.activeTab === TabId.REPAIRS) {
-                  return <RepairHistoryList repairHistory={viewModel.filteredRepairs} theme={theme} />
-                } else {
-                  return <Vehicle />
-                }
-              })()}
+              <MainContent role="main">
+                {(() => {
+                  if (viewModel.activeTab === TabId.REPAIRS) {
+                    return <RepairHistoryList repairHistory={viewModel.filteredRepairs} theme={theme} />
+                  } else {
+                    return <Vehicle />
+                  }
+                })()}
+              </MainContent>
               <CTAButtonContainer>
-                <CTAButton onClick={viewModel.startNewRepair} theme={theme}>
+                <CTAButton onClick={viewModel.startNewRepair} theme={theme} aria-label="새 정비 작업 시작하기">
                   + 새 정비 작업 시작
                 </CTAButton>
               </CTAButtonContainer>
@@ -73,13 +75,17 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
   }
 
   return (
-    <Modal theme={theme}>
+    <Modal theme={theme} role="dialog" aria-labelledby="auth-modal-title">
       <ModalContent theme={theme}>
-        <ModalTitle theme={theme}>인증번호를 입력하세요</ModalTitle>
-        <ModalDescription theme={theme}>
+        <ModalTitle id="auth-modal-title" theme={theme}>
+          인증번호를 입력하세요
+        </ModalTitle>
+        <ModalDescription theme={theme} id="auth-description">
           인증번호를 모르는 경우 정비이력 업데이트 권한을 부여받은 기관에 문의바랍니다.
         </ModalDescription>
-        <StyledInput
+        <ModalInput
+          autoFocus
+          theme={theme}
           type="password"
           pattern="[0-9]*"
           inputMode="numeric"
@@ -89,11 +95,12 @@ const AuthModal = ({ authCode, setAuthCode, onSubmit, theme }: AuthModalProps) =
             setAuthCode(e.target.value)
           }}
           onKeyDown={handleKeyDown}
-          theme={theme}
+          autoComplete="one-time-code"
+          aria-describedby="auth-description"
         />
-        <StyledButton onClick={onSubmit} theme={theme}>
+        <ModalCTAButton onClick={onSubmit} theme={theme} aria-label="인증번호 확인">
           확인
-        </StyledButton>
+        </ModalCTAButton>
       </ModalContent>
     </Modal>
   )
@@ -109,15 +116,18 @@ const SearchBar = ({ searchTerm, setSearchTerm, theme }: SearchBarProps) => {
   return (
     <SearchBarOuterContainer theme={theme}>
       <SearchBarInnerContainer theme={theme}>
-        <Search color={theme.colors.onSurfaceVariant} />
+        <SearchIcon aria-hidden="true">
+          <Search color={theme.colors.onSurfaceVariant} />
+        </SearchIcon>
         <SearchInput
+          theme={theme}
           type="text"
           placeholder="정비 내역 검색"
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value)
           }}
-          theme={theme}
+          aria-label="정비 내역 검색"
         />
       </SearchBarInnerContainer>
     </SearchBarOuterContainer>
@@ -131,11 +141,11 @@ interface RepairHistoryListProps {
 
 const RepairHistoryList = ({ repairHistory, theme }: RepairHistoryListProps) => {
   return (
-    <>
+    <RepairList aria-label="정비 이력 목록">
       {repairHistory.map((repair) => (
         <RepairHistoryItem key={repair.id} repair={repair} theme={theme} />
       ))}
-    </>
+    </RepairList>
   )
 }
 
@@ -146,15 +156,19 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair, theme }: RepairItemProps) => {
   return (
-    <RepairCard theme={theme}>
+    <RepairCard theme={theme} role="listitem" tabIndex={0}>
       <RepairCardHeader theme={theme}>
-        <ReapairDateContainer>
-          <Calendar color={theme.colors.onSurfaceVariant} />
+        <RepairDateContainer>
+          <CalendarIcon aria-hidden="true">
+            <Calendar color={theme.colors.onSurfaceVariant} />
+          </CalendarIcon>
           <RepairDate theme={theme}>{repair.repairedAtDisplayString}</RepairDate>
-        </ReapairDateContainer>
+        </RepairDateContainer>
         <RepairPriceContainer>
-          <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>{' '}
-          <ChevronRight color={theme.colors.primary} />
+          <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>
+          <ChevronIcon aria-hidden="true">
+            <ChevronRight color={theme.colors.primary} />
+          </ChevronIcon>
         </RepairPriceContainer>
       </RepairCardHeader>
       <RepairTypeBadge theme={theme}>{repair.type}</RepairTypeBadge>
@@ -167,7 +181,6 @@ const Vehicle = () => {
   return <></>
 }
 
-// 스타일 컴포넌트 정의
 const Modal = styled.div`
   position: fixed;
   top: 0;
@@ -178,6 +191,7 @@ const Modal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 `
 
 const ModalContent = styled.div`
@@ -191,12 +205,11 @@ const ModalContent = styled.div`
   flex-direction: column;
 `
 
-const ModalTitle = styled.p`
+const ModalTitle = styled.h2`
   ${({ theme }) => css`
     ...${theme.typography.subtitleMedium};
   `}
   padding: 19px 16px 0px 16px;
-  margin: 0;
 `
 
 const ModalDescription = styled.p`
@@ -204,10 +217,9 @@ const ModalDescription = styled.p`
     ...${theme.typography.bodySmall};
   `}
   padding: 0px 16px 15px 16px;
-  margin: 0;
 `
 
-const StyledInput = styled.input`
+const ModalInput = styled.input`
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
   height: 44px;
   padding: 11px 0px;
@@ -219,16 +231,16 @@ const StyledInput = styled.input`
   text-align: center;
 `
 
-const StyledButton = styled.button`
+const ModalCTAButton = styled.button`
   ${({ theme }: { theme: SOORITheme }) => css`
     ...${theme.typography.bodyMedium};
     color: ${theme.colors.primary};
   `}
-  height: 22px;
-  padding: 11px 16px;
+  height: 44px;
+  padding: 0px 16px;
 `
 
-const Container = styled.div`
+const Container = styled.main`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -242,6 +254,10 @@ const StickyTop = styled.div`
   width: 100%;
   z-index: 10;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+`
+
+const MainContent = styled.section`
+  flex: 1;
 `
 
 const SearchBarOuterContainer = styled.div`
@@ -262,6 +278,21 @@ const SearchBarInnerContainer = styled.div`
   border-radius: 12px;
   border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+`
+
+const SearchIcon = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const CalendarIcon = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const ChevronIcon = styled.span`
+  display: flex;
+  align-items: center;
 `
 
 const SearchInput = styled.input`
@@ -309,7 +340,13 @@ const CTAButton = styled.button`
   `}
 `
 
-const RepairCard = styled.div`
+const RepairList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`
+
+const RepairCard = styled.li`
   display: flex;
   flex-direction: column;
   height: 100px;
@@ -326,7 +363,7 @@ const RepairCardHeader = styled.div`
   height: 15px;
 `
 
-const ReapairDateContainer = styled.div`
+const RepairDateContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 7px;

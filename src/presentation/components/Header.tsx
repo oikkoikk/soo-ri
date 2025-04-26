@@ -14,7 +14,7 @@ export function Header({ title, description, onBack }: HeaderProps) {
   const theme = useTheme()
 
   return (
-    <HeaderContainer theme={theme}>
+    <HeaderContainer theme={theme} role="banner">
       <HeaderRow theme={theme}>
         {onBack && <BackButton theme={theme} onClick={onBack} />}
         <HeaderText>
@@ -33,8 +33,18 @@ interface BackButtonProps {
 
 export const BackButton = ({ theme, onClick }: BackButtonProps) => {
   return (
-    <BackButtonWrapper onClick={onClick}>
-      <ChevronLeft width={20} height={20} color={theme.colors.onSurface} />
+    <BackButtonWrapper
+      onClick={onClick}
+      aria-label="뒤로 가기"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClick()
+          e.preventDefault()
+        }
+      }}
+    >
+      <ChevronLeft width={20} height={20} color={theme.colors.onSurface} aria-hidden="true" />
     </BackButtonWrapper>
   )
 }
@@ -74,7 +84,7 @@ const HeaderDescription = styled.p`
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `
 
-const BackButtonWrapper = styled.div`
+const BackButtonWrapper = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
