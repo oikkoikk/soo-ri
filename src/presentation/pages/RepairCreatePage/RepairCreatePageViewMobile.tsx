@@ -24,7 +24,13 @@ export const RepairCreatePageViewMobile = observer(() => {
         <ActionSection />
       </MainContent>
       <CTAButtonContainer>
-        <CTAButton onClick={viewModel.submitRepair} theme={theme} aria-label="정비내역 저장하기">
+        <CTAButton
+          onClick={viewModel.submitRepair}
+          theme={theme}
+          disabled={!viewModel.valid}
+          aria-label="정비내역 저장하기"
+          aria-disabled={!viewModel.valid}
+        >
           정비내역 저장하기
         </CTAButton>
       </CTAButtonContainer>
@@ -205,11 +211,18 @@ const CTAButton = styled.button`
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
+    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
+  color: ${({ theme, disabled }: { theme: SOORITheme; disabled?: boolean }) =>
+    disabled ? theme.colors.onSurface : theme.colors.background};
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyLarge};
   `}
+  transition: all 0.2s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `
 
 const Section = styled.div`
