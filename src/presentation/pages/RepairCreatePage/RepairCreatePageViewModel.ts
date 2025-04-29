@@ -5,6 +5,15 @@ import { buildRoute } from '@/application/routers/routes'
 import { RepairModel } from '@/domain/models/repair_model'
 
 export type RepairType = 'accident' | 'routine' | null
+export type RepairCategory = 'tire_replacement' | 'battery_check' | 'brake_repair'
+
+export const CATEGORY_LABELS: Record<RepairCategory, string> = {
+  tire_replacement: '타이어 교체',
+  battery_check: '배터리 점검',
+  brake_repair: '제동장치 수리',
+}
+
+export const CATEGORY_KEYS: RepairCategory[] = ['tire_replacement', 'battery_check', 'brake_repair']
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -13,14 +22,18 @@ class RepairCreateStore {
     makeAutoObservable(this)
   }
 
-  get priceDisplayString(): string {
-    return this.repairModel.price.toLocaleString('ko-KR')
+  get valid(): boolean {
+    return Boolean(
+      this.repairModel.type !== '' &&
+        this.repairModel.price >= 0 &&
+        this.repairModel.problem &&
+        this.repairModel.action &&
+        this.repairModel.categories.length > 0
+    )
   }
 
-  get isFormValid(): boolean {
-    return Boolean(
-      this.repairModel.type !== '' && this.repairModel.price > 0 && this.repairModel.problem && this.repairModel.action
-    )
+  getCategoryLabel = (categoryKey: RepairCategory): string => {
+    return CATEGORY_LABELS[categoryKey]
   }
 
   updateType = (type: RepairType) => {
@@ -36,6 +49,25 @@ class RepairCreateStore {
     this.repairModel = this.repairModel.copyWith({
       price,
     })
+  }
+
+  toggleCategory = (category: RepairCategory) => {
+    const currentCategories = [...this.repairModel.categories]
+    const categoryIndex = currentCategories.indexOf(category)
+
+    if (categoryIndex >= 0) {
+      currentCategories.splice(categoryIndex, 1)
+    } else {
+      currentCategories.push(category)
+    }
+
+    this.repairModel = this.repairModel.copyWith({
+      categories: currentCategories,
+    })
+  }
+
+  categorySelected = (category: RepairCategory): boolean => {
+    return this.repairModel.categories.includes(category)
   }
 
   updateProblem = (value: string) => {
@@ -62,7 +94,7 @@ export function useRepairCreateViewModel() {
   const vehicleId = searchParams.get('vehicleId') ?? ''
 
   const submitRepair = () => {
-    if (!store.isFormValid) return
+    if (!store.valid) return
 
     alert('정비사항이 저장되었습니다.')
     store.resetForm()
@@ -76,6 +108,7 @@ export function useRepairCreateViewModel() {
   return {
     ...store,
     vehicleId,
+    valid: store.valid,
     submitRepair,
     goBack,
   }

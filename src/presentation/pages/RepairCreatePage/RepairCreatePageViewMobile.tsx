@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
-import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
+import { CATEGORY_KEYS, useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
 export const RepairCreatePageViewMobile = observer(() => {
   const theme = useTheme()
@@ -18,12 +18,19 @@ export const RepairCreatePageViewMobile = observer(() => {
       </StickyTop>
       <MainContent role="main">
         <TypeSection />
+        <CategorySection />
         <PriceSection />
         <ProblemSection />
         <ActionSection />
       </MainContent>
       <CTAButtonContainer>
-        <CTAButton onClick={viewModel.submitRepair} theme={theme} aria-label="정비내역 저장하기">
+        <CTAButton
+          onClick={viewModel.submitRepair}
+          theme={theme}
+          disabled={!viewModel.valid}
+          aria-label="정비내역 저장하기"
+          aria-disabled={!viewModel.valid}
+        >
           정비내역 저장하기
         </CTAButton>
       </CTAButtonContainer>
@@ -62,6 +69,35 @@ const TypeSection = observer(() => {
           일상적인 수리예요
         </SelectButton>
       </ButtonGroup>
+    </Section>
+  )
+})
+
+const CategorySection = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <Section>
+      <SectionTitle id="repair-category-title">수리 항목</SectionTitle>
+      <CategoryGroup role="group" aria-labelledby="repair-category-title">
+        {CATEGORY_KEYS.map((categoryKey) => (
+          <CheckboxRow key={categoryKey}>
+            <CheckboxInput
+              type="checkbox"
+              id={`category-${categoryKey}`}
+              checked={viewModel.categorySelected(categoryKey)}
+              onChange={() => {
+                viewModel.toggleCategory(categoryKey)
+              }}
+              aria-checked={viewModel.categorySelected(categoryKey)}
+            />
+            <CheckboxLabel htmlFor={`category-${categoryKey}`} theme={theme}>
+              {viewModel.getCategoryLabel(categoryKey)}
+            </CheckboxLabel>
+          </CheckboxRow>
+        ))}
+      </CategoryGroup>
     </Section>
   )
 })
@@ -175,11 +211,18 @@ const CTAButton = styled.button`
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
+    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
+  color: ${({ theme, disabled }: { theme: SOORITheme; disabled?: boolean }) =>
+    disabled ? theme.colors.onSurface : theme.colors.background};
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyLarge};
   `}
+  transition: all 0.2s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `
 
 const Section = styled.div`
@@ -248,4 +291,51 @@ const TextArea = styled.textarea`
   &::placeholder {
     color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
   }
+`
+
+const CategoryGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const CheckboxRow = styled.div`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  gap: 5px;
+`
+
+const CheckboxInput = styled.input`
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:checked {
+    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+    border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  }
+
+  &:checked::after {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+    border-radius: 2px;
+    margin: auto;
+  }
+`
+
+const CheckboxLabel = styled.label`
+  cursor: pointer;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
 `
