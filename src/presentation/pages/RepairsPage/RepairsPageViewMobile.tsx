@@ -170,7 +170,40 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
 }
 
 const Vehicle = () => {
-  return <></>
+  const theme = useTheme()
+  const viewModel = useRepairsViewModel()
+
+  return (
+    <VehicleCard theme={theme}>
+      <VehicleInfoRow>
+        <VehicleInfoLabel>모델명</VehicleInfoLabel>
+        <VehicleInfoValue>{viewModel.vehicle.model}</VehicleInfoValue>
+      </VehicleInfoRow>
+      <Divider />
+      <VehicleInfoRow>
+        <VehicleInfoLabel>등록일</VehicleInfoLabel>
+        <VehicleInfoValue>{viewModel.vehicle.registeredAtDisplayString}</VehicleInfoValue>
+      </VehicleInfoRow>
+      <Divider />
+      <VehicleInfoRow>
+        <VehicleInfoLabel>구매일</VehicleInfoLabel>
+        <VehicleInfoValue>{viewModel.vehicle.purchasedAtDisplayString}</VehicleInfoValue>
+      </VehicleInfoRow>
+      <Divider />
+      <VehicleInfoRow>
+        <VehicleInfoLabel>누적 수리횟수</VehicleInfoLabel>
+        <VehicleInfoValue>{viewModel.totalRepairsCountDisplayString}</VehicleInfoValue>
+      </VehicleInfoRow>
+      <Divider />
+      <VehicleInfoRow>
+        <VehicleInfoLabel>이번달 수리비 합계</VehicleInfoLabel>
+        <VehicleInfoValue style={{ color: theme.colors.primary }}>
+          {viewModel.repairPriceSumThisMonthDisplayString}
+        </VehicleInfoValue>
+      </VehicleInfoRow>
+      <Divider />
+    </VehicleCard>
+  )
 }
 
 const Modal = styled.div`
@@ -410,4 +443,39 @@ const RepairShop = styled.p`
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
   height: 15px;
+`
+
+const VehicleCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 40px 26px;
+  padding: 15px 12px 45px 12px;
+  border-radius: 24px;
+  border: 1px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+`
+
+const VehicleInfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 10px;
+`
+
+const VehicleInfoLabel = styled.span`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+`
+
+const VehicleInfoValue = styled.span`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+`
+
+const Divider = styled.div`
+  width: 100%;
+  height: 0.8px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
 `
