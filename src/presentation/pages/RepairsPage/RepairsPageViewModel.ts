@@ -146,7 +146,7 @@ class RepairsStore {
 
 const store = new RepairsStore()
 
-export function useRepairViewModel() {
+export function useRepairsViewModel() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const vehicleId = searchParams.get('vehicleId') ?? ''
