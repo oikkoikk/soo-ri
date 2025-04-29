@@ -23,7 +23,7 @@ const tabItems: TabItem[] = [
   { id: TabId.VEHICLE, label: '전동보장구 정보' },
 ]
 
-class RepairsPageStore {
+class RepairsStore {
   repairs: RepairModel[] = []
   searchKeyword = ''
   activeTab: TabId = TabId.REPAIRS
@@ -144,7 +144,7 @@ class RepairsPageStore {
   }
 }
 
-const store = new RepairsPageStore()
+const store = new RepairsStore()
 
 export function useRepairViewModel() {
   const navigate = useNavigate()
