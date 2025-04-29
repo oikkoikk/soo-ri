@@ -41,6 +41,7 @@ export const buildRoute = (
   })
 
   const queryString = Object.entries(queryParams)
+    .filter(([, value]) => value !== '')
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&')
 
