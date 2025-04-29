@@ -46,6 +46,19 @@ export function GlobalStyle() {
           font: inherit;
           color: inherit;
           cursor: pointer;
+
+          :hover {
+            opacity: 0.7;
+          }
+        }
+
+        a,
+        input,
+        label,
+        textarea {
+          :hover {
+            opacity: 0.7;
+          }
         }
 
         ul,
