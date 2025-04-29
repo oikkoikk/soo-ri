@@ -9,7 +9,7 @@ export function HomePageViewMobile() {
   const theme = useTheme()
   const [searchParams] = useSearchParams()
 
-  const userId = searchParams.get('id') ?? ''
+  const vehicleId = searchParams.get('vehicleId') ?? ''
 
   return (
     <Container theme={theme}>
@@ -17,7 +17,7 @@ export function HomePageViewMobile() {
       {/* TODO: 카카오 아이콘 추가 */}
       {/* TODO: 카카오 로그인 페이지로 연결 */}
       <KakaoLoginButton to={{}}>카카오 로그인</KakaoLoginButton>
-      <RepairModeButton to={buildRoute('REPAIRS', {}, { id: userId })} theme={theme}>
+      <RepairModeButton to={buildRoute('REPAIRS', {}, { vehicleId: vehicleId })} theme={theme}>
         수리자 모드 바로가기
       </RepairModeButton>
     </Container>

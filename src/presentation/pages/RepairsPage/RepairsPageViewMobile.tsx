@@ -1,8 +1,9 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Link, useNavigate } from 'react-router'
+import { observer } from 'mobx-react-lite'
+import { Link } from 'react-router'
 
-import { buildRoute, ROUTES } from '@/application/routers/routes'
+import { buildRoute } from '@/application/routers/routes'
 import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
@@ -10,10 +11,9 @@ import { SOORITheme } from '@/theme/soori_theme'
 
 import { TabId, useRepairViewModel } from './RepairsPageViewModel'
 
-export function RepairsPageViewMobile() {
+export const RepairsPageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairViewModel()
-  const navigate = useNavigate()
 
   return (
     <>
@@ -24,11 +24,7 @@ export function RepairsPageViewMobile() {
           return (
             <Container>
               <StickyTop theme={theme}>
-                <Header
-                  title="전동보장구 정비이력"
-                  description="PM2024007 • 라이언"
-                  onBack={() => void navigate(ROUTES.HOME)}
-                />
+                <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
                 <Tabs
                   activeTab={viewModel.activeTab as string}
                   setActiveTab={(tabId: string) => {
@@ -48,11 +44,7 @@ export function RepairsPageViewMobile() {
                 })()}
               </MainContent>
               <CTAButtonContainer>
-                <CTAButton
-                  onClick={() => void navigate(buildRoute('REPAIR_CREATE'))}
-                  theme={theme}
-                  aria-label="새 정비 작업 시작하기"
-                >
+                <CTAButton onClick={viewModel.goRepairCreatePage} theme={theme} aria-label="새 정비 작업 시작하기">
                   + 새 정비 작업 시작
                 </CTAButton>
               </CTAButtonContainer>
@@ -62,9 +54,9 @@ export function RepairsPageViewMobile() {
       })()}
     </>
   )
-}
+})
 
-const AuthModal = () => {
+const AuthModal = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairViewModel()
 
@@ -104,9 +96,9 @@ const AuthModal = () => {
       </ModalContent>
     </Modal>
   )
-}
+})
 
-const SearchBar = () => {
+const SearchBar = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairViewModel()
 
@@ -129,9 +121,9 @@ const SearchBar = () => {
       </SearchBarInnerContainer>
     </SearchBarOuterContainer>
   )
-}
+})
 
-const RepairHistoryList = () => {
+const RepairHistoryList = observer(() => {
   const viewModel = useRepairViewModel()
 
   return (
@@ -141,7 +133,7 @@ const RepairHistoryList = () => {
       ))}
     </RepairList>
   )
-}
+})
 
 interface RepairItemProps {
   repair: RepairModel
@@ -149,9 +141,14 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair }: RepairItemProps) => {
   const theme = useTheme()
+  const viewModel = useRepairViewModel()
 
   return (
-    <RepairCard to={buildRoute('REPAIR_DETAIL', { id: repair.id })} theme={theme} tabIndex={0}>
+    <RepairCard
+      to={buildRoute('REPAIR_DETAIL', { id: repair.id }, { vehicleId: viewModel.vehicleId })}
+      theme={theme}
+      tabIndex={0}
+    >
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
           <CalendarIcon aria-hidden="true">

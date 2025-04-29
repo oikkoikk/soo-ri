@@ -1,28 +1,20 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useNavigate } from 'react-router'
+import { observer } from 'mobx-react-lite'
 
-import { ROUTES } from '@/application/routers/routes'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
 import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
-export function RepairCreatePageViewMobile() {
+export const RepairCreatePageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
-  const navigate = useNavigate()
 
   return (
     <Container>
       <StickyTop theme={theme}>
-        <Header
-          title="전동보장구 정비사항 작성"
-          description="PM2024007 • 라이언"
-          onBack={() => {
-            void navigate(ROUTES.REPAIRS)
-          }}
-        />
+        <Header title="전동보장구 정비사항 작성" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
       </StickyTop>
       <MainContent role="main">
         <TypeSection />
@@ -37,9 +29,9 @@ export function RepairCreatePageViewMobile() {
       </CTAButtonContainer>
     </Container>
   )
-}
+})
 
-const TypeSection = () => {
+const TypeSection = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
@@ -49,8 +41,8 @@ const TypeSection = () => {
       <ButtonGroup role="radiogroup" aria-labelledby="repair-type-title">
         <SelectButton
           role="radio"
-          aria-checked={viewModel.type === 'accident'}
-          selected={viewModel.type === 'accident'}
+          aria-checked={viewModel.repairModel.type === 'accident'}
+          selected={viewModel.repairModel.type === 'accident'}
           onClick={() => {
             viewModel.updateType('accident')
           }}
@@ -60,8 +52,8 @@ const TypeSection = () => {
         </SelectButton>
         <SelectButton
           role="radio"
-          aria-checked={viewModel.type === 'routine'}
-          selected={viewModel.type === 'routine'}
+          aria-checked={viewModel.repairModel.type === 'routine'}
+          selected={viewModel.repairModel.type === 'routine'}
           onClick={() => {
             viewModel.updateType('routine')
           }}
@@ -72,9 +64,9 @@ const TypeSection = () => {
       </ButtonGroup>
     </Section>
   )
-}
+})
 
-const PriceSection = () => {
+const PriceSection = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
@@ -85,7 +77,7 @@ const PriceSection = () => {
         <PriceInput
           type="text"
           placeholder="청구 가격을 입력해주세요"
-          value={viewModel.priceDisplayString}
+          value={viewModel.repairModel.price}
           onChange={(e) => {
             viewModel.updatePrice(e.target.value)
           }}
@@ -96,9 +88,9 @@ const PriceSection = () => {
       </PriceInputContainer>
     </Section>
   )
-}
+})
 
-const ProblemSection = () => {
+const ProblemSection = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
@@ -107,7 +99,7 @@ const ProblemSection = () => {
       <SectionTitle id="problem-title">접수 문제</SectionTitle>
       <TextArea
         placeholder="접수된 문제 사항을 기록해주세요."
-        value={viewModel.problem}
+        value={viewModel.repairModel.problem}
         onChange={(e) => {
           viewModel.updateProblem(e.target.value)
         }}
@@ -117,9 +109,9 @@ const ProblemSection = () => {
       />
     </Section>
   )
-}
+})
 
-const ActionSection = () => {
+const ActionSection = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
@@ -128,7 +120,7 @@ const ActionSection = () => {
       <SectionTitle id="action-title">수리 사항</SectionTitle>
       <TextArea
         placeholder="수리한 사항을 기록해주세요"
-        value={viewModel.action}
+        value={viewModel.repairModel.action}
         onChange={(e) => {
           viewModel.updateAction(e.target.value)
         }}
@@ -138,7 +130,7 @@ const ActionSection = () => {
       />
     </Section>
   )
-}
+})
 
 const Container = styled.main`
   width: 100%;

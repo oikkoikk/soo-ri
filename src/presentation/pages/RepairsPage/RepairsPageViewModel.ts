@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 
-import { atom, useAtom } from 'jotai'
-import { useSearchParams } from 'react-router'
+import { makeAutoObservable } from 'mobx'
+import { useNavigate, useSearchParams } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { RepairModel } from '@/domain/models/models'
 
 export enum TabId {
@@ -17,41 +18,67 @@ interface TabItem {
 
 const AUTH_SESSION_KEY = 'repair-shop-auth-session'
 
-const repairsAtom = atom<RepairModel[]>([])
-const searchKeywordAtom = atom<string>('')
-const activeTabAtom = atom<TabId>(TabId.REPAIRS)
-const modalOpenedAtom = atom<boolean>(false)
-const authCodeAtom = atom<string>('')
-
 const tabItems: TabItem[] = [
   { id: TabId.REPAIRS, label: '정비 이력' },
   { id: TabId.VEHICLE, label: '전동보장구 정보' },
 ]
 
-export function useRepairViewModel() {
-  const [repairs, setRepairs] = useAtom(repairsAtom)
-  const [searchKeyword, setSearchKeyword] = useAtom(searchKeywordAtom)
-  const [activeTab, setActiveTab] = useAtom(activeTabAtom)
-  const [modalOpened, setModalOpened] = useAtom(modalOpenedAtom)
-  const [authCode, setAuthCode] = useAtom(authCodeAtom)
-  const [searchParams] = useSearchParams()
+class RepairsPageStore {
+  repairs: RepairModel[] = []
+  searchKeyword = ''
+  activeTab: TabId = TabId.REPAIRS
+  modalOpened = false
+  authCode = ''
 
-  const checkAuthSession = (): boolean => {
+  constructor() {
+    makeAutoObservable(this)
+    this.loadSampleData()
+  }
+
+  get filteredRepairs() {
+    return this.repairs
+      .filter((repair) => {
+        if (!this.searchKeyword) return true
+        return repair.type.includes(this.searchKeyword) || repair.shopLabel.includes(this.searchKeyword)
+      })
+      .sort((a, b) => b.repairedAt.getTime() - a.repairedAt.getTime())
+  }
+
+  updateSearchKeyword = (term: string) => {
+    this.searchKeyword = term
+  }
+
+  changeTab = (tabId: TabId) => {
+    this.activeTab = tabId
+  }
+
+  updateAuthCode = (code: string) => {
+    this.authCode = code
+  }
+
+  submitAuthCode = () => {
+    if (this.authCode.length === 4) {
+      // TODO: 실제 인증 로직 구현
+      if (this.authCode === '1234') {
+        this.saveAuthSession()
+        this.modalOpened = false
+        this.authCode = ''
+        return true
+      }
+      alert('인증 코드가 올바르지 않습니다.')
+    }
+    return false
+  }
+
+  checkAuthSession = (): boolean => {
     return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true'
   }
 
-  const saveAuthSession = (): void => {
+  saveAuthSession = (): void => {
     sessionStorage.setItem(AUTH_SESSION_KEY, 'true')
   }
 
-  const filteredRepairs = repairs
-    .filter((repair) => {
-      if (!searchKeyword) return true
-      return repair.type.includes(searchKeyword) || repair.shopLabel.includes(searchKeyword)
-    })
-    .sort((a, b) => b.repairedAt.getTime() - a.repairedAt.getTime())
-
-  useEffect(() => {
+  loadSampleData = () => {
     // 샘플 데이터
     const sampleRepairs = [
       new RepairModel({
@@ -104,48 +131,44 @@ export function useRepairViewModel() {
       }),
     ]
 
-    setRepairs(sampleRepairs)
+    this.repairs = sampleRepairs
+  }
 
-    const isAuthenticated = checkAuthSession()
+  checkAuthAndShowModal = (searchParams: URLSearchParams) => {
+    const isAuthenticated = this.checkAuthSession()
+    const vehicleId = searchParams.get('vehicleId') ?? ''
 
-    if (searchParams.get('id') && !isAuthenticated) {
-      setModalOpened(true)
+    if (vehicleId && !isAuthenticated) {
+      this.modalOpened = true
     }
-  }, [searchParams, setRepairs, setModalOpened])
+  }
+}
+
+const store = new RepairsPageStore()
+
+export function useRepairViewModel() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const vehicleId = searchParams.get('vehicleId') ?? ''
+
+  useEffect(() => {
+    store.checkAuthAndShowModal(searchParams)
+  }, [searchParams])
+
+  const goBack = () => {
+    void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
+  }
+
+  const goRepairCreatePage = () => {
+    void navigate(buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId }))
+  }
 
   return {
-    repairs,
-    filteredRepairs,
+    ...store,
+    vehicleId,
+    filteredRepairs: store.filteredRepairs,
     tabItems,
-    searchKeyword,
-    activeTab,
-    modalOpened,
-    authCode,
-
-    updateSearchKeyword: (term: string) => {
-      setSearchKeyword(term)
-    },
-
-    changeTab: (tabId: TabId) => {
-      setActiveTab(tabId)
-    },
-
-    updateAuthCode: (code: string) => {
-      setAuthCode(code)
-    },
-
-    submitAuthCode: () => {
-      if (authCode.length === 4) {
-        // TODO: 실제 인증 로직 구현
-        if (authCode === '1234') {
-          saveAuthSession()
-          setModalOpened(false)
-          setAuthCode('')
-          return true
-        }
-        alert('인증 코드가 올바르지 않습니다.')
-      }
-      return false
-    },
+    goBack,
+    goRepairCreatePage,
   }
 }
