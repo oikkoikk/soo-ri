@@ -9,11 +9,11 @@ import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
 import { SOORITheme } from '@/theme/soori_theme'
 
-import { TabId, useRepairViewModel } from './RepairsPageViewModel'
+import { TabId, useRepairsViewModel } from './RepairsPageViewModel'
 
 export const RepairsPageViewMobile = observer(() => {
   const theme = useTheme()
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   return (
     <>
@@ -58,7 +58,7 @@ export const RepairsPageViewMobile = observer(() => {
 
 const AuthModal = observer(() => {
   const theme = useTheme()
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -100,7 +100,7 @@ const AuthModal = observer(() => {
 
 const SearchBar = observer(() => {
   const theme = useTheme()
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   return (
     <SearchBarOuterContainer theme={theme}>
@@ -124,7 +124,7 @@ const SearchBar = observer(() => {
 })
 
 const RepairHistoryList = observer(() => {
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   return (
     <RepairList aria-label="정비 이력 목록">
@@ -141,7 +141,7 @@ interface RepairItemProps {
 
 const RepairHistoryItem = ({ repair }: RepairItemProps) => {
   const theme = useTheme()
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   return (
     <RepairCard
@@ -171,7 +171,7 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
 
 const Vehicle = () => {
   const theme = useTheme()
-  const viewModel = useRepairViewModel()
+  const viewModel = useRepairsViewModel()
 
   return (
     <VehicleCard theme={theme}>
