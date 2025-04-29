@@ -105,7 +105,7 @@ const SearchBar = observer(() => {
   return (
     <SearchBarOuterContainer theme={theme}>
       <SearchBarInnerContainer theme={theme}>
-        <SearchIcon aria-hidden="true">
+        <SearchIcon aria-hidden>
           <Search color={theme.colors.onSurfaceVariant} />
         </SearchIcon>
         <SearchInput
@@ -151,14 +151,14 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
     >
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
-          <CalendarIcon aria-hidden="true">
+          <CalendarIcon aria-hidden>
             <Calendar color={theme.colors.onSurfaceVariant} />
           </CalendarIcon>
           <RepairDate theme={theme}>{repair.repairedAtDisplayString}</RepairDate>
         </RepairDateContainer>
         <RepairPriceContainer>
           <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>
-          <ChevronIcon aria-hidden="true">
+          <ChevronIcon aria-hidden>
             <ChevronRight color={theme.colors.primary} />
           </ChevronIcon>
         </RepairPriceContainer>
@@ -179,29 +179,29 @@ const Vehicle = () => {
         <VehicleInfoLabel>모델명</VehicleInfoLabel>
         <VehicleInfoValue>{viewModel.vehicle.model}</VehicleInfoValue>
       </VehicleInfoRow>
-      <Divider />
+      <Divider aria-hidden />
       <VehicleInfoRow>
         <VehicleInfoLabel>등록일</VehicleInfoLabel>
         <VehicleInfoValue>{viewModel.vehicle.registeredAtDisplayString}</VehicleInfoValue>
       </VehicleInfoRow>
-      <Divider />
+      <Divider aria-hidden />
       <VehicleInfoRow>
         <VehicleInfoLabel>구매일</VehicleInfoLabel>
         <VehicleInfoValue>{viewModel.vehicle.purchasedAtDisplayString}</VehicleInfoValue>
       </VehicleInfoRow>
-      <Divider />
+      <Divider aria-hidden />
       <VehicleInfoRow>
         <VehicleInfoLabel>누적 수리횟수</VehicleInfoLabel>
         <VehicleInfoValue>{viewModel.totalRepairsCountDisplayString}</VehicleInfoValue>
       </VehicleInfoRow>
-      <Divider />
+      <Divider aria-hidden />
       <VehicleInfoRow>
         <VehicleInfoLabel>이번달 수리비 합계</VehicleInfoLabel>
         <VehicleInfoValue style={{ color: theme.colors.primary }}>
           {viewModel.repairPriceSumThisMonthDisplayString}
         </VehicleInfoValue>
       </VehicleInfoRow>
-      <Divider />
+      <Divider aria-hidden />
     </VehicleCard>
   )
 }
@@ -454,21 +454,21 @@ const VehicleCard = styled.div`
   border: 1px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
 `
 
-const VehicleInfoRow = styled.div`
+const VehicleInfoRow = styled.dl`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 9px 10px;
 `
 
-const VehicleInfoLabel = styled.span`
+const VehicleInfoLabel = styled.dt`
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
 `
 
-const VehicleInfoValue = styled.span`
+const VehicleInfoValue = styled.dd`
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyMedium};
   `}
