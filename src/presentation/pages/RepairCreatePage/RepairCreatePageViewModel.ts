@@ -105,11 +105,17 @@ export function useRepairCreateViewModel() {
     void navigate(buildRoute('REPAIRS', {}, { vehicleId: vehicleId }))
   }
 
+  const addPhoto = () => {
+    // TODO: 사진 추가 기능 구현
+    alert('사진 추가 기능이 구현될 예정입니다.')
+  }
+
   return {
     ...store,
     vehicleId,
     valid: store.valid,
     submitRepair,
     goBack,
+    addPhoto,
   }
 }

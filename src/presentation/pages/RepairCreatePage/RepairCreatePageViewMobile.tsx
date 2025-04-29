@@ -2,6 +2,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
+import { Camera } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
@@ -22,6 +23,7 @@ export const RepairCreatePageViewMobile = observer(() => {
         <PriceSection />
         <ProblemSection />
         <ActionSection />
+        <PhotoSection />
       </MainContent>
       <CTAButtonContainer>
         <CTAButton
@@ -168,6 +170,22 @@ const ActionSection = observer(() => {
   )
 })
 
+const PhotoSection = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <Section>
+      <PhotoButton onClick={viewModel.addPhoto} theme={theme} aria-labelledby="photo-title">
+        <CameraIcon aria-hidden="true">
+          <Camera width={18} height={18} color={theme.colors.onSurface} />
+        </CameraIcon>
+        <PhotoLabel>사진 추가</PhotoLabel>
+      </PhotoButton>
+    </Section>
+  )
+})
+
 const Container = styled.main`
   width: 100%;
   min-height: 100vh;
@@ -187,6 +205,7 @@ const StickyTop = styled.div`
 const MainContent = styled.section`
   flex: 1;
   padding: 15px 27px;
+  padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
 `
 
 const CTAButtonContainer = styled.div`
@@ -338,4 +357,30 @@ const CheckboxLabel = styled.label`
     ${theme.typography.bodySmall};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+`
+
+const PhotoButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: auto;
+  width: 120px;
+  height: 30px;
+  padding: 9px 20px;
+  border-radius: 6px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  transition: all 0.2s ease;
+`
+
+const CameraIcon = styled.span`
+  display: flex;
+  align-items: center;
+`
+
+const PhotoLabel = styled.span`
+  ${({ theme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `
