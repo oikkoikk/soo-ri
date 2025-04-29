@@ -7,6 +7,7 @@ interface Repair {
   shopCode?: string
   problem?: string
   action?: string
+  categories?: string[]
 }
 
 export class RepairModel implements Repair {
@@ -18,6 +19,7 @@ export class RepairModel implements Repair {
   readonly shopCode: string
   readonly problem: string
   readonly action: string
+  readonly categories: string[]
 
   constructor(model: Repair) {
     this.id = model.id ?? ''
@@ -28,6 +30,7 @@ export class RepairModel implements Repair {
     this.shopCode = model.shopCode ?? ''
     this.problem = model.problem ?? ''
     this.action = model.action ?? ''
+    this.categories = model.categories ?? []
   }
 
   get repairedAtDisplayString(): string {
