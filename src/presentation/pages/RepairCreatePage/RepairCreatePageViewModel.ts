@@ -1,85 +1,82 @@
-import { atom, useAtom } from 'jotai'
-import { useNavigate } from 'react-router'
+import { makeAutoObservable } from 'mobx'
+import { useNavigate, useSearchParams } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { RepairModel } from '@/domain/models/repair_model'
 
 export type RepairType = 'accident' | 'routine' | null
 
-const initialRepairModel = new RepairModel({})
+class RepairCreateStore {
+  repairModel: RepairModel = new RepairModel({})
 
-const repairModelAtom = atom<RepairModel>(initialRepairModel)
+  constructor() {
+    makeAutoObservable(this)
+  }
 
-export function useRepairCreateViewModel() {
-  const [repairModel, setRepairModel] = useAtom(repairModelAtom)
-  const navigate = useNavigate()
+  get priceDisplayString(): string {
+    return this.repairModel.price.toLocaleString('ko-KR')
+  }
 
-  const isFormValid = Boolean(
-    repairModel.type !== '' && repairModel.price > 0 && repairModel.problem && repairModel.action
-  )
-
-  const priceDisplayString = repairModel.price.toLocaleString('ko-KR')
-
-  const updateType = (type: RepairType) => {
-    setRepairModel((prev) =>
-      prev.copyWith({
-        type: type as string,
-      })
+  get isFormValid(): boolean {
+    return Boolean(
+      this.repairModel.type !== '' && this.repairModel.price > 0 && this.repairModel.problem && this.repairModel.action
     )
   }
 
-  const updatePrice = (value: string) => {
+  updateType = (type: RepairType) => {
+    this.repairModel = this.repairModel.copyWith({
+      type: type as string,
+    })
+  }
+
+  updatePrice = (value: string) => {
     const numericValue = value.replace(/[^0-9]/g, '')
     const price = numericValue === '' ? 0 : parseInt(numericValue, 10)
 
-    setRepairModel((prev) =>
-      prev.copyWith({
-        price,
-      })
-    )
+    this.repairModel = this.repairModel.copyWith({
+      price,
+    })
   }
 
-  const updateProblem = (value: string) => {
-    setRepairModel((prev) =>
-      prev.copyWith({
-        problem: value,
-      })
-    )
+  updateProblem = (value: string) => {
+    this.repairModel = this.repairModel.copyWith({
+      problem: value,
+    })
   }
 
-  const updateAction = (value: string) => {
-    setRepairModel((prev) =>
-      prev.copyWith({
-        action: value,
-      })
-    )
+  updateAction = (value: string) => {
+    this.repairModel = this.repairModel.copyWith({
+      action: value,
+    })
   }
+
+  resetForm = () => {
+    this.repairModel = new RepairModel({})
+  }
+}
+const store = new RepairCreateStore()
+
+export function useRepairCreateViewModel() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const vehicleId = searchParams.get('vehicleId') ?? ''
 
   const submitRepair = () => {
-    if (!isFormValid) return
+    if (!store.isFormValid) return
 
     alert('정비사항이 저장되었습니다.')
-    resetForm()
-
-    void navigate(-1)
+    store.resetForm()
+    goBack()
   }
 
-  const resetForm = () => {
-    setRepairModel(initialRepairModel)
+  const goBack = () => {
+    void navigate(buildRoute('REPAIRS', {}, { vehicleId: vehicleId }))
   }
 
   return {
-    repairModel,
-    type: repairModel.type,
-    price: repairModel.price.toString(),
-    problem: repairModel.problem,
-    action: repairModel.action,
-    isFormValid,
-    updateType,
-    updatePrice,
-    updateProblem,
-    updateAction,
+    ...store,
+    vehicleId,
     submitRepair,
-    resetForm,
-    priceDisplayString,
+    goBack,
   }
 }

@@ -1,60 +1,42 @@
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useNavigate } from 'react-router'
 
-import { ROUTES } from '@/application/routers/routes'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
+import { useRepairDetailViewModel } from './RepairDetailPageViewModel'
+
 export function RepairDetailPageViewMobile() {
   const theme = useTheme()
-  const navigate = useNavigate()
+  const viewModel = useRepairDetailViewModel()
 
   return (
     <Container>
       <StickyTop theme={theme}>
-        <Header
-          title="전동보장구 정비이력 확인"
-          description="PM2024007 • 라이언"
-          onBack={() => {
-            void navigate(ROUTES.REPAIRS)
-          }}
-        />
+        <Header title="전동보장구 정비이력 확인" description={'PM2024007 • 라이언'} onBack={viewModel.goBack} />
       </StickyTop>
       <MainContent role="main">
-        <ProblemSection />
-        <ActionSection />
+        <ProblemSection problemText={viewModel.repairModel.problem} />
+        <ActionSection actionText={viewModel.repairModel.action} />
       </MainContent>
     </Container>
   )
 }
 
-const ProblemSection = () => {
+const ProblemSection = ({ problemText }: { problemText: string }) => {
   return (
     <Section>
       <SectionTitle id="problem-title">접수 문제</SectionTitle>
-      <TextArea
-        readOnly
-        value={'파손부위 점검 후 수리 요청'}
-        rows={7}
-        aria-labelledby="problem-title"
-        aria-readonly="true"
-      />
+      <TextArea readOnly value={problemText} rows={7} aria-labelledby="problem-title" aria-readonly="true" />
     </Section>
   )
 }
 
-const ActionSection = () => {
+const ActionSection = ({ actionText }: { actionText: string }) => {
   return (
     <Section>
       <SectionTitle id="repair-title">수리사항</SectionTitle>
-      <TextArea
-        readOnly
-        value={'브레이크 및 타이어 휠 파손 확인 후 교체 조치'}
-        rows={7}
-        aria-labelledby="repair-title"
-        aria-readonly="true"
-      />
+      <TextArea readOnly value={actionText} rows={7} aria-labelledby="repair-title" aria-readonly="true" />
     </Section>
   )
 }
