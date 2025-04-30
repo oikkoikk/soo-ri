@@ -3,7 +3,7 @@ import { RouterProvider } from 'react-router'
 
 import { SOORITheme, GlobalStyle } from '@/theme/theme'
 
-import { router } from '../routers/Router'
+import { router } from '../routers/routers'
 
 export function App() {
   return (
