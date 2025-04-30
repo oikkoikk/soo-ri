@@ -1,9 +1,11 @@
 import { RepairCreatePageViewMobile } from './RepairCreatePageViewMobile'
 
-export function RepairCreatePageView() {
+function RepairCreatePageView() {
   return (
     <>
       <RepairCreatePageViewMobile />
     </>
   )
 }
+
+export default RepairCreatePageView

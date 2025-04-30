@@ -1,9 +1,11 @@
 import { HomePageViewMobile } from './HomePageViewMobile'
 
-export function HomePageView() {
+function HomePageView() {
   return (
     <>
       <HomePageViewMobile />
     </>
   )
 }
+
+export default HomePageView

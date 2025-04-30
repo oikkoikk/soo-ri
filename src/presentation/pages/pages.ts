@@ -1,4 +1,4 @@
-export * from './HomePage/HomePageView'
-export * from './RepairCreatePage/RepairCreatePageView'
-export * from './RepairDetailPage/RepairDetailPageView'
-export * from './RepairsPage/RepairsPageView'
+export { default as HomePageView } from './HomePage/HomePageView'
+export { default as RepairCreatePageView } from './RepairCreatePage/RepairCreatePageView'
+export { default as RepairDetailPageView } from './RepairDetailPage/RepairDetailPageView'
+export { default as RepairsPageView } from './RepairsPage/RepairsPageView'

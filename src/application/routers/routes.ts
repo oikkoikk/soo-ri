@@ -1,7 +1,3 @@
-import { ComponentType } from 'react'
-
-import { HomePageView, RepairsPageView, RepairDetailPageView, RepairCreatePageView } from '@/presentation/pages/pages'
-
 export const ROUTES = {
   HOME: '/',
   REPAIRS: '/repairs',
@@ -9,16 +5,7 @@ export const ROUTES = {
   REPAIR_CREATE: '/repairs/new',
 } as const
 
-export const ROUTE_PAGES: Record<RoutePath, ComponentType> = {
-  [ROUTES.HOME]: HomePageView,
-  [ROUTES.REPAIRS]: RepairsPageView,
-  [ROUTES.REPAIR_DETAIL]: RepairDetailPageView,
-  [ROUTES.REPAIR_CREATE]: RepairCreatePageView,
-}
-
 export type RouteKey = keyof typeof ROUTES
-
-export type RoutePath = (typeof ROUTES)[RouteKey]
 
 /**
  * 라우트 경로를 생성하는 함수

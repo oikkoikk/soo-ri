@@ -1,16 +1,15 @@
 import { ThemeProvider } from '@emotion/react'
-import { BrowserRouter } from 'react-router'
+import { RouterProvider } from 'react-router'
 
-import { Router } from '@/application/routers/routers'
 import { SOORITheme, GlobalStyle } from '@/theme/theme'
+
+import { router } from '../routers/Router'
 
 export function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={SOORITheme}>
-        <GlobalStyle />
-        <Router />
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider theme={SOORITheme}>
+      <GlobalStyle />
+      <RouterProvider router={router} />
+    </ThemeProvider>
   )
 }
