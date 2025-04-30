@@ -32,6 +32,10 @@ class RepairCreateStore {
     )
   }
 
+  get priceDisplayString(): string {
+    return this.repairModel.price.toLocaleString('ko-KR')
+  }
+
   getCategoryLabel = (categoryKey: RepairCategory): string => {
     return CATEGORY_LABELS[categoryKey]
   }
@@ -114,6 +118,7 @@ export function useRepairCreateViewModel() {
     ...store,
     vehicleId,
     valid: store.valid,
+    priceDisplayString: store.priceDisplayString,
     submitRepair,
     goBack,
     addPhoto,
