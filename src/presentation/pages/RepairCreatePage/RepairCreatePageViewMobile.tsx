@@ -115,7 +115,7 @@ const PriceSection = observer(() => {
         <PriceInput
           type="text"
           placeholder="청구 가격을 입력해주세요"
-          value={viewModel.repairModel.price}
+          value={viewModel.priceDisplayString}
           onChange={(e) => {
             viewModel.updatePrice(e.target.value)
           }}
