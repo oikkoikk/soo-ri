@@ -2,7 +2,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
-import { Camera } from '@/assets/svgs/svgs'
+import { Setting, User } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
@@ -18,14 +18,10 @@ export const RepairCreatePageViewMobile = observer(() => {
         <Header title="전동보장구 정비사항 작성" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
       </StickyTop>
       <MainContent role="main">
-        <TypeSection />
-        <CategorySection />
-        <PriceSection />
-        <ProblemSection />
-        <ActionSection />
-        <PhotoSection />
+        <BasicInfoSection />
+        <RepairInfoSection />
       </MainContent>
-      <CTAButtonContainer>
+      <CTAButtonContainer theme={theme}>
         <CTAButton
           onClick={viewModel.submitRepair}
           theme={theme}
@@ -40,13 +36,32 @@ export const RepairCreatePageViewMobile = observer(() => {
   )
 })
 
-const TypeSection = observer(() => {
+const BasicInfoSection = observer(() => {
+  const theme = useTheme()
+
+  return (
+    <SectionBox>
+      <SectionHeader theme={theme}>
+        <IconContainer aria-hidden>
+          <User width={15} height={15} color={theme.colors.onSurfaceVariant} />
+        </IconContainer>
+        <SectionTitle>기본정보</SectionTitle>
+      </SectionHeader>
+      <RepairTypeFormGroup />
+      <RepairDateFormGroup />
+      <RepairShopFormGroup />
+      <RepairOfficerFormGroup />
+    </SectionBox>
+  )
+})
+
+const RepairTypeFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
-    <Section>
-      <SectionTitle id="repair-type-title">수리 이유</SectionTitle>
+    <FormGroup>
+      <FormLabel id="repair-type-title">수리 이유</FormLabel>
       <ButtonGroup role="radiogroup" aria-labelledby="repair-type-title">
         <SelectButton
           role="radio"
@@ -71,70 +86,176 @@ const TypeSection = observer(() => {
           일상적인 수리예요
         </SelectButton>
       </ButtonGroup>
-    </Section>
+    </FormGroup>
   )
 })
 
-const CategorySection = observer(() => {
+const RepairDateFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
-    <Section>
-      <SectionTitle id="repair-category-title">수리 항목</SectionTitle>
-      <CategoryGroup role="group" aria-labelledby="repair-category-title">
-        {CATEGORY_KEYS.map((categoryKey) => (
-          <CheckboxRow key={categoryKey}>
-            <CheckboxInput
-              type="checkbox"
-              id={`category-${categoryKey}`}
-              checked={viewModel.categorySelected(categoryKey)}
-              onChange={() => {
-                viewModel.toggleCategory(categoryKey)
-              }}
-              aria-checked={viewModel.categorySelected(categoryKey)}
-            />
-            <CheckboxLabel htmlFor={`category-${categoryKey}`} theme={theme}>
-              {viewModel.getCategoryLabel(categoryKey)}
-            </CheckboxLabel>
-          </CheckboxRow>
+    <FormGroup>
+      <FormLabel id="repair-date-title">점검일</FormLabel>
+      <FormInput
+        type="date"
+        value={viewModel.formatDateForInput(viewModel.repairModel.repairedAt)}
+        onChange={(e) => {
+          viewModel.updateRepairDate(new Date(e.target.value))
+        }}
+        theme={theme}
+        aria-labelledby="repair-date-title"
+      />
+    </FormGroup>
+  )
+})
+
+const RepairShopFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="repair-shop-title">담당기관</FormLabel>
+      <FormInput
+        type="text"
+        value={viewModel.repairModel.shopLabel}
+        onChange={(e) => {
+          viewModel.updateRepairShop(e.target.value)
+        }}
+        theme={theme}
+        placeholder="담당기관을 입력해주세요"
+        aria-labelledby="repair-shop-title"
+      />
+    </FormGroup>
+  )
+})
+
+const RepairOfficerFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="repair-officer-title">담당수리자</FormLabel>
+      <FormInput
+        type="text"
+        value={viewModel.repairModel.officer}
+        onChange={(e) => {
+          viewModel.updateRepairOfficer(e.target.value)
+        }}
+        theme={theme}
+        placeholder="담당수리자를 입력해주세요"
+        aria-labelledby="repair-officer-title"
+      />
+    </FormGroup>
+  )
+})
+
+const RepairInfoSection = observer(() => {
+  const theme = useTheme()
+
+  return (
+    <SectionBox>
+      <SectionHeader theme={theme}>
+        <IconContainer aria-hidden>
+          <Setting width={15} height={15} color={theme.colors.onSurfaceVariant} />
+        </IconContainer>
+        <SectionTitle>수리정보</SectionTitle>
+      </SectionHeader>
+      <RepairCategoryFormGroup />
+      <BatteryVoltageFormGroup />
+      <EtcRepairPartFormGroup />
+      <RepairProblemFormGroup />
+    </SectionBox>
+  )
+})
+
+const RepairCategoryFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="repair-category-title">수리 항목</FormLabel>
+      <CategoryGrid>
+        {CATEGORY_KEYS.map((category) => (
+          <CategoryButton
+            key={category}
+            selected={viewModel.categorySelected(category)}
+            onClick={() => {
+              viewModel.toggleCategory(category)
+            }}
+            role="checkbox"
+            aria-checked={viewModel.categorySelected(category)}
+            theme={theme}
+          >
+            {viewModel.getCategoryLabel(category)}
+          </CategoryButton>
         ))}
-      </CategoryGroup>
-    </Section>
+      </CategoryGrid>
+    </FormGroup>
   )
 })
 
-const PriceSection = observer(() => {
+const BatteryVoltageFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  if (!viewModel.hasBattery) return null
+
+  return (
+    <FormGroup>
+      <FormInput
+        type="text"
+        value={viewModel.repairModel.batteryVoltage}
+        onChange={(e) => {
+          viewModel.updateBatteryVoltage(e.target.value)
+        }}
+        theme={theme}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          border: `0.8px solid ${theme.colors.primary}`,
+        }}
+        placeholder="배터리 전압을 입력해주세요"
+        aria-label="배터리 전압을 입력해주세요"
+      />
+    </FormGroup>
+  )
+})
+
+const EtcRepairPartFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  if (!viewModel.hasEtc) return null
+
+  return (
+    <FormGroup>
+      <FormInput
+        type="text"
+        value={viewModel.repairModel.etcRepairPart}
+        onChange={(e) => {
+          viewModel.updateEtcRepairPart(e.target.value)
+        }}
+        theme={theme}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          border: `0.8px solid ${theme.colors.primary}`,
+        }}
+        placeholder="기타 수리 부위를 입력해주세요"
+        aria-label="기타 수리 부위를 입력해주세요"
+      />
+    </FormGroup>
+  )
+})
+
+const RepairProblemFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
-    <Section>
-      <SectionTitle id="price-title">청구 가격</SectionTitle>
-      <PriceInputContainer>
-        <PriceInput
-          type="text"
-          placeholder="청구 가격을 입력해주세요"
-          value={viewModel.priceDisplayString}
-          onChange={(e) => {
-            viewModel.updatePrice(e.target.value)
-          }}
-          theme={theme}
-          aria-labelledby="price-title"
-          inputMode="numeric"
-        />
-      </PriceInputContainer>
-    </Section>
-  )
-})
-
-const ProblemSection = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairCreateViewModel()
-
-  return (
-    <Section>
-      <SectionTitle id="problem-title">접수 문제</SectionTitle>
+    <FormGroup>
       <TextArea
         placeholder="접수된 문제 사항을 기록해주세요."
         value={viewModel.repairModel.problem}
@@ -143,46 +264,9 @@ const ProblemSection = observer(() => {
         }}
         rows={5}
         theme={theme}
-        aria-labelledby="problem-title"
+        aria-label="접수된 문제 사항을 기록해주세요."
       />
-    </Section>
-  )
-})
-
-const ActionSection = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairCreateViewModel()
-
-  return (
-    <Section>
-      <SectionTitle id="action-title">수리 사항</SectionTitle>
-      <TextArea
-        placeholder="수리한 사항을 기록해주세요"
-        value={viewModel.repairModel.action}
-        onChange={(e) => {
-          viewModel.updateAction(e.target.value)
-        }}
-        rows={5}
-        theme={theme}
-        aria-labelledby="action-title"
-      />
-    </Section>
-  )
-})
-
-const PhotoSection = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairCreateViewModel()
-
-  return (
-    <Section>
-      <PhotoButton onClick={viewModel.addPhoto} theme={theme} aria-labelledby="photo-title">
-        <CameraIcon aria-hidden="true">
-          <Camera width={18} height={18} color={theme.colors.onSurface} />
-        </CameraIcon>
-        <PhotoLabel>사진 추가</PhotoLabel>
-      </PhotoButton>
-    </Section>
+    </FormGroup>
   )
 })
 
@@ -204,8 +288,121 @@ const StickyTop = styled.div`
 
 const MainContent = styled.section`
   flex: 1;
-  padding: 15px 27px;
+  padding: 15px 16px;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
+`
+
+const SectionBox = styled.div`
+  margin-bottom: 40px;
+`
+
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 12px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outlineVariant};
+`
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const SectionTitle = styled.h2`
+  ${({ theme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+`
+
+const FormGroup = styled.div`
+  padding: 0 11px;
+  margin-bottom: 13px;
+`
+
+const FormLabel = styled.label`
+  display: block;
+  ${({ theme }) => css`
+    ${theme.typography.labelSmall};
+  `}
+`
+
+const FormInput = styled.input`
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+`
+
+const SelectButton = styled.button<{ selected: boolean }>`
+  flex: 1;
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.primary};
+  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    selected ? theme.colors.primary : theme.colors.background};
+  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    selected ? theme.colors.onSurface : theme.colors.primary};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  ${({ theme }) => css`
+    ${theme.typography.labelSmall};
+  `}
+`
+
+const CategoryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
+  gap: 10px;
+  justify-content: center;
+`
+
+const CategoryButton = styled.button<{ selected: boolean }>`
+  flex: 1;
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.outline};
+  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    selected ? theme.colors.primary : theme.colors.background};
+  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  ${({ theme }) => css`
+    ${theme.typography.labelSmall};
+  `}
+`
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  resize: none;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
 `
 
 const CTAButtonContainer = styled.div`
@@ -242,145 +439,4 @@ const CTAButton = styled.button`
   &:disabled {
     cursor: not-allowed;
   }
-`
-
-const Section = styled.div`
-  margin-bottom: 15px;
-`
-
-const SectionTitle = styled.h2`
-  ${({ theme }) => css`
-    ${theme.typography.labelMedium};
-  `}
-`
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 3px;
-  width: 100%;
-`
-
-const SelectButton = styled.button<{ selected: boolean }>`
-  flex: 1;
-  padding: 3px 12px;
-  border-radius: 6px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.primary};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.primary};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  ${({ theme }) => css`
-    ${theme.typography.labelSmall};
-  `}
-`
-
-const PriceInputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`
-
-const PriceInput = styled.input`
-  flex: 1;
-  padding: 12px;
-  height: 12px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  border-radius: 6px;
-  ${({ theme }) => css`
-    ${theme.typography.bodySmall};
-  `}
-
-  &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
-  }
-`
-
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 12px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  border-radius: 6px;
-  resize: none;
-  ${({ theme }) => css`
-    ${theme.typography.bodySmall};
-  `}
-
-  &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
-  }
-`
-
-const CategoryGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const CheckboxRow = styled.div`
-  display: flex;
-  align-items: center;
-  height: 30px;
-  gap: 5px;
-`
-
-const CheckboxInput = styled.input`
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:checked {
-    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
-    border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  }
-
-  &:checked::after {
-    content: '';
-    display: block;
-    width: 10px;
-    height: 10px;
-    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-    border-radius: 2px;
-    margin: auto;
-  }
-`
-
-const CheckboxLabel = styled.label`
-  cursor: pointer;
-  ${({ theme }) => css`
-    ${theme.typography.bodySmall};
-  `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
-`
-
-const PhotoButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin: auto;
-  width: 120px;
-  height: 30px;
-  padding: 9px 20px;
-  border-radius: 6px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  transition: all 0.2s ease;
-`
-
-const CameraIcon = styled.span`
-  display: flex;
-  align-items: center;
-`
-
-const PhotoLabel = styled.span`
-  ${({ theme }) => css`
-    ${theme.typography.bodyMedium};
-  `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `
