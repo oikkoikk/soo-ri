@@ -3,10 +3,9 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Setting, User } from '@/assets/svgs/svgs'
+import { REPAIR_CATEGORY_KEYS } from '@/domain/models/repair_model'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
-
-import { REPAIR_CATEGORY_KEYS } from '../RepairCreatePage/RepairCreatePageViewModel'
 
 import { useRepairDetailViewModel } from './RepairDetailPageViewModel'
 
