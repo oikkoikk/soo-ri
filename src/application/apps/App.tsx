@@ -3,7 +3,7 @@ import { RouterProvider } from 'react-router'
 
 import { SOORITheme, GlobalStyle } from '@/theme/theme'
 
-import { FirebaseProvider } from '../configurations/firebase/FirebaseContext'
+import { FirebaseProvider } from '../configurations/configurations'
 import { router } from '../routers/routers'
 
 export function App() {
