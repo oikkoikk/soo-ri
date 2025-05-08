@@ -47,8 +47,12 @@ export function GlobalStyle() {
           color: inherit;
           cursor: pointer;
 
-          :hover {
+          &:hover {
             opacity: 0.7;
+          }
+
+          &:focus {
+            opacity: 1;
           }
         }
 
@@ -56,8 +60,12 @@ export function GlobalStyle() {
         input,
         label,
         textarea {
-          :hover {
+          &:hover {
             opacity: 0.7;
+          }
+
+          &:focus {
+            opacity: 1;
           }
         }
 
@@ -76,6 +84,7 @@ export function GlobalStyle() {
         :focus {
           outline: 2px solid ${theme.colors.tertiary};
           outline-offset: 2px;
+          opacity: 1;
         }
 
         /* 포커스-보이기(focus-visible) 상태에 대한 스타일 (키보드 접근성) */

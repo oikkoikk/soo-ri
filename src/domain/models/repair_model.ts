@@ -8,6 +8,9 @@ interface Repair {
   problem?: string
   action?: string
   categories?: string[]
+  officer?: string
+  batteryVoltage?: string
+  etcRepairPart?: string
 }
 
 export class RepairModel implements Repair {
@@ -20,6 +23,9 @@ export class RepairModel implements Repair {
   readonly problem: string
   readonly action: string
   readonly categories: string[]
+  readonly officer: string
+  readonly batteryVoltage: string
+  readonly etcRepairPart: string
 
   constructor(model: Repair) {
     this.id = model.id ?? ''
@@ -31,6 +37,9 @@ export class RepairModel implements Repair {
     this.problem = model.problem ?? ''
     this.action = model.action ?? ''
     this.categories = model.categories ?? []
+    this.officer = model.officer ?? ''
+    this.batteryVoltage = model.batteryVoltage ?? ''
+    this.etcRepairPart = model.etcRepairPart ?? ''
   }
 
   get repairedAtDisplayString(): string {
