@@ -101,7 +101,7 @@ const RepairDateFormGroup = observer(() => {
       <DateInputWrapper>
         <DateInput
           type="date"
-          value={viewModel.formatDateForInput(viewModel.repairModel.repairedAt)}
+          value={viewModel.dateInputFormatString(viewModel.repairModel.repairedAt)}
           onChange={(e) => {
             viewModel.updateRepairDate(new Date(e.target.value))
           }}
