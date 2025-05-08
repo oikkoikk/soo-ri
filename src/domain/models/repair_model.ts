@@ -1,3 +1,28 @@
+export type RepairType = 'accident' | 'routine' | null
+export type RepairCategory =
+  | 'drive_unit'
+  | 'electronic_control'
+  | 'brake'
+  | 'seat'
+  | 'footrest'
+  | 'frame'
+  | 'tire_tube'
+  | 'battery'
+  | 'etc'
+
+export const REPAIR_CATEGORY_LABELS: Record<RepairCategory, string> = {
+  drive_unit: '구동장치',
+  electronic_control: '전자제어',
+  brake: '제동장치',
+  seat: '시트',
+  footrest: '발걸이',
+  frame: '프레임',
+  tire_tube: '타이어 | 튜브',
+  battery: '배터리',
+  etc: '기타',
+}
+export const REPAIR_CATEGORY_KEYS: RepairCategory[] = Object.keys(REPAIR_CATEGORY_LABELS) as RepairCategory[]
+
 interface Repair {
   id?: string
   repairedAt?: Date

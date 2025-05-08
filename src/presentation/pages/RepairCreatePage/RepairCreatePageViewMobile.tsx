@@ -3,10 +3,11 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Setting, User } from '@/assets/svgs/svgs'
+import { REPAIR_CATEGORY_KEYS } from '@/domain/models/repair_model'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
-import { CATEGORY_KEYS, useRepairCreateViewModel } from './RepairCreatePageViewModel'
+import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
 export const RepairCreatePageViewMobile = observer(() => {
   const theme = useTheme()
@@ -179,7 +180,7 @@ const RepairCategoryFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-category-title">수리 항목</FormLabel>
       <CategoryGrid>
-        {CATEGORY_KEYS.map((category) => (
+        {REPAIR_CATEGORY_KEYS.map((category) => (
           <CategoryButton
             key={category}
             selected={viewModel.categorySelected(category)}

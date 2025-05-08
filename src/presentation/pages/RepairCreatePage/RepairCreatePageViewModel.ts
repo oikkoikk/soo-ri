@@ -2,32 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
-import { RepairModel } from '@/domain/models/repair_model'
-
-export type RepairType = 'accident' | 'routine' | null
-export type RepairCategory =
-  | 'drive_unit'
-  | 'electronic_control'
-  | 'brake'
-  | 'seat'
-  | 'footrest'
-  | 'frame'
-  | 'tire_tube'
-  | 'battery'
-  | 'etc'
-
-export const CATEGORY_LABELS: Record<RepairCategory, string> = {
-  drive_unit: '구동장치',
-  electronic_control: '전자제어',
-  brake: '제동장치',
-  seat: '시트',
-  footrest: '발걸이',
-  frame: '프레임',
-  tire_tube: '타이어 | 튜브',
-  battery: '배터리',
-  etc: '기타',
-}
-export const CATEGORY_KEYS: RepairCategory[] = Object.keys(CATEGORY_LABELS) as RepairCategory[]
+import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/repair_model'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -68,7 +43,7 @@ class RepairCreateStore {
   }
 
   getCategoryLabel = (categoryKey: RepairCategory): string => {
-    return CATEGORY_LABELS[categoryKey]
+    return REPAIR_CATEGORY_LABELS[categoryKey]
   }
 
   updateRepairOfficer = (value: string) => {
