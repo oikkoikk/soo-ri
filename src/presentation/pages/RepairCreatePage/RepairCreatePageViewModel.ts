@@ -43,7 +43,7 @@ class RepairCreateStore {
   }
 
   getCategoryLabel = (categoryKey: RepairCategory): string => {
-    return CATEGORY_LABELS[categoryKey]
+    return REPAIR_CATEGORY_LABELS[categoryKey]
   }
 
   updateRepairOfficer = (value: string) => {
