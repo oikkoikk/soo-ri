@@ -6,21 +6,39 @@ import { SOORITheme } from '@/theme/soori_theme'
 
 interface HeaderProps {
   title: string
-  description: string
+  description?: string
   onBack?: () => void
 }
 
 export function Header({ title, description, onBack }: HeaderProps) {
   const theme = useTheme()
+  const hasDescription = !!description
+  const hasBackButton = !!onBack
 
   return (
     <HeaderContainer theme={theme} role="banner">
-      <HeaderRow theme={theme}>
-        {onBack && <BackButton theme={theme} onClick={onBack} />}
-        <HeaderText>
+      <HeaderRow theme={theme} hasDescription={hasDescription} hasBackButton={hasBackButton}>
+        {(() => {
+          if (onBack) {
+            return <BackButton theme={theme} onClick={onBack} />
+          }
+          return null
+        })()}
+        <HeaderText hasDescription={hasDescription} hasBackButton={hasBackButton}>
           <HeaderTitle theme={theme}>{title}</HeaderTitle>
-          <HeaderDescription theme={theme}>{description}</HeaderDescription>
+          {(() => {
+            if (description) {
+              return <HeaderDescription theme={theme}>{description}</HeaderDescription>
+            }
+            return null
+          })()}
         </HeaderText>
+        {(() => {
+          if (onBack) {
+            return <InvisibleSpaceBox aria-hidden />
+          }
+          return null
+        })()}
       </HeaderRow>
     </HeaderContainer>
   )
@@ -54,20 +72,42 @@ const HeaderContainer = styled.header`
   height: 70px;
   display: flex;
   align-items: center;
-  padding: 20px 16px 6px 16px;
+  padding: 20px 16px;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
 `
 
-const HeaderRow = styled.div`
+const HeaderRow = styled.div<{ hasDescription: boolean; hasBackButton: boolean }>`
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 0 18px;
+  width: 100%;
+  justify-content: ${({ hasDescription, hasBackButton }) => {
+    if (!hasDescription && hasBackButton) {
+      return 'space-between'
+    } else if (!hasDescription && !hasBackButton) {
+      return 'center'
+    }
+    return 'flex-start'
+  }};
 `
 
-const HeaderText = styled.div`
+const HeaderText = styled.div<{ hasDescription: boolean; hasBackButton: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  ${({ hasDescription, hasBackButton }) => {
+    if (!hasDescription && hasBackButton) {
+      return `
+        text-align: center;
+      `
+    }
+    if (!hasDescription && !hasBackButton) {
+      return `
+        text-align: center;
+      `
+    }
+    return ''
+  }}
 `
 
 const HeaderTitle = styled.h1`
@@ -91,4 +131,10 @@ const BackButtonWrapper = styled.button`
   justify-content: center;
   width: 32px;
   height: 32px;
+`
+
+const InvisibleSpaceBox = styled.div`
+  width: 32px;
+  height: 32px;
+  visibility: hidden;
 `
