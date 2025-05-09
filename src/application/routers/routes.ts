@@ -1,5 +1,6 @@
 export const ROUTES = {
   HOME: '/',
+  SIGN_IN: '/sign-in',
   REPAIRS: '/repairs',
   REPAIR_DETAIL: '/repairs/:id',
   REPAIR_CREATE: '/repairs/new',
