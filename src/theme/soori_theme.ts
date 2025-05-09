@@ -9,6 +9,7 @@ export const SOORITheme = {
     outline: '#C7C7CC',
     outlineVariant: '#E7E7E7',
     surfaceContainer: '#F5F5F5',
+    error: '#FF382B',
   },
   typography: {
     titleLarge: {
