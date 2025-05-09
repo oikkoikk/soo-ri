@@ -105,9 +105,9 @@ const SearchBar = observer(() => {
   return (
     <SearchBarOuterContainer theme={theme}>
       <SearchBarInnerContainer theme={theme}>
-        <SearchIcon aria-hidden>
+        <IconContainer aria-hidden>
           <Search color={theme.colors.onSurfaceVariant} />
-        </SearchIcon>
+        </IconContainer>
         <SearchInput
           theme={theme}
           type="text"
@@ -151,16 +151,16 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
     >
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
-          <CalendarIcon aria-hidden>
+          <IconContainer aria-hidden>
             <Calendar color={theme.colors.onSurfaceVariant} />
-          </CalendarIcon>
+          </IconContainer>
           <RepairDate theme={theme}>{repair.repairedAtDisplayString}</RepairDate>
         </RepairDateContainer>
         <RepairPriceContainer>
           <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>
-          <ChevronIcon aria-hidden>
+          <IconContainer aria-hidden>
             <ChevronRight color={theme.colors.primary} />
-          </ChevronIcon>
+          </IconContainer>
         </RepairPriceContainer>
       </RepairCardHeader>
       <RepairTypeBadge theme={theme}>{repair.type}</RepairTypeBadge>
@@ -314,19 +314,10 @@ const SearchBarInnerContainer = styled.div`
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
 `
 
-const SearchIcon = styled.span`
+const IconContainer = styled.div`
   display: flex;
   align-items: center;
-`
-
-const CalendarIcon = styled.span`
-  display: flex;
-  align-items: center;
-`
-
-const ChevronIcon = styled.span`
-  display: flex;
-  align-items: center;
+  justify-content: center;
 `
 
 const SearchInput = styled.input`
