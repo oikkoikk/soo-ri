@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
-import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/repair_model'
+import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/models'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -11,8 +11,7 @@ class RepairCreateStore {
     makeAutoObservable(this)
   }
 
-  // 날짜를 input[type="date"]에 맞는 형식으로 변환하는 메서드
-  formatDateForInput = (date: Date): string => {
+  dateInputFormatString = (date: Date): string => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')

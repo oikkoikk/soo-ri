@@ -2,10 +2,10 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
-import { Setting, User } from '@/assets/svgs/svgs'
-import { REPAIR_CATEGORY_KEYS } from '@/domain/models/repair_model'
-import { Header } from '@/presentation/components/Header'
-import { SOORITheme } from '@/theme/soori_theme'
+import { Calendar, ChevronDown, Setting, User } from '@/assets/svgs/svgs'
+import { REPAIR_CATEGORY_KEYS } from '@/domain/models/models'
+import { Header } from '@/presentation/components/components'
+import { SOORITheme } from '@/theme/theme'
 
 import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
@@ -98,15 +98,20 @@ const RepairDateFormGroup = observer(() => {
   return (
     <FormGroup>
       <FormLabel id="repair-date-title">점검일</FormLabel>
-      <FormInput
-        type="date"
-        value={viewModel.formatDateForInput(viewModel.repairModel.repairedAt)}
-        onChange={(e) => {
-          viewModel.updateRepairDate(new Date(e.target.value))
-        }}
-        theme={theme}
-        aria-labelledby="repair-date-title"
-      />
+      <DateInputWrapper>
+        <DateInput
+          type="date"
+          value={viewModel.dateInputFormatString(viewModel.repairModel.repairedAt)}
+          onChange={(e) => {
+            viewModel.updateRepairDate(new Date(e.target.value))
+          }}
+          theme={theme}
+          aria-labelledby="repair-date-title"
+        />
+        <CalendarIconWrapper>
+          <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} />
+        </CalendarIconWrapper>
+      </DateInputWrapper>
     </FormGroup>
   )
 })
@@ -118,16 +123,22 @@ const RepairShopFormGroup = observer(() => {
   return (
     <FormGroup>
       <FormLabel id="repair-shop-title">담당기관</FormLabel>
-      <FormInput
-        type="text"
-        value={viewModel.repairModel.shopLabel}
-        onChange={(e) => {
-          viewModel.updateRepairShop(e.target.value)
-        }}
-        theme={theme}
-        placeholder="담당기관을 입력해주세요"
-        aria-labelledby="repair-shop-title"
-      />
+      <SelectWrapper>
+        <SelectBox
+          value={viewModel.repairModel.shopLabel}
+          onChange={(e) => {
+            viewModel.updateRepairShop(e.target.value)
+          }}
+          theme={theme}
+          aria-labelledby="repair-shop-title"
+        >
+          <option value="">담당기관을 선택해주세요</option>
+          <option value="성동장애인종합복지관">성동장애인종합복지관</option>
+        </SelectBox>
+        <SelectIconWrapper>
+          <ChevronDown width={15} height={15} color={theme.colors.onSurfaceVariant} />
+        </SelectIconWrapper>
+      </SelectWrapper>
     </FormGroup>
   )
 })
@@ -167,7 +178,7 @@ const RepairInfoSection = observer(() => {
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
       <EtcRepairPartFormGroup />
-      <RepairProblemFormGroup />
+      <RepairActionFormGroup />
     </SectionBox>
   )
 })
@@ -251,21 +262,21 @@ const EtcRepairPartFormGroup = observer(() => {
   )
 })
 
-const RepairProblemFormGroup = observer(() => {
+const RepairActionFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
     <FormGroup>
       <TextArea
-        placeholder="접수된 문제 사항을 기록해주세요."
-        value={viewModel.repairModel.problem}
+        placeholder="접수시 메모 사항을 기록해주세요."
+        value={viewModel.repairModel.action}
         onChange={(e) => {
           viewModel.updateProblem(e.target.value)
         }}
         rows={5}
         theme={theme}
-        aria-label="접수된 문제 사항을 기록해주세요."
+        aria-label="접수시 메모 사항을 기록해주세요."
       />
     </FormGroup>
   )
@@ -440,4 +451,87 @@ const CTAButton = styled.button`
   &:disabled {
     cursor: not-allowed;
   }
+`
+
+const DateInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const DateInput = styled.input`
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  position: relative;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  text-align: left;
+
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+  }
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const CalendarIconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+`
+
+const SelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const SelectBox = styled.select`
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const SelectIconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 `
