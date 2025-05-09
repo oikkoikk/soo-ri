@@ -3,9 +3,9 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Calendar, ChevronDown, Setting, User } from '@/assets/svgs/svgs'
-import { REPAIR_CATEGORY_KEYS } from '@/domain/models/repair_model'
-import { Header } from '@/presentation/components/Header'
-import { SOORITheme } from '@/theme/soori_theme'
+import { REPAIR_CATEGORY_KEYS } from '@/domain/models/models'
+import { Header } from '@/presentation/components/components'
+import { SOORITheme } from '@/theme/theme'
 
 import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
@@ -178,7 +178,7 @@ const RepairInfoSection = observer(() => {
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
       <EtcRepairPartFormGroup />
-      <RepairProblemFormGroup />
+      <RepairActionFormGroup />
     </SectionBox>
   )
 })
@@ -262,21 +262,21 @@ const EtcRepairPartFormGroup = observer(() => {
   )
 })
 
-const RepairProblemFormGroup = observer(() => {
+const RepairActionFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
     <FormGroup>
       <TextArea
-        placeholder="접수된 문제 사항을 기록해주세요."
-        value={viewModel.repairModel.problem}
+        placeholder="접수시 메모 사항을 기록해주세요."
+        value={viewModel.repairModel.action}
         onChange={(e) => {
           viewModel.updateProblem(e.target.value)
         }}
         rows={5}
         theme={theme}
-        aria-label="접수된 문제 사항을 기록해주세요."
+        aria-label="접수시 메모 사항을 기록해주세요."
       />
     </FormGroup>
   )

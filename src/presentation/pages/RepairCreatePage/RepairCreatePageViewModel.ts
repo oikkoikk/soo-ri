@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
-import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/repair_model'
+import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/models'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
