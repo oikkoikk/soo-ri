@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
@@ -16,8 +14,6 @@ interface TabItem {
   label: string
 }
 
-const AUTH_SESSION_KEY = 'repair-shop-auth-session'
-
 const tabItems: TabItem[] = [
   { id: TabId.REPAIRS, label: '정비 이력' },
   { id: TabId.VEHICLE, label: '전동보장구 정보' },
@@ -28,8 +24,6 @@ class RepairsStore {
   vehicle: VehicleModel = new VehicleModel({})
   searchKeyword = ''
   activeTab: TabId = TabId.REPAIRS
-  modalOpened = false
-  authCode = ''
   totalRepairsCount = 0
   repairPriceSumThisMonth = 0
 
@@ -63,32 +57,6 @@ class RepairsStore {
 
   changeTab = (tabId: TabId) => {
     this.activeTab = tabId
-  }
-
-  updateAuthCode = (code: string) => {
-    this.authCode = code
-  }
-
-  submitAuthCode = () => {
-    if (this.authCode.length === 4) {
-      // TODO: 실제 인증 로직 구현
-      if (this.authCode === '1234') {
-        this.saveAuthSession()
-        this.modalOpened = false
-        this.authCode = ''
-        return true
-      }
-      alert('인증 코드가 올바르지 않습니다.')
-    }
-    return false
-  }
-
-  checkAuthSession = (): boolean => {
-    return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true'
-  }
-
-  saveAuthSession = (): void => {
-    sessionStorage.setItem(AUTH_SESSION_KEY, 'true')
   }
 
   loadSampleData = () => {
@@ -171,15 +139,6 @@ class RepairsStore {
       return sum
     }, 0)
   }
-
-  checkAuthAndShowModal = (searchParams: URLSearchParams) => {
-    const isAuthenticated = this.checkAuthSession()
-    const vehicleId = searchParams.get('vehicleId') ?? ''
-
-    if (vehicleId && !isAuthenticated) {
-      this.modalOpened = true
-    }
-  }
 }
 
 const store = new RepairsStore()
@@ -189,16 +148,16 @@ export function useRepairsViewModel() {
   const [searchParams] = useSearchParams()
   const vehicleId = searchParams.get('vehicleId') ?? ''
 
-  useEffect(() => {
-    store.checkAuthAndShowModal(searchParams)
-  }, [searchParams])
-
   const goBack = () => {
     void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
   }
 
-  const goRepairCreatePage = () => {
-    void navigate(buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId }))
+  const buildRouteForRepairCreatePage = () => {
+    return buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId })
+  }
+
+  const buildRouteForRepairDetailPage = (repairId: string) => {
+    return buildRoute('REPAIR_DETAIL', { repairId: repairId }, { vehicleId: vehicleId })
   }
 
   return {
@@ -209,6 +168,7 @@ export function useRepairsViewModel() {
     repairPriceSumThisMonthDisplayString: store.repairPriceSumThisMonthDisplayString,
     tabItems,
     goBack,
-    goRepairCreatePage,
+    buildRouteForRepairCreatePage,
+    buildRouteForRepairDetailPage,
   }
 }
