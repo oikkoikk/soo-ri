@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 import { Link, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
+import { WordMark } from '@/assets/images/images'
 import { SOORITheme } from '@/theme/theme'
 
 export function HomePageViewMobile() {
@@ -13,13 +14,14 @@ export function HomePageViewMobile() {
 
   return (
     <Container theme={theme}>
-      <Title theme={theme}>전동보장구 관리 서비스</Title>
-      {/* TODO: 카카오 아이콘 추가 */}
-      {/* TODO: 카카오 로그인 페이지로 연결 */}
-      <KakaoLoginButton to={{}}>카카오 로그인</KakaoLoginButton>
-      <RepairModeButton to={buildRoute('REPAIRS', {}, { vehicleId: vehicleId })} theme={theme}>
-        수리자 모드 바로가기
-      </RepairModeButton>
+      <MainContent>
+        <LogoTitle>
+          <LogoWordMark src={WordMark} alt="수리수리 마수리" />
+        </LogoTitle>
+        <LoginButton to={buildRoute('SIGN_IN', {}, { vehicleId: vehicleId })} theme={theme}>
+          전화번호로 로그인
+        </LoginButton>
+      </MainContent>
     </Container>
   )
 }
@@ -30,47 +32,38 @@ const Container = styled.main`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 0 47px;
+  padding: 100px 25px;
   gap: 24px 0px;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
+`
+
+const MainContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+`
+
+const LogoTitle = styled.h1`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const LogoWordMark = styled.img`
+  width: 200px;
+`
+
+const LoginButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 270px;
+  height: 45px;
+  border-radius: 6px;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
-  position: relative;
-`
-
-const Title = styled.h1`
-  ${({ theme }) => css`
-    ${theme.typography.titleLarge};
-  `}
-  color: ${({ theme }) => theme.colors.onSurface};
-`
-
-const KakaoLoginButton = styled(Link)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 48px;
-  background-color: #fee500;
-  border-radius: 6px;
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.secondary};
-  }
-  ${({ theme }) => css`
-    ${theme.typography.bodyMedium};
-  `}
-`
-
-const RepairModeButton = styled(Link)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 48px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
-  border-radius: 6px;
-  &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.secondary};
-  }
-  ${({ theme }) => css`
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
