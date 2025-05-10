@@ -32,11 +32,9 @@ const Container = styled.main`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  width: 100%;
   padding: 100px 25px;
   gap: 24px 0px;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
-  position: relative;
 `
 
 const MainContent = styled.div`
