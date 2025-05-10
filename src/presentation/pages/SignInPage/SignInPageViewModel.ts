@@ -2,6 +2,7 @@ import { ConfirmationResult, getAuth } from 'firebase/auth'
 import { makeAutoObservable, runInAction } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
+import { useLoading } from '@/application/configurations/contexts/contexts'
 import { buildRoute } from '@/application/routers/routes'
 import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase } from '@/domain/use_cases/use_cases'
 
@@ -17,7 +18,6 @@ class SignInStore {
   confirmationResult: ConfirmationResult | null = null
   expirationTime = EXPIRATION_TIME
   verificationError: string | null = null
-  loading = false
   verified = false
 
   private timerIntervalId: number | null = null
@@ -58,17 +58,11 @@ class SignInStore {
   }
 
   get canRequestVerification() {
-    return !this.loading && this.validPhoneNumber && !this.verificationCodeRequested
+    return this.validPhoneNumber && !this.verificationCodeRequested
   }
 
   get canVerifyCode() {
-    return (
-      this.validVerificationCode &&
-      !this.loading &&
-      !this.timerExpired &&
-      !this.verified &&
-      this.verificationCodeRequested
-    )
+    return this.validVerificationCode && !this.timerExpired && !this.verified && this.verificationCodeRequested
   }
 
   get expirationTimeDisplayString() {
@@ -85,24 +79,47 @@ class SignInStore {
     return `${minutes}분 ${remainingSeconds}초 남음`
   }
 
+  handlePhoneInputKeyDown = async (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    showLoading: () => void,
+    hideLoading: () => void
+  ) => {
+    if (e.key === 'Enter' && this.canRequestVerification) {
+      e.preventDefault()
+      await this.requestVerification(showLoading, hideLoading)
+    }
+  }
+
+  handleVerificationCodeKeyDown = async (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    showLoading: () => void,
+    hideLoading: () => void
+  ) => {
+    if (e.key === 'Enter' && this.canVerifyCode) {
+      e.preventDefault()
+      await this.verifyCode(showLoading, hideLoading)
+    }
+  }
+
   updatePhoneNumber = (phoneNumber: string) => {
     if (this.verificationCodeRequested) return
     this.phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
   }
 
-  updateVerificationCode = (code: string) => {
-    this.verificationCode = code.replace(/[^0-9]/g, '').slice(0, VERIFICATION_CODE_LENGTH)
+  updateVerificationCode = async (code: string, showLoading: () => void, hideLoading: () => void) => {
+    const newCode = code.replace(/[^0-9]/g, '').slice(0, VERIFICATION_CODE_LENGTH)
+    this.verificationCode = newCode
     this.verificationError = null
+
+    if (newCode.length === VERIFICATION_CODE_LENGTH && this.canVerifyCode) {
+      await this.verifyCode(showLoading, hideLoading)
+    }
   }
 
-  handleLoading = (state: boolean) => {
-    this.loading = state
-  }
-
-  requestVerification = async () => {
+  async requestVerification(showLoading: () => void, hideLoading: () => void) {
     if (!this.canRequestVerification) return
 
-    this.handleLoading(true)
+    showLoading()
 
     try {
       const formattedPhoneNumber = '+82' + this.phoneNumber.replace(/-/g, '')
@@ -115,21 +132,20 @@ class SignInStore {
 
       runInAction(() => {
         this.confirmationResult = result
+        this.startTimer()
       })
-
-      this.startTimer()
     } catch (error) {
       console.error('인증번호 요청 실패:', error)
       this.verificationError = '인증번호 요청에 실패했습니다. 다시 시도해주세요.'
     } finally {
-      this.handleLoading(false)
+      hideLoading()
     }
   }
 
-  verifyCode = async () => {
+  async verifyCode(showLoading: () => void, hideLoading: () => void) {
     if (!this.canVerifyCode) return false
 
-    this.handleLoading(true)
+    showLoading()
 
     try {
       const user = await authPhoneConfirmUseCase.call({
@@ -155,7 +171,7 @@ class SignInStore {
 
       return false
     } finally {
-      this.handleLoading(false)
+      hideLoading()
     }
   }
 
@@ -190,7 +206,6 @@ class SignInStore {
     this.confirmationResult = null
     this.expirationTime = EXPIRATION_TIME
     this.verificationError = null
-    this.loading = false
     this.verified = false
     this.cleanup()
   }
@@ -202,6 +217,7 @@ export function useSignInViewModel() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const vehicleId = searchParams.get('vehicleId') ?? ''
+  const { showLoading, hideLoading } = useLoading()
 
   const goBack = () => {
     void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
@@ -213,6 +229,13 @@ export function useSignInViewModel() {
 
   return {
     ...store,
+    requestVerification: () => store.requestVerification(showLoading, hideLoading),
+    verifyCode: () => store.verifyCode(showLoading, hideLoading),
+    updateVerificationCode: (code: string) => store.updateVerificationCode(code, showLoading, hideLoading),
+    handlePhoneInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) =>
+      store.handlePhoneInputKeyDown(e, showLoading, hideLoading),
+    handleVerificationCodeKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) =>
+      store.handleVerificationCodeKeyDown(e, showLoading, hideLoading),
     validPhoneNumber: store.validPhoneNumber,
     validVerificationCode: store.validVerificationCode,
     verificationCodeRequested: store.verificationCodeRequested,

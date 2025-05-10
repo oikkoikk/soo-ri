@@ -52,13 +52,16 @@ const PhoneInputFormGroup = observer(() => {
       <FormLabel>휴대전화번호</FormLabel>
       <InputGroup>
         <PhoneInput
+          autoFocus
           type="tel"
+          inputMode="tel"
           value={viewModel.phoneNumber}
           onChange={(e) => {
             viewModel.updatePhoneNumber(e.target.value)
           }}
+          onKeyDown={viewModel.handlePhoneInputKeyDown}
           placeholder="휴대전화번호를 입력해주세요"
-          disabled={viewModel.loading || viewModel.verificationCodeRequested}
+          disabled={viewModel.verificationCodeRequested}
         />
         <RequestButton
           theme={theme}
@@ -90,11 +93,14 @@ const VerificationInputFormGroup = observer(() => {
           aria-invalid={!!viewModel.errorMessage}
         >
           <VerificationInput
+            autoFocus
             type="text"
+            inputMode="decimal"
             value={viewModel.verificationCode}
             onChange={(e) => {
-              viewModel.updateVerificationCode(e.target.value)
+              void viewModel.updateVerificationCode(e.target.value)
             }}
+            onKeyDown={viewModel.handleVerificationCodeKeyDown}
             placeholder={`${viewModel.VERIFICATION_CODE_LENGTH.toString()}자리 인증번호`}
             maxLength={viewModel.VERIFICATION_CODE_LENGTH}
             disabled={viewModel.timerExpired || viewModel.verified}
@@ -240,6 +246,7 @@ const ErrorMessage = styled.p`
 `
 
 const RequestButton = styled.button`
+  flex: 0 0 100px;
   width: 100px;
   height: 42px;
   margin-left: 9px;
