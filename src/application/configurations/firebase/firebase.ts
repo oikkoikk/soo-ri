@@ -1,1 +1,1 @@
-export * from './FirebaseContext'
+export * from './config'
