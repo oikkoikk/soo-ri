@@ -19,28 +19,19 @@ export const SignInPageViewMobile = observer(() => {
     return () => {
       viewModel.reset()
     }
-  }, [viewModel])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewModel.init, viewModel.reset])
 
   return (
     <Container>
-      <Header
-        title="번호 인증"
-        description=""
-        onBack={() => {
-          // TODO: 뒤로가기 구현
-          return
-        }}
-      />
+      <Header title="번호 인증" onBack={viewModel.goBack} />
       <MainContent>
         <PhoneInputFormGroup />
         <VerificationInputFormGroup />
       </MainContent>
       <CTAButtonContainer>
         <CTAButton
-          onClick={() => {
-            // TODO: 인증 완료 후 동작 구현
-            return
-          }}
+          onClick={viewModel.redirectToPreviousPage}
           theme={theme}
           disabled={!viewModel.valid}
           aria-disabled={!viewModel.valid}
@@ -67,7 +58,7 @@ const PhoneInputFormGroup = observer(() => {
             viewModel.updatePhoneNumber(e.target.value)
           }}
           placeholder="휴대전화번호를 입력해주세요"
-          disabled={viewModel.loading}
+          disabled={viewModel.loading || viewModel.verificationCodeRequested}
         />
         <RequestButton
           theme={theme}
@@ -104,10 +95,10 @@ const VerificationInputFormGroup = observer(() => {
             onChange={(e) => {
               viewModel.updateVerificationCode(e.target.value)
             }}
-            placeholder={`${viewModel.verificationCodeLength.toString()}자리 인증번호`}
-            maxLength={viewModel.verificationCodeLength}
+            placeholder={`${viewModel.VERIFICATION_CODE_LENGTH.toString()}자리 인증번호`}
+            maxLength={viewModel.VERIFICATION_CODE_LENGTH}
             disabled={viewModel.timerExpired || viewModel.verified}
-            aria-label={`${viewModel.verificationCodeLength.toString()}자리 인증번호 입력`}
+            aria-label={`${viewModel.VERIFICATION_CODE_LENGTH.toString()}자리 인증번호 입력`}
             aria-describedby={viewModel.errorMessage ? 'verification-error' : undefined}
           />
           {(() => {
