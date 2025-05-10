@@ -266,7 +266,7 @@ const RequestButton = styled.button`
   }
 `
 
-const RecaptchaVerifier = styled.div`
+const RecaptchaVerifier = styled.span`
   display: none;
 `
 
