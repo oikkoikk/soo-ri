@@ -1,5 +1,5 @@
 import { ConfirmationResult, getAuth } from 'firebase/auth'
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
@@ -109,10 +109,15 @@ class SignInStore {
       const formattedPhoneNumber = '+82' + this.phoneNumber.replace(/-/g, '')
       const auth = getAuth()
 
-      this.confirmationResult = await authPhoneVerifyUseCase.call({
+      const result = await authPhoneVerifyUseCase.call({
         auth,
         phoneNumber: formattedPhoneNumber,
       })
+
+      runInAction(() => {
+        this.confirmationResult = result
+      })
+
       this.startTimer()
     } catch (error) {
       console.error('인증번호 요청 실패:', error)
@@ -134,13 +139,21 @@ class SignInStore {
       })
 
       this.stopTimer()
-      this.verified = !!user
-      if (!user) this.verificationError = '인증번호를 다시 확인해주세요'
+
+      runInAction(() => {
+        this.verified = !!user
+        if (!user) this.verificationError = '인증번호를 다시 확인해주세요'
+      })
+
       return !!user
     } catch (error) {
       console.error('인증번호 확인 실패:', error)
-      this.verificationError = '인증번호를 다시 확인해주세요'
-      this.verified = false
+
+      runInAction(() => {
+        this.verificationError = '인증번호를 다시 확인해주세요'
+        this.verified = false
+      })
+
       return false
     } finally {
       this.handleLoading(false)
@@ -151,7 +164,10 @@ class SignInStore {
     this.stopTimer()
     this.expirationTime = EXPIRATION_TIME
     this.timerIntervalId = window.setInterval(() => {
-      if (--this.expirationTime <= 0) this.stopTimer()
+      runInAction(() => {
+        this.expirationTime -= 1
+        if (this.expirationTime <= 0) this.stopTimer()
+      })
     }, 1000)
   }
 
@@ -170,15 +186,13 @@ class SignInStore {
   }
 
   reset = () => {
-    Object.assign(this, {
-      phoneNumber: '',
-      verificationCode: '',
-      confirmationResult: null,
-      expirationTime: EXPIRATION_TIME,
-      verificationError: null,
-      loading: false,
-      verified: false,
-    })
+    this.phoneNumber = ''
+    this.verificationCode = ''
+    this.confirmationResult = null
+    this.expirationTime = EXPIRATION_TIME
+    this.verificationError = null
+    this.loading = false
+    this.verified = false
     this.cleanup()
   }
 
