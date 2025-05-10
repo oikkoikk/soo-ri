@@ -87,11 +87,7 @@ const VerificationInputFormGroup = observer(() => {
   return (
     <FormGroup>
       <InputGroup>
-        <VerificationInputContainer
-          theme={theme}
-          error={!!viewModel.errorMessage}
-          aria-invalid={!!viewModel.errorMessage}
-        >
+        <VerificationInputContainer theme={theme} error={!!viewModel.errorMessage}>
           <VerificationInput
             autoFocus
             type="text"
@@ -107,16 +103,12 @@ const VerificationInputFormGroup = observer(() => {
             aria-label={`${viewModel.VERIFICATION_CODE_LENGTH.toString()}자리 인증번호 입력`}
             aria-describedby={viewModel.errorMessage ? 'verification-error' : undefined}
           />
-          {(() => {
-            if (viewModel.timerActive && !viewModel.verified) {
-              return (
-                <Timer theme={theme} expired={viewModel.timerExpired} aria-live="polite">
-                  <VisibleOnly aria-hidden>{viewModel.expirationTimeDisplayString}</VisibleOnly>
-                  <ScreenReaderOnly>{viewModel.expirationTimeScreenReaderString}</ScreenReaderOnly>
-                </Timer>
-              )
-            }
-          })()}
+          {viewModel.timerActive && !viewModel.verified && (
+            <TimerOverlay theme={theme} expired={viewModel.timerExpired} aria-live="polite">
+              <VisibleOnly aria-hidden>{viewModel.expirationTimeDisplayString}</VisibleOnly>
+              <ScreenReaderOnly>{viewModel.expirationTimeScreenReaderString}</ScreenReaderOnly>
+            </TimerOverlay>
+          )}
         </VerificationInputContainer>
         <RequestButton
           theme={theme}
@@ -187,8 +179,6 @@ const PhoneInput = styled.input`
 const VerificationInputContainer = styled.div`
   flex: 1;
   position: relative;
-  padding: 3px 12px;
-  height: 42px;
   border: 0.8px solid
     ${({ theme, error }: { theme: SOORITheme; error: boolean }) => (error ? theme.colors.error : theme.colors.outline)};
   border-radius: 6px;
@@ -204,9 +194,11 @@ const VerificationInputContainer = styled.div`
 
 const VerificationInput = styled.input`
   flex: 1;
-  height: 100%;
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
   border: none;
-  background: transparent;
+  border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
   `}
@@ -220,7 +212,9 @@ const VerificationInput = styled.input`
   }
 `
 
-const Timer = styled.div`
+const TimerOverlay = styled.div`
+  position: absolute;
+  right: 12px;
   ${({ theme }: { theme: SOORITheme }) => theme.typography.bodyMedium};
   color: ${({ theme, expired }: { theme: SOORITheme; expired: boolean }) =>
     expired ? theme.colors.error : theme.colors.primary};
