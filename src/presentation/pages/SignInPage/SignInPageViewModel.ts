@@ -103,7 +103,6 @@ class SignInStore {
     if (!this.canRequestVerification) return
 
     this.handleLoading(true)
-    this.resetVerificationState()
 
     try {
       const formattedPhoneNumber = '+82' + this.phoneNumber.replace(/-/g, '')
@@ -195,12 +194,6 @@ class SignInStore {
     this.verified = false
     this.cleanup()
   }
-
-  resetVerificationState = () => {
-    this.verificationCode = ''
-    this.verificationError = null
-    this.verified = false
-  }
 }
 
 const store = new SignInStore()
@@ -217,6 +210,7 @@ export function useSignInViewModel() {
   const redirectToPreviousPage = () => {
     void navigate(-1)
   }
+
   return {
     ...store,
     validPhoneNumber: store.validPhoneNumber,
