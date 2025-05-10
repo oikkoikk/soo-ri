@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairModel, VehicleModel } from '@/domain/models/models'
@@ -144,13 +144,8 @@ class RepairsStore {
 const store = new RepairsStore()
 
 export function useRepairsViewModel() {
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const vehicleId = searchParams.get('vehicleId') ?? ''
-
-  const goBack = () => {
-    void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
-  }
 
   const buildRouteForRepairCreatePage = () => {
     return buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId })
@@ -167,7 +162,6 @@ export function useRepairsViewModel() {
     totalRepairsCountDisplayString: store.totalRepairsCountDisplayString,
     repairPriceSumThisMonthDisplayString: store.repairPriceSumThisMonthDisplayString,
     tabItems,
-    goBack,
     buildRouteForRepairCreatePage,
     buildRouteForRepairDetailPage,
   }

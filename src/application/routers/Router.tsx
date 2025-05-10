@@ -2,6 +2,7 @@ import { lazy } from 'react'
 
 import { createBrowserRouter } from 'react-router'
 
+import { ProtectedRoute } from './ProtectedRoutes'
 import { ROUTES } from './routes'
 
 const HomePage = lazy(() => import('@/presentation/pages/HomePage/HomePageView'))
@@ -13,22 +14,42 @@ const RepairDetailPage = lazy(() => import('@/presentation/pages/RepairDetailPag
 export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    element: <HomePage />,
+    element: (
+      <ProtectedRoute requireAuth={false}>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.SIGN_IN,
-    element: <SignInPage />,
+    element: (
+      <ProtectedRoute requireAuth={false}>
+        <SignInPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.REPAIRS,
-    element: <RepairsPage />,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <RepairsPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.REPAIR_CREATE,
-    element: <RepairCreatePage />,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <RepairCreatePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTES.REPAIR_DETAIL,
-    element: <RepairDetailPage />,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <RepairDetailPage />
+      </ProtectedRoute>
+    ),
   },
 ])
