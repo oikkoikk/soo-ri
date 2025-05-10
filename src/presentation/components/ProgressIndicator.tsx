@@ -14,13 +14,21 @@ export function ProgressIndicator() {
 }
 
 const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 `
 
 const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 `
 
 const ProgressIndicatorContainer = styled.div`
@@ -35,17 +43,17 @@ const ProgressIndicatorContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-  animation: ${fadeIn} 0.3s ease-in;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  animation: ${fadeIn} 0.4s ease-in-out;
   z-index: 9999;
 `
 
 const Indicator = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 4px solid ${SOORITheme.colors.outlineVariant};
-  border-top: 4px solid ${SOORITheme.colors.primary};
+  width: 45px;
+  height: 45px;
+  border: 5px solid ${SOORITheme.colors.outlineVariant};
+  border-top: 5px solid ${SOORITheme.colors.primary};
   border-radius: 50%;
-  animation: ${spin} 1s linear infinite;
+  animation: ${spin} 0.8s linear infinite;
 `

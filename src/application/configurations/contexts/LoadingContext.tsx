@@ -13,7 +13,7 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
   const loadingStartTime = useRef<number | null>(null)
   const hideLoadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const MIN_LOADING_TIME = 200
+  const MIN_LOADING_TIME = 500
 
   const showLoading = () => {
     if (hideLoadingTimeoutRef.current) {
