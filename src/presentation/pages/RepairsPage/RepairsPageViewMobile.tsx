@@ -7,7 +7,7 @@ import { buildRoute } from '@/application/routers/routes'
 import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/soori_theme'
+import { SOORITheme } from '@/theme/theme'
 
 import { TabId, useRepairsViewModel } from './RepairsPageViewModel'
 
@@ -16,85 +16,33 @@ export const RepairsPageViewMobile = observer(() => {
   const viewModel = useRepairsViewModel()
 
   return (
-    <>
-      {(() => {
-        if (viewModel.modalOpened) {
-          return <AuthModal />
-        } else {
-          return (
-            <Container>
-              <StickyTop theme={theme}>
-                <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
-                <Tabs
-                  activeTab={viewModel.activeTab as string}
-                  setActiveTab={(tabId: string) => {
-                    viewModel.changeTab(tabId as TabId)
-                  }}
-                  tabs={viewModel.tabItems}
-                />
-                <SearchBar />
-              </StickyTop>
-              <MainContent role="main">
-                {(() => {
-                  if (viewModel.activeTab === TabId.REPAIRS) {
-                    return <RepairHistoryList />
-                  } else {
-                    return <Vehicle />
-                  }
-                })()}
-              </MainContent>
-              <CTAButtonContainer>
-                <CTAButton onClick={viewModel.goRepairCreatePage} theme={theme} aria-label="새 정비 작업 시작하기">
-                  + 새 정비 작업 시작
-                </CTAButton>
-              </CTAButtonContainer>
-            </Container>
-          )
-        }
-      })()}
-    </>
-  )
-})
-
-const AuthModal = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairsViewModel()
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      viewModel.submitAuthCode()
-    }
-  }
-
-  return (
-    <Modal theme={theme} role="dialog" aria-labelledby="auth-modal-title">
-      <ModalContent theme={theme}>
-        <ModalTitle id="auth-modal-title" theme={theme}>
-          인증번호를 입력하세요
-        </ModalTitle>
-        <ModalDescription theme={theme} id="auth-description">
-          인증번호를 모르는 경우 정비이력 업데이트 권한을 부여받은 기관에 문의바랍니다.
-        </ModalDescription>
-        <ModalInput
-          autoFocus
-          theme={theme}
-          type="password"
-          pattern="[0-9]*"
-          inputMode="numeric"
-          maxLength={4}
-          value={viewModel.authCode}
-          onChange={(e) => {
-            viewModel.updateAuthCode(e.target.value)
+    <Container>
+      <StickyTop theme={theme}>
+        <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
+        <Tabs
+          activeTab={viewModel.activeTab as string}
+          setActiveTab={(tabId: string) => {
+            viewModel.changeTab(tabId as TabId)
           }}
-          onKeyDown={handleKeyDown}
-          autoComplete="one-time-code"
-          aria-describedby="auth-description"
+          tabs={viewModel.tabItems}
         />
-        <ModalCTAButton onClick={viewModel.submitAuthCode} theme={theme} aria-label="인증번호 확인">
-          확인
-        </ModalCTAButton>
-      </ModalContent>
-    </Modal>
+        <SearchBar />
+      </StickyTop>
+      <MainContent role="main">
+        {(() => {
+          if (viewModel.activeTab === TabId.REPAIRS) {
+            return <RepairHistoryList />
+          } else {
+            return <Vehicle />
+          }
+        })()}
+      </MainContent>
+      <CTAButtonContainer>
+        <CTAButton onClick={viewModel.goRepairCreatePage} theme={theme} aria-label="새 정비 작업 시작하기">
+          + 새 정비 작업 시작
+        </CTAButton>
+      </CTAButtonContainer>
+    </Container>
   )
 })
 
@@ -205,74 +153,6 @@ const Vehicle = () => {
     </VehicleCard>
   )
 }
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: ${({ theme }: { theme: SOORITheme }) => theme.colors.outlineVariant};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-`
-
-const ModalContent = styled.div`
-  width: 270px;
-  height: 184px;
-  background: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
-  border-radius: 14px;
-  text-align: center;
-  display: flex;
-  gap: 2px;
-  flex-direction: column;
-`
-
-const ModalTitle = styled.h2`
-  ${({ theme }) => css`
-    ${theme.typography.subtitleMedium};
-  `}
-  padding: 19px 16px 0px 16px;
-`
-
-const ModalDescription = styled.p`
-  ${({ theme }) => css`
-    ${theme.typography.bodySmall};
-  `}
-  padding: 0px 16px 15px 16px;
-`
-
-const ModalInput = styled.input`
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
-  height: 44px;
-  padding: 11px 0px;
-  border: none;
-  border-top: 0.3px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  border-bottom: 0.3px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  width: 100%;
-  text-align: center;
-  &:focus {
-    outline: none;
-    background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
-  }
-&
-`
-
-const ModalCTAButton = styled.button`
-  ${({ theme }: { theme: SOORITheme }) => css`
-    ${theme.typography.bodyMedium};
-  `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  height: 44px;
-  padding: 0px 16px;
-  &:focus {
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-  }
-`
 
 const Container = styled.main`
   width: 100%;
