@@ -17,7 +17,7 @@ export const RepairsPageViewMobile = observer(() => {
   return (
     <Container>
       <StickyTop theme={theme}>
-        <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
+        <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" />
         <Tabs
           activeTab={viewModel.activeTab as string}
           setActiveTab={(tabId: string) => {
