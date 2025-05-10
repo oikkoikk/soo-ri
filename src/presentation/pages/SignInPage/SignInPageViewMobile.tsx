@@ -71,13 +71,13 @@ const PhoneInputFormGroup = observer(() => {
         />
         <RequestButton
           theme={theme}
-          id={RECAPTCHA_VERIFIER_ID}
           onClick={async () => {
             await viewModel.requestVerification()
           }}
           disabled={!viewModel.canRequestVerification}
           aria-disabled={!viewModel.canRequestVerification}
         >
+          <RecaptchaVerifier id={RECAPTCHA_VERIFIER_ID} tabIndex={-1} />
           {'인증번호 요청'}
         </RequestButton>
       </InputGroup>
@@ -264,6 +264,10 @@ const RequestButton = styled.button`
   &:disabled {
     cursor: not-allowed;
   }
+`
+
+const RecaptchaVerifier = styled.div`
+  display: none;
 `
 
 const CTAButtonContainer = styled.div`
