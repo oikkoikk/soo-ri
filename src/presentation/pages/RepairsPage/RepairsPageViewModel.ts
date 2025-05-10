@@ -152,8 +152,12 @@ export function useRepairsViewModel() {
     void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
   }
 
-  const goRepairCreatePage = () => {
-    void navigate(buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId }))
+  const buildRouteForRepairCreatePage = () => {
+    return buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId })
+  }
+
+  const buildRouteForRepairDetailPage = (repairId: string) => {
+    return buildRoute('REPAIR_DETAIL', { repairId: repairId }, { vehicleId: vehicleId })
   }
 
   return {
@@ -164,6 +168,7 @@ export function useRepairsViewModel() {
     repairPriceSumThisMonthDisplayString: store.repairPriceSumThisMonthDisplayString,
     tabItems,
     goBack,
-    goRepairCreatePage,
+    buildRouteForRepairCreatePage,
+    buildRouteForRepairDetailPage,
   }
 }
