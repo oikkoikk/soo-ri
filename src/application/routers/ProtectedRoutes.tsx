@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState, useRef } from 'react'
+import { JSX, useEffect, useState, useRef, useMemo } from 'react'
 
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
 import { Navigate, useLocation } from 'react-router'
@@ -37,6 +37,7 @@ function useAuthState() {
 interface LocationState {
   from?: {
     pathname: string
+    search?: string
   }
 }
 
@@ -56,7 +57,17 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
   }
 
   const locationState = isLocationState(location.state) ? location.state : undefined
-  const queryParams = location.search
+
+  const queryParams = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const params: Record<string, string> = {}
+
+    searchParams.forEach((value, key) => {
+      params[key] = value
+    })
+
+    return params
+  }, [location.search])
 
   useEffect(() => {
     if (loading) {
@@ -76,16 +87,22 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
   }
 
   if (requireAuth && !user) {
-    return <Navigate to={buildRoute('SIGN_IN')} replace state={{ from: location }} />
+    return (
+      <Navigate
+        to={buildRoute('SIGN_IN')}
+        replace
+        state={{ from: { pathname: location.pathname, search: location.search } }}
+      />
+    )
   }
 
   if (!requireAuth && user) {
-    const isInternalNavigation = locationState?.from !== undefined
+    const internalNavigation = locationState?.from !== undefined
 
-    if (isInternalNavigation && locationState.from?.pathname) {
-      return <Navigate to={`${locationState.from.pathname}${queryParams}`} replace />
+    if (internalNavigation && locationState.from?.pathname) {
+      return <Navigate to={`${locationState.from.pathname}${locationState.from.search ?? ''}`} replace />
     } else {
-      return <Navigate to={`${buildRoute('REPAIRS')}${queryParams}`} replace />
+      return <Navigate to={buildRoute('REPAIRS', {}, queryParams)} replace />
     }
   }
 
