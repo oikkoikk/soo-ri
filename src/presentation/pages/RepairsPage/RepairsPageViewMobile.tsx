@@ -3,7 +3,6 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { Link } from 'react-router'
 
-import { buildRoute } from '@/application/routers/routes'
 import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
@@ -38,7 +37,7 @@ export const RepairsPageViewMobile = observer(() => {
         })()}
       </MainContent>
       <CTAButtonContainer>
-        <CTAButton onClick={viewModel.goRepairCreatePage} theme={theme} aria-label="새 정비 작업 시작하기">
+        <CTAButton to={viewModel.buildRouteForRepairCreatePage()} theme={theme} aria-label="새 정비 작업 시작하기">
           + 새 정비 작업 시작
         </CTAButton>
       </CTAButtonContainer>
@@ -92,11 +91,7 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
   const viewModel = useRepairsViewModel()
 
   return (
-    <RepairCard
-      to={buildRoute('REPAIR_DETAIL', { id: repair.id }, { vehicleId: viewModel.vehicleId })}
-      theme={theme}
-      tabIndex={0}
-    >
+    <RepairCard to={viewModel.buildRouteForRepairDetailPage(repair.id)} theme={theme} tabIndex={0}>
       <RepairCardHeader theme={theme}>
         <RepairDateContainer>
           <IconContainer aria-hidden>
@@ -231,7 +226,7 @@ const CTAButtonContainer = styled.div`
   border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
 `
 
-const CTAButton = styled.button`
+const CTAButton = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
