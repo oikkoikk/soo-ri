@@ -62,7 +62,7 @@ const FloatingActionMenu = observer(() => {
                 <MenuItemContainer>
                   <MenuItem theme={theme}>
                     <MenuItemIconContainer theme={theme}>
-                      <Map color={theme.colors.onSurface} aria-hidden />
+                      <Map width={25} height={25} color={theme.colors.onSurface} aria-hidden />
                     </MenuItemIconContainer>
                     <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
                   </MenuItem>
@@ -70,7 +70,7 @@ const FloatingActionMenu = observer(() => {
                 {/* TODO: Link로 전환 */}
                 <MenuItem theme={theme}>
                   <MenuItemIconContainer theme={theme}>
-                    <Check color={theme.colors.onSurface} aria-hidden />
+                    <Check width={20} height={20} color={theme.colors.onSurface} aria-hidden />
                   </MenuItemIconContainer>
                   <MenuItemText theme={theme}>나의 전동보장구 자가점검</MenuItemText>
                 </MenuItem>
@@ -87,9 +87,9 @@ const FloatingActionMenu = observer(() => {
       >
         {(() => {
           if (viewModel.fabExpended) {
-            return <Cancel color={theme.colors.primary} aria-hidden />
+            return <Cancel width={15} height={15} color={theme.colors.primary} aria-hidden />
           } else {
-            return <Add color={theme.colors.onSurface} aria-hidden />
+            return <Add width={15} height={15} color={theme.colors.onSurface} aria-hidden />
           }
         })()}
       </FABContainer>
