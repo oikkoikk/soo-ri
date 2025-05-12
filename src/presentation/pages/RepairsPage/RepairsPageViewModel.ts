@@ -26,6 +26,7 @@ class RepairsStore {
   activeTab: TabId = TabId.REPAIRS
   totalRepairsCount = 0
   repairPriceSumThisMonth = 0
+  fabExpended = false
 
   constructor() {
     makeAutoObservable(this)
@@ -57,6 +58,10 @@ class RepairsStore {
 
   changeTab = (tabId: TabId) => {
     this.activeTab = tabId
+  }
+
+  toggleFab = () => {
+    this.fabExpended = !this.fabExpended
   }
 
   loadSampleData = () => {

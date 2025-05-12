@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { Link } from 'react-router'
 
-import { Calendar, ChevronRight, Search } from '@/assets/svgs/svgs'
+import { Add, Calendar, Cancel, Check, ChevronRight, Map, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
 import { SOORITheme } from '@/theme/theme'
@@ -36,12 +36,64 @@ export const RepairsPageViewMobile = observer(() => {
           }
         })()}
       </MainContent>
+      <FloatingActionMenu />
       <CTAButtonContainer>
         <CTAButton to={viewModel.buildRouteForRepairCreatePage()} theme={theme} aria-label="새 정비 작업 시작하기">
           + 새 정비 작업 시작
         </CTAButton>
       </CTAButtonContainer>
+      {viewModel.fabExpended && <ModalOverlay onClick={viewModel.toggleFab} />}
     </Container>
+  )
+})
+
+const FloatingActionMenu = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairsViewModel()
+
+  return (
+    <FloatingMenuContainer>
+      {(() => {
+        if (viewModel.fabExpended) {
+          return (
+            <>
+              <MenuItemContainer>
+                {/* TODO: Link로 전환 */}
+                <MenuItemContainer>
+                  <MenuItem theme={theme}>
+                    <MenuItemIconContainer theme={theme}>
+                      <Map color={theme.colors.onSurface} aria-hidden />
+                    </MenuItemIconContainer>
+                    <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
+                  </MenuItem>
+                </MenuItemContainer>
+                {/* TODO: Link로 전환 */}
+                <MenuItem theme={theme}>
+                  <MenuItemIconContainer theme={theme}>
+                    <Check color={theme.colors.onSurface} aria-hidden />
+                  </MenuItemIconContainer>
+                  <MenuItemText theme={theme}>나의 전동보장구 자가점검</MenuItemText>
+                </MenuItem>
+              </MenuItemContainer>
+            </>
+          )
+        }
+      })()}
+      <FABContainer
+        onClick={viewModel.toggleFab}
+        aria-label={viewModel.fabExpended ? '메뉴 닫기' : '메뉴 열기'}
+        theme={theme}
+        fabExpended={viewModel.fabExpended}
+      >
+        {(() => {
+          if (viewModel.fabExpended) {
+            return <Cancel color={theme.colors.primary} aria-hidden />
+          } else {
+            return <Add color={theme.colors.onSurface} aria-hidden />
+          }
+        })()}
+      </FABContainer>
+    </FloatingMenuContainer>
   )
 })
 
@@ -344,4 +396,106 @@ const Divider = styled.div`
   width: 100%;
   height: 0.8px;
   background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+`
+
+const FloatingMenuContainer = styled.div`
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 15;
+`
+
+const MenuItemContainer = styled.div`
+  margin-bottom: 10px;
+  animation: slideUp 0.3s ease-out forwards;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`
+
+const MenuItem = styled.button`
+  display: flex;
+  align-items: center;
+  padding: 0px 16px 0px 0px;
+  background-color: transparent;
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  cursor: pointer;
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+`
+
+const MenuItemIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+`
+
+const MenuItemText = styled.span`
+  ${({ theme }: { theme: SOORITheme }) => css`
+    ${theme.typography.bodyMedium};
+  `}
+`
+
+const FABContainer = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: ${({ theme, fabExpended }: { theme: SOORITheme; fabExpended?: boolean }) => {
+    if (fabExpended) {
+      return theme.colors.outlineVariant
+    } else {
+      return theme.colors.primary
+    }
+  }};
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 15;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 10;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.3s ease-out forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `
