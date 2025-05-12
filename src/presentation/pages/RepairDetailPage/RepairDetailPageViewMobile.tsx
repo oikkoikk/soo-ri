@@ -45,6 +45,7 @@ const BasicInfoSection = observer(() => {
       <RepairDateFormGroup />
       <RepairShopFormGroup />
       <RepairOfficerFormGroup />
+      <RepairPriceFormGroup />
     </SectionBox>
   )
 })
@@ -105,6 +106,20 @@ const RepairOfficerFormGroup = observer(() => {
       <FormLabel id="repair-officer-title">담당수리자</FormLabel>
       <ReadonlyValue theme={theme} aria-labelledby="repair-officer-title">
         {viewModel.repairModel.officer}
+      </ReadonlyValue>
+    </FormGroup>
+  )
+})
+
+const RepairPriceFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairDetailViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="repair-price-title">청구가격</FormLabel>
+      <ReadonlyValue theme={theme} aria-labelledby="repair-price-title">
+        {viewModel.priceDisplayString}
       </ReadonlyValue>
     </FormGroup>
   )
