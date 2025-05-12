@@ -62,7 +62,7 @@ export const BackButton = ({ theme, onClick }: BackButtonProps) => {
         }
       }}
     >
-      <ChevronLeft width={20} height={20} color={theme.colors.onSurface} aria-hidden="true" />
+      <ChevronLeft width={20} height={20} color={theme.colors.onSurface} aria-hidden />
     </BackButtonWrapper>
   )
 }
