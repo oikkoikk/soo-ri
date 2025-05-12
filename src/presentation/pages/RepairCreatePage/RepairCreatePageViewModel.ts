@@ -18,18 +18,26 @@ class RepairCreateStore {
     return `${year.toString()}-${month}-${day}`
   }
 
+  priceInputFormatString = (price: number): string => {
+    return price.toLocaleString('ko-KR')
+  }
+
+  parsePrice = (value: string): number => {
+    return Number(value.replace(/,/g, ''))
+  }
+
   get valid(): boolean {
-    const isEtcValid = !this.hasBattery || this.repairModel.batteryVoltage.trim() !== ''
-    const isBatteryValid = !this.hasEtc || this.repairModel.etcRepairPart.trim() !== ''
+    const batteryFieldValid = !this.hasBattery || this.repairModel.batteryVoltage.trim() !== ''
+    const etcFieldValid = !this.hasEtc || this.repairModel.etcRepairPart.trim() !== ''
 
     return Boolean(
       this.repairModel.type !== '' &&
         this.repairModel.shopLabel.trim() !== '' &&
         this.repairModel.officer.trim() !== '' &&
-        this.repairModel.problem &&
+        this.repairModel.price >= 0 &&
         this.repairModel.categories.length > 0 &&
-        isEtcValid &&
-        isBatteryValid
+        batteryFieldValid &&
+        etcFieldValid
     )
   }
 
@@ -51,6 +59,15 @@ class RepairCreateStore {
     })
   }
 
+  updatePrice = (value: string) => {
+    const cleanValue = value.replace(/[^0-9]/g, '')
+    const numericValue = cleanValue ? parseInt(cleanValue, 10) : 0
+
+    this.repairModel = this.repairModel.copyWith({
+      price: numericValue,
+    })
+  }
+
   updateRepairShop = (value: string) => {
     this.repairModel = this.repairModel.copyWith({
       shopLabel: value,
@@ -69,7 +86,14 @@ class RepairCreateStore {
     })
   }
 
-  updateRepairDate = (date: Date) => {
+  updateRepairDate = (value: string) => {
+    const date = new Date(value)
+    if (isNaN(date.getTime())) {
+      this.repairModel = this.repairModel.copyWith({
+        repairedAt: new Date(),
+      })
+      return
+    }
     this.repairModel = this.repairModel.copyWith({
       repairedAt: date,
     })
