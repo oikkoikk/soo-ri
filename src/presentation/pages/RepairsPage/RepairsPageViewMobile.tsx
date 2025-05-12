@@ -59,20 +59,20 @@ const FloatingActionMenu = observer(() => {
             <>
               <MenuItemContainer>
                 {/* TODO: Link로 전환 */}
+                <MenuItemContainer>
+                  <MenuItem theme={theme}>
+                    <MenuItemIconContainer theme={theme}>
+                      <Map color={theme.colors.onSurface} aria-hidden />
+                    </MenuItemIconContainer>
+                    <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
+                  </MenuItem>
+                </MenuItemContainer>
+                {/* TODO: Link로 전환 */}
                 <MenuItem theme={theme}>
                   <MenuItemIconContainer theme={theme}>
                     <Check color={theme.colors.onSurface} aria-hidden />
                   </MenuItemIconContainer>
                   <MenuItemText theme={theme}>나의 전동보장구 자가점검</MenuItemText>
-                </MenuItem>
-              </MenuItemContainer>
-              {/* TODO: Link로 전환 */}
-              <MenuItemContainer>
-                <MenuItem theme={theme}>
-                  <MenuItemIconContainer theme={theme}>
-                    <Map color={theme.colors.onSurface} aria-hidden />
-                  </MenuItemIconContainer>
-                  <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
                 </MenuItem>
               </MenuItemContainer>
             </>
