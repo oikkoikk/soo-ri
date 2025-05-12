@@ -52,6 +52,7 @@ const BasicInfoSection = observer(() => {
       <RepairDateFormGroup />
       <RepairShopFormGroup />
       <RepairOfficerFormGroup />
+      <RepairPriceFormGroup />
     </SectionBox>
   )
 })
@@ -103,7 +104,7 @@ const RepairDateFormGroup = observer(() => {
           type="date"
           value={viewModel.dateInputFormatString(viewModel.repairModel.repairedAt)}
           onChange={(e) => {
-            viewModel.updateRepairDate(new Date(e.target.value))
+            viewModel.updateRepairDate(e.target.value)
           }}
           theme={theme}
           aria-labelledby="repair-date-title"
@@ -157,8 +158,30 @@ const RepairOfficerFormGroup = observer(() => {
           viewModel.updateRepairOfficer(e.target.value)
         }}
         theme={theme}
-        placeholder="담당수리자를 입력해주세요"
+        placeholder="담당수리자 이름을 입력해주세요"
         aria-labelledby="repair-officer-title"
+      />
+    </FormGroup>
+  )
+})
+
+const RepairPriceFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useRepairCreateViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="repair-price-title">청구가격</FormLabel>
+      <FormInput
+        type="text"
+        inputMode="numeric"
+        value={viewModel.priceInputFormatString(viewModel.repairModel.price)}
+        onChange={(e) => {
+          viewModel.updatePrice(e.target.value)
+        }}
+        theme={theme}
+        placeholder="청구가격(원)을 입력하세요"
+        aria-labelledby="repair-price-title"
       />
     </FormGroup>
   )
@@ -272,7 +295,7 @@ const RepairActionFormGroup = observer(() => {
         placeholder="접수시 메모 사항을 기록해주세요."
         value={viewModel.repairModel.action}
         onChange={(e) => {
-          viewModel.updateProblem(e.target.value)
+          viewModel.updateAction(e.target.value)
         }}
         rows={5}
         theme={theme}
