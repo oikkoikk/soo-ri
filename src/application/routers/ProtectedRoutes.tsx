@@ -3,7 +3,7 @@ import { JSX, useEffect, useState, useRef, useMemo } from 'react'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
 import { Navigate, useLocation } from 'react-router'
 
-import { useLoading } from '@/application/configurations/contexts/contexts'
+import { useLoading } from '@/presentation/hooks/hooks'
 
 import { buildRoute } from './routes'
 
@@ -85,6 +85,11 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
     previousPageRef.current ??= children
     return previousPageRef.current
   }
+  console.log(
+    (async () => {
+      return await user?.getIdToken()
+    })()
+  )
 
   if (requireAuth && !user) {
     return (
