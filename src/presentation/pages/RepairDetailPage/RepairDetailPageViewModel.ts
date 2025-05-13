@@ -7,21 +7,23 @@ import { RepairModel } from '@/domain/models/repair_model'
 class RepairDetailStore {
   repairModel: RepairModel = new RepairModel({
     id: 'RP2024001',
-    problem: '파손부위 점검 후 수리 요청',
-    action: '브레이크 및 타이어 휠 파손 확인 후 교체 조치',
+    vehicleId: 'V001',
+    memo: '파손부위 점검 후 수리 요청',
     repairedAt: new Date(2024, 3, 15),
-    price: 150000,
-    type: '정기점검',
-    shopLabel: '쏘리 서비스센터',
-    shopCode: 'SSC001',
+    billingPrice: 150000,
+    isAccident: false,
+    repairStationLabel: '쏘리 서비스센터',
+    repairStationCode: 'SSC001',
+    repairCategories: ['제동장치', '타이어 | 튜브'],
+    repairer: '김수리',
   })
 
   constructor() {
     makeAutoObservable(this)
   }
 
-  get priceDisplayString(): string {
-    return this.repairModel.price.toLocaleString('ko-KR') + '원'
+  get billingPriceDisplayString(): string {
+    return this.repairModel.billingPriceDisplayString
   }
 }
 
@@ -38,7 +40,7 @@ export function useRepairDetailViewModel() {
 
   return {
     ...store,
-    priceDisplayString: store.priceDisplayString,
+    billingPriceDisplayString: store.billingPriceDisplayString,
     goBack,
   }
 }
