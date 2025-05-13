@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Setting, User } from '@/assets/svgs/svgs'
-import { REPAIR_CATEGORY_KEYS } from '@/domain/models/repair_model'
+import { REPAIR_CATEGORIES } from '@/domain/models/repair_model'
 import { Header } from '@/presentation/components/Header'
 import { SOORITheme } from '@/theme/soori_theme'
 
@@ -43,9 +43,9 @@ const BasicInfoSection = observer(() => {
       </SectionHeader>
       <RepairTypeFormGroup />
       <RepairDateFormGroup />
-      <RepairShopFormGroup />
-      <RepairOfficerFormGroup />
-      <RepairPriceFormGroup />
+      <RepairStationFormGroup />
+      <RepairerFormGroup />
+      <RepairBillingPriceFormGroup />
     </SectionBox>
   )
 })
@@ -58,10 +58,10 @@ const RepairTypeFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-type-title">수리 이유</FormLabel>
       <ButtonGroup role="radiogroup" aria-labelledby="repair-type-title">
-        <ReadonlySelectButton selected={viewModel.repairModel.type === 'accident'} theme={theme}>
+        <ReadonlySelectButton selected={viewModel.repairModel.isAccident} theme={theme}>
           사고로 인한 수리예요
         </ReadonlySelectButton>
-        <ReadonlySelectButton selected={viewModel.repairModel.type === 'routine'} theme={theme}>
+        <ReadonlySelectButton selected={!viewModel.repairModel.isAccident} theme={theme}>
           일상적인 수리예요
         </ReadonlySelectButton>
       </ButtonGroup>
@@ -83,43 +83,43 @@ const RepairDateFormGroup = observer(() => {
   )
 })
 
-const RepairShopFormGroup = observer(() => {
+const RepairStationFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="repair-shop-title">담당기관</FormLabel>
-      <ReadonlyValue theme={theme} aria-labelledby="repair-shop-title">
-        {viewModel.repairModel.shopLabel}
+      <FormLabel id="repair-station-title">담당기관</FormLabel>
+      <ReadonlyValue theme={theme} aria-labelledby="repair-station-title">
+        {viewModel.repairModel.repairStationLabel}
       </ReadonlyValue>
     </FormGroup>
   )
 })
 
-const RepairOfficerFormGroup = observer(() => {
+const RepairerFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="repair-officer-title">담당수리자</FormLabel>
-      <ReadonlyValue theme={theme} aria-labelledby="repair-officer-title">
-        {viewModel.repairModel.officer}
+      <FormLabel id="repair-repairer-title">담당수리자</FormLabel>
+      <ReadonlyValue theme={theme} aria-labelledby="repair-repairer-title">
+        {viewModel.repairModel.repairer}
       </ReadonlyValue>
     </FormGroup>
   )
 })
 
-const RepairPriceFormGroup = observer(() => {
+const RepairBillingPriceFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="repair-price-title">청구가격</FormLabel>
-      <ReadonlyValue theme={theme} aria-labelledby="repair-price-title">
-        {viewModel.priceDisplayString}
+      <FormLabel id="repair-billing-price-title">청구가격</FormLabel>
+      <ReadonlyValue theme={theme} aria-labelledby="repair-billing-price-title">
+        {viewModel.billingPriceDisplayString}
       </ReadonlyValue>
     </FormGroup>
   )
@@ -139,7 +139,7 @@ const RepairInfoSection = observer(() => {
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
       <EtcRepairPartFormGroup />
-      <RepairActionFormGroup />
+      <RepairMemoFormGroup />
     </SectionBox>
   )
 })
@@ -148,25 +148,17 @@ const RepairCategoryFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
-  const categoryLabels: Record<string, string> = {
-    drive_unit: '구동장치',
-    electronic_control: '전자제어',
-    brake: '제동장치',
-    seat: '시트',
-    footrest: '발걸이',
-    frame: '프레임',
-    tire_tube: '타이어 | 튜브',
-    battery: '배터리',
-    etc: '기타',
-  }
-
   return (
     <FormGroup>
       <FormLabel id="repair-category-title">수리 항목</FormLabel>
       <CategoryGrid>
-        {REPAIR_CATEGORY_KEYS.map((category) => (
-          <CategoryBadge key={category} selected={viewModel.repairModel.categories.includes(category)} theme={theme}>
-            {categoryLabels[category]}
+        {REPAIR_CATEGORIES.map((category) => (
+          <CategoryBadge
+            key={category}
+            selected={viewModel.repairModel.repairCategories.includes(category)}
+            theme={theme}
+          >
+            {category}
           </CategoryBadge>
         ))}
       </CategoryGrid>
@@ -200,13 +192,13 @@ const EtcRepairPartFormGroup = observer(() => {
   )
 })
 
-const RepairActionFormGroup = observer(() => {
+const RepairMemoFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
   return (
     <FormGroup aria-label="수리 사항">
-      <ReadonlyTextArea value={viewModel.repairModel.action} readOnly rows={5} theme={theme} aria-readonly="true" />
+      <ReadonlyTextArea value={viewModel.repairModel.memo} readOnly rows={5} theme={theme} aria-readonly="true" />
     </FormGroup>
   )
 })

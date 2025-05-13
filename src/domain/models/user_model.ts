@@ -10,6 +10,8 @@ interface User {
   guardianIds?: string[]
   name?: string
   recipientType?: RecipientType
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class UserModel implements User {
@@ -20,6 +22,8 @@ export class UserModel implements User {
   readonly guardianIds: string[]
   readonly name: string
   readonly recipientType: RecipientType
+  readonly createdAt: Date
+  readonly updatedAt: Date
 
   constructor(model: User) {
     this.id = model.id ?? ''
@@ -29,6 +33,8 @@ export class UserModel implements User {
     this.guardianIds = model.guardianIds ?? []
     this.name = model.name ?? ''
     this.recipientType = model.recipientType ?? 'general'
+    this.createdAt = new Date(model.createdAt ?? new Date())
+    this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
 
   get isAdmin(): boolean {
@@ -59,6 +65,8 @@ export class UserModel implements User {
     return new UserModel({
       ...this,
       ...changes,
+      createdAt: changes.createdAt ? new Date(changes.createdAt) : this.createdAt,
+      updatedAt: changes.updatedAt ? new Date(changes.updatedAt) : this.updatedAt,
     })
   }
 }

@@ -25,21 +25,21 @@ class RepairsStore {
   searchKeyword = ''
   activeTab: TabId = TabId.REPAIRS
   totalRepairsCount = 0
-  repairPriceSumThisMonth = 0
+  repairBillingPriceSumThisMonth = 0
   fabExpended = false
 
   constructor() {
     makeAutoObservable(this)
     this.loadSampleData()
     this.calculateTotalRepairsCount()
-    this.calculateRepairPriceSumThisMonth()
+    this.calculateRepairBillingPriceSumThisMonth()
   }
 
   get filteredRepairs() {
     return this.repairs
       .filter((repair) => {
         if (!this.searchKeyword) return true
-        return repair.type.includes(this.searchKeyword) || repair.shopLabel.includes(this.searchKeyword)
+        return repair.type.includes(this.searchKeyword) || repair.repairStationLabel.includes(this.searchKeyword)
       })
       .sort((a, b) => b.repairedAt.getTime() - a.repairedAt.getTime())
   }
@@ -48,8 +48,8 @@ class RepairsStore {
     return this.totalRepairsCount.toLocaleString('ko-KR') + '회'
   }
 
-  get repairPriceSumThisMonthDisplayString() {
-    return this.repairPriceSumThisMonth.toLocaleString('ko-KR') + '원'
+  get repairBillingPriceSumThisMonthDisplayString() {
+    return this.repairBillingPriceSumThisMonth.toLocaleString('ko-KR') + '원'
   }
 
   updateSearchKeyword = (term: string) => {
@@ -70,50 +70,63 @@ class RepairsStore {
       new RepairModel({
         id: '1',
         repairedAt: new Date('2025-04-22'),
-        price: 42000,
-        type: '단순 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 42000,
+        isAccident: false,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['제동장치'],
+        repairer: '박정비',
       }),
       new RepairModel({
         id: '2',
         repairedAt: new Date('2025-04-12'),
-        price: 83000,
-        type: '사고 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 83000,
+        isAccident: true,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['타이어 | 튜브', '전자제어'],
+        repairer: '김수리',
       }),
       new RepairModel({
         id: '3',
         repairedAt: new Date('2023-04-18'),
-        price: 62000,
-        type: '사고 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 62000,
+        isAccident: true,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['시트', '프레임'],
+        repairer: '이정비',
       }),
       new RepairModel({
         id: '4',
         repairedAt: new Date('2023-01-12'),
-        price: 12000,
-        type: '단순 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 12000,
+        isAccident: false,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['구동장치'],
+        repairer: '박정비',
       }),
       new RepairModel({
         id: '5',
         repairedAt: new Date('2022-07-25'),
-        price: 15000,
-        type: '단순 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 15000,
+        isAccident: false,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['배터리'],
+        repairer: '김수리',
+        batteryVoltage: '12V',
       }),
       new RepairModel({
         id: '6',
         repairedAt: new Date('2022-05-01'),
-        price: 47000,
-        type: '단순 수리',
-        shopLabel: '성동장애인복지관',
-        shopCode: 'SD001',
+        billingPrice: 47000,
+        isAccident: false,
+        repairStationLabel: '성동장애인복지관',
+        repairStationCode: 'SD001',
+        repairCategories: ['발걸이', '전자제어'],
+        repairer: '이정비',
       }),
     ]
 
@@ -132,14 +145,14 @@ class RepairsStore {
     this.totalRepairsCount = this.repairs.length
   }
 
-  calculateRepairPriceSumThisMonth = () => {
+  calculateRepairBillingPriceSumThisMonth = () => {
     const currentDate = new Date()
-    this.repairPriceSumThisMonth = this.repairs.reduce((sum, repair) => {
+    this.repairBillingPriceSumThisMonth = this.repairs.reduce((sum, repair) => {
       if (
         repair.repairedAt.getFullYear() === currentDate.getFullYear() &&
         repair.repairedAt.getMonth() === currentDate.getMonth()
       ) {
-        return sum + repair.price
+        return sum + repair.billingPrice
       }
       return sum
     }, 0)
@@ -179,7 +192,7 @@ export function useRepairsViewModel() {
     vehicleId,
     filteredRepairs: store.filteredRepairs,
     totalRepairsCountDisplayString: store.totalRepairsCountDisplayString,
-    repairPriceSumThisMonthDisplayString: store.repairPriceSumThisMonthDisplayString,
+    repairBillingPriceSumThisMonthDisplayString: store.repairBillingPriceSumThisMonthDisplayString,
     tabItems,
     buildRouteForRepairCreatePage,
     buildRouteForRepairDetailPage,

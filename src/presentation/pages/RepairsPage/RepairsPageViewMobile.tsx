@@ -158,15 +158,15 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
           </IconContainer>
           <RepairDate theme={theme}>{repair.repairedAtDisplayString}</RepairDate>
         </RepairDateContainer>
-        <RepairPriceContainer>
-          <RepairPrice theme={theme}>{repair.priceDisplayString}</RepairPrice>
+        <RepairBillingPriceContainer>
+          <RepairBillingPrice theme={theme}>{repair.billingPriceDisplayString}</RepairBillingPrice>
           <IconContainer aria-hidden>
             <ChevronRight color={theme.colors.primary} />
           </IconContainer>
-        </RepairPriceContainer>
+        </RepairBillingPriceContainer>
       </RepairCardHeader>
-      <RepairTypeBadge theme={theme}>{repair.type}</RepairTypeBadge>
-      <RepairShop theme={theme}>담당기관: {repair.shopLabel}</RepairShop>
+      <RepairTypeBadge theme={theme}>{repair.isAccident ? '사고 수리' : '일상 수리'}</RepairTypeBadge>
+      <RepairShop theme={theme}>담당기관: {repair.repairStationLabel}</RepairShop>
     </RepairCard>
   )
 }
@@ -200,7 +200,7 @@ const Vehicle = () => {
       <VehicleInfoRow>
         <VehicleInfoLabel>이번달 수리비 합계</VehicleInfoLabel>
         <VehicleInfoValue style={{ color: theme.colors.primary }}>
-          {viewModel.repairPriceSumThisMonthDisplayString}
+          {viewModel.repairBillingPriceSumThisMonthDisplayString}
         </VehicleInfoValue>
       </VehicleInfoRow>
       <Divider aria-hidden />
@@ -335,13 +335,13 @@ const RepairDate = styled.span`
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
 `
 
-const RepairPriceContainer = styled.div`
+const RepairBillingPriceContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
 `
 
-const RepairPrice = styled.p`
+const RepairBillingPrice = styled.p`
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyMedium};
   `}
