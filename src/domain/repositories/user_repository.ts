@@ -17,4 +17,5 @@ export interface SignUpParams {
 export interface UserRepository {
   checkUserExists(token: string): Promise<CheckUserResponse>
   signUp(token: string, userData: SignUpParams): Promise<UserModel>
+  getUserRole(token: string): Promise<string>
 }

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairCategory, RepairModel } from '@/domain/models/models'
+import { useUserRole } from '@/presentation/hooks/hooks'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -129,10 +130,15 @@ const store = new RepairCreateStore()
 export function useRepairCreateViewModel() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { isUser, isGuardian } = useUserRole()
   const vehicleId = searchParams.get('vehicleId') ?? ''
 
   const submitRepair = () => {
     if (!store.valid) return
+    if (isUser || isGuardian) {
+      alert('정비사항은 관리자만 등록할 수 있습니다.')
+      return
+    }
 
     alert('정비사항이 저장되었습니다.')
     store.resetForm()
