@@ -24,11 +24,7 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.SIGN_IN,
-    element: (
-      <ProtectedRoute requireAuth={false}>
-        <SignInPage />
-      </ProtectedRoute>
-    ),
+    element: <SignInPage />,
   },
   {
     path: ROUTES.REPAIRS,
