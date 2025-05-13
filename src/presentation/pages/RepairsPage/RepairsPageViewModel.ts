@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairModel, VehicleModel } from '@/domain/models/models'
+import { useUserRole } from '@/presentation/hooks/hooks'
 
 export enum TabId {
   REPAIRS = 'repairs',
@@ -169,6 +170,7 @@ const store = new RepairsStore()
 
 export function useRepairsViewModel() {
   const [searchParams] = useSearchParams()
+  const { isAdmin, isRepairer, isUser, isGuardian } = useUserRole()
   const vehicleId = searchParams.get('vehicleId') ?? ''
 
   const buildRouteForRepairCreatePage = () => {
@@ -187,6 +189,9 @@ export function useRepairsViewModel() {
     return buildRoute('VEHICLE_TEST', {}, { vehicleId: vehicleId })
   }
 
+  const shouldShowCTA = isAdmin || isRepairer
+  const shouldShowFAB = isUser || isGuardian
+
   return {
     ...store,
     vehicleId,
@@ -198,5 +203,8 @@ export function useRepairsViewModel() {
     buildRouteForRepairDetailPage,
     buildRouteForRepairStationsPage,
     buildRouteForVehicleTestPage,
+    isUser,
+    shouldShowCTA,
+    shouldShowFAB,
   }
 }

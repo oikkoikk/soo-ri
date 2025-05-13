@@ -24,7 +24,7 @@ export const RepairsPageViewMobile = observer(() => {
   }, [])
 
   return (
-    <Container>
+    <Container shouldShowCTA={viewModel.shouldShowCTA}>
       <StickyTop theme={theme}>
         <Header title="전동보장구 정비이력" description="PM2024007 • 라이언" />
         <Tabs
@@ -45,13 +45,25 @@ export const RepairsPageViewMobile = observer(() => {
           }
         })()}
       </MainContent>
-      <FloatingActionMenu />
-      <CTAButtonContainer>
-        <CTAButton to={viewModel.buildRouteForRepairCreatePage()} theme={theme} aria-label="새 정비 작업 시작하기">
-          + 새 정비 작업 시작
-        </CTAButton>
-      </CTAButtonContainer>
-      {viewModel.fabExpended && <ModalOverlay onClick={viewModel.toggleFab} />}
+      {(() => {
+        if (viewModel.shouldShowFAB) {
+          return <FloatingActionMenu />
+        }
+      })()}
+      {(() => {
+        if (viewModel.shouldShowCTA) {
+          return (
+            <CTAButtonContainer>
+              <CTAButton to={viewModel.buildRouteForRepairCreatePage()}>정비이력 등록하기</CTAButton>
+            </CTAButtonContainer>
+          )
+        }
+      })()}
+      {(() => {
+        if (viewModel.fabExpended) {
+          return <ModalOverlay onClick={viewModel.toggleFab} />
+        }
+      })()}
     </Container>
   )
 })
@@ -213,7 +225,8 @@ const Container = styled.main`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
+  padding-bottom: ${({ shouldShowCTA }: { shouldShowCTA: boolean }) =>
+    shouldShowCTA ? '80px' : '0'}; /* 하단 버튼 높이만큼 패딩 추가 */
 `
 
 const StickyTop = styled.div`
