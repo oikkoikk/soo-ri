@@ -239,7 +239,6 @@ class SignInStore {
         }
       })
 
-      // 인증 성공 시 사용자 확인 진행하고 콜백 전달
       void this.getTokenAndCheckUser(showLoading, hideLoading, onVerified)
     } catch (error) {
       console.error('인증번호 확인 실패:', error)
@@ -267,11 +266,9 @@ class SignInStore {
         this.userChecked = true
       })
 
-      // 이미 가입된 유저인 경우 바로 콜백 호출 (수리 페이지로 이동)
       if (this.userExists && onUserChecked) {
         onUserChecked()
       }
-      // 회원가입이 필요한 경우 콜백 실행하지 않고 폼을 표시
     } catch (error) {
       console.error('사용자 확인 실패:', error)
       this.verificationError = '사용자 확인에 실패했습니다. 다시 시도해주세요.'
@@ -306,7 +303,6 @@ class SignInStore {
         this.userExists = true
       })
 
-      // 회원가입 완료 후 콜백 실행 (수리 페이지로 이동)
       if (onSignUpCompleted) {
         onSignUpCompleted()
       }
