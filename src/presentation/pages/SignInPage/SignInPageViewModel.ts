@@ -2,7 +2,6 @@ import { ConfirmationResult, getAuth } from 'firebase/auth'
 import { makeAutoObservable, runInAction } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
-import { useLoading } from '@/application/configurations/contexts/contexts'
 import { buildRoute } from '@/application/routers/routes'
 import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase } from '@/domain/use_cases/use_cases'
 import { useLoading } from '@/presentation/hooks/hooks'
