@@ -3,7 +3,7 @@ import { createContext, ReactNode } from 'react'
 import { FirebaseApp } from 'firebase/app'
 import { Auth } from 'firebase/auth'
 
-import { app, auth } from '../firebase/config'
+import { app, auth } from '../configurations/configurations'
 
 interface FirebaseContext {
   app: FirebaseApp
