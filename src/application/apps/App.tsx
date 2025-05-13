@@ -2,10 +2,11 @@ import { ThemeProvider } from '@emotion/react'
 import { RouterProvider } from 'react-router'
 
 import { ProgressIndicator } from '@/presentation/components/components'
+import { useLoading } from '@/presentation/hooks/hooks'
 import { SOORITheme, GlobalStyle } from '@/theme/theme'
 
-import { FirebaseProvider } from '../configurations/configurations'
-import { LoadingProvider, useLoading } from '../configurations/contexts/contexts'
+import { QueryProvider } from '../configurations/configurations'
+import { FirebaseProvider, LoadingProvider } from '../contexts/contexts'
 import { router } from '../routers/routers'
 
 export function App() {
@@ -14,7 +15,9 @@ export function App() {
       <GlobalStyle />
       <FirebaseProvider>
         <LoadingProvider>
-          <AppContent />
+          <QueryProvider>
+            <AppContent />
+          </QueryProvider>
         </LoadingProvider>
       </FirebaseProvider>
     </ThemeProvider>
