@@ -1,38 +1,10 @@
-import { JSX, useEffect, useState, useRef, useMemo } from 'react'
+import { JSX, useEffect, useRef, useMemo } from 'react'
 
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
 import { Navigate, useLocation } from 'react-router'
 
-import { useLoading } from '@/presentation/hooks/hooks'
+import { useLoading, useAuthState } from '@/presentation/hooks/hooks'
 
 import { buildRoute } from './routes'
-
-function useAuthState() {
-  const auth = getAuth()
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (currentUser) => {
-        setUser(currentUser)
-        setLoading(false)
-      },
-      (err) => {
-        setError(err)
-        setLoading(false)
-      }
-    )
-
-    return () => {
-      unsubscribe()
-    }
-  }, [auth])
-
-  return { user, loading, error }
-}
 
 interface LocationState {
   from?: {
@@ -85,11 +57,6 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
     previousPageRef.current ??= children
     return previousPageRef.current
   }
-  console.log(
-    (async () => {
-      return await user?.getIdToken()
-    })()
-  )
 
   if (requireAuth && !user) {
     return (
