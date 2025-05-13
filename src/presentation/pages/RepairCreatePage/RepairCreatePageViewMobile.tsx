@@ -2,8 +2,8 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
-import { Calendar, ChevronDown, Setting, User } from '@/assets/svgs/svgs'
-import { REPAIR_CATEGORY_KEYS } from '@/domain/models/models'
+import { Calendar, Setting, User } from '@/assets/svgs/svgs'
+import { REPAIR_CATEGORIES } from '@/domain/models/models'
 import { Header } from '@/presentation/components/components'
 import { SOORITheme } from '@/theme/theme'
 
@@ -50,9 +50,8 @@ const BasicInfoSection = observer(() => {
       </SectionHeader>
       <RepairTypeFormGroup />
       <RepairDateFormGroup />
-      <RepairShopFormGroup />
-      <RepairOfficerFormGroup />
-      <RepairPriceFormGroup />
+      <RepairerFormGroup />
+      <RepairBillingPriceFormGroup />
     </SectionBox>
   )
 })
@@ -70,7 +69,7 @@ const RepairTypeFormGroup = observer(() => {
           aria-checked={viewModel.repairModel.type === 'accident'}
           selected={viewModel.repairModel.type === 'accident'}
           onClick={() => {
-            viewModel.updateType('accident')
+            viewModel.updateIsAccident(true)
           }}
           theme={theme}
         >
@@ -81,7 +80,7 @@ const RepairTypeFormGroup = observer(() => {
           aria-checked={viewModel.repairModel.type === 'routine'}
           selected={viewModel.repairModel.type === 'routine'}
           onClick={() => {
-            viewModel.updateType('routine')
+            viewModel.updateIsAccident(false)
           }}
           theme={theme}
         >
@@ -117,71 +116,44 @@ const RepairDateFormGroup = observer(() => {
   )
 })
 
-const RepairShopFormGroup = observer(() => {
+const RepairerFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="repair-shop-title">담당기관</FormLabel>
-      <SelectWrapper>
-        <SelectBox
-          value={viewModel.repairModel.shopLabel}
-          onChange={(e) => {
-            viewModel.updateRepairShop(e.target.value)
-          }}
-          theme={theme}
-          aria-labelledby="repair-shop-title"
-        >
-          <option value="">담당기관을 선택해주세요</option>
-          <option value="성동장애인종합복지관">성동장애인종합복지관</option>
-        </SelectBox>
-        <SelectIconWrapper>
-          <ChevronDown width={15} height={15} color={theme.colors.onSurfaceVariant} />
-        </SelectIconWrapper>
-      </SelectWrapper>
-    </FormGroup>
-  )
-})
-
-const RepairOfficerFormGroup = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairCreateViewModel()
-
-  return (
-    <FormGroup>
-      <FormLabel id="repair-officer-title">담당수리자</FormLabel>
+      <FormLabel id="repair-repairer-title">담당수리자</FormLabel>
       <FormInput
         type="text"
-        value={viewModel.repairModel.officer}
+        value={viewModel.repairModel.repairer}
         onChange={(e) => {
-          viewModel.updateRepairOfficer(e.target.value)
+          viewModel.updateRepairer(e.target.value)
         }}
         theme={theme}
         placeholder="담당수리자 이름을 입력해주세요"
-        aria-labelledby="repair-officer-title"
+        aria-labelledby="repair-repairer-title"
       />
     </FormGroup>
   )
 })
 
-const RepairPriceFormGroup = observer(() => {
+const RepairBillingPriceFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="repair-price-title">청구가격</FormLabel>
+      <FormLabel id="repair-billing-price-title">청구가격</FormLabel>
       <FormInput
         type="text"
         inputMode="numeric"
-        value={viewModel.priceInputFormatString(viewModel.repairModel.price)}
+        value={viewModel.billingPriceInputFormatString(viewModel.repairModel.billingPrice)}
         onChange={(e) => {
-          viewModel.updatePrice(e.target.value)
+          viewModel.updateBillingPrice(e.target.value)
         }}
         theme={theme}
         placeholder="청구가격(원)을 입력하세요"
-        aria-labelledby="repair-price-title"
+        aria-labelledby="repair-billing-price-title"
       />
     </FormGroup>
   )
@@ -201,7 +173,7 @@ const RepairInfoSection = observer(() => {
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
       <EtcRepairPartFormGroup />
-      <RepairActionFormGroup />
+      <RepairMemoFormGroup />
     </SectionBox>
   )
 })
@@ -214,7 +186,7 @@ const RepairCategoryFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-category-title">수리 항목</FormLabel>
       <CategoryGrid>
-        {REPAIR_CATEGORY_KEYS.map((category) => (
+        {REPAIR_CATEGORIES.map((category) => (
           <CategoryButton
             key={category}
             selected={viewModel.categorySelected(category)}
@@ -225,7 +197,7 @@ const RepairCategoryFormGroup = observer(() => {
             aria-checked={viewModel.categorySelected(category)}
             theme={theme}
           >
-            {viewModel.getCategoryLabel(category)}
+            {category}
           </CategoryButton>
         ))}
       </CategoryGrid>
@@ -285,21 +257,21 @@ const EtcRepairPartFormGroup = observer(() => {
   )
 })
 
-const RepairActionFormGroup = observer(() => {
+const RepairMemoFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
   return (
     <FormGroup>
       <TextArea
-        placeholder="접수시 메모 사항을 기록해주세요."
-        value={viewModel.repairModel.action}
+        placeholder="수리내역을 기록해주세요."
+        value={viewModel.repairModel.memo}
         onChange={(e) => {
-          viewModel.updateAction(e.target.value)
+          viewModel.updateMemo(e.target.value)
         }}
         rows={5}
         theme={theme}
-        aria-label="접수시 메모 사항을 기록해주세요."
+        aria-label="수리내역을 기록해주세요."
       />
     </FormGroup>
   )
@@ -514,41 +486,6 @@ const DateInput = styled.input`
 `
 
 const CalendarIconWrapper = styled.div`
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  bottom: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-`
-
-const SelectWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`
-
-const SelectBox = styled.select`
-  width: 100%;
-  padding: 3px 12px;
-  height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  border-radius: 6px;
-  ${({ theme }) => css`
-    ${theme.typography.bodySmall};
-  `}
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-
-  &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
-  }
-`
-
-const SelectIconWrapper = styled.div`
   position: absolute;
   right: 12px;
   top: 50%;

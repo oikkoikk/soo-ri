@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
-import { REPAIR_CATEGORY_LABELS, RepairCategory, RepairModel, RepairType } from '@/domain/models/models'
+import { RepairCategory, RepairModel } from '@/domain/models/models'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -18,11 +18,11 @@ class RepairCreateStore {
     return `${year.toString()}-${month}-${day}`
   }
 
-  priceInputFormatString = (price: number): string => {
-    return price.toLocaleString('ko-KR')
+  billingPriceInputFormatString = (billingPrice: number): string => {
+    return billingPrice.toLocaleString('ko-KR')
   }
 
-  parsePrice = (value: string): number => {
+  parseBillingPrice = (value: string): number => {
     return Number(value.replace(/,/g, ''))
   }
 
@@ -32,57 +32,26 @@ class RepairCreateStore {
 
     return Boolean(
       this.repairModel.type !== '' &&
-        this.repairModel.shopLabel.trim() !== '' &&
-        this.repairModel.officer.trim() !== '' &&
-        this.repairModel.price >= 0 &&
-        this.repairModel.categories.length > 0 &&
+        this.repairModel.repairStationLabel.trim() !== '' &&
+        this.repairModel.repairer.trim() !== '' &&
+        this.repairModel.billingPrice >= 0 &&
+        this.repairModel.repairCategories.length > 0 &&
         batteryFieldValid &&
         etcFieldValid
     )
   }
 
   get hasBattery(): boolean {
-    return this.repairModel.categories.includes('battery')
+    return this.repairModel.repairCategories.includes('battery')
   }
 
   get hasEtc(): boolean {
-    return this.repairModel.categories.includes('etc')
+    return this.repairModel.repairCategories.includes('etc')
   }
 
-  getCategoryLabel = (categoryKey: RepairCategory): string => {
-    return REPAIR_CATEGORY_LABELS[categoryKey]
-  }
-
-  updateRepairOfficer = (value: string) => {
+  updateIsAccident = (isAccident: boolean) => {
     this.repairModel = this.repairModel.copyWith({
-      officer: value,
-    })
-  }
-
-  updatePrice = (value: string) => {
-    const cleanValue = value.replace(/[^0-9]/g, '')
-    const numericValue = cleanValue ? parseInt(cleanValue, 10) : 0
-
-    this.repairModel = this.repairModel.copyWith({
-      price: numericValue,
-    })
-  }
-
-  updateRepairShop = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      shopLabel: value,
-    })
-  }
-
-  updateBatteryVoltage = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      batteryVoltage: value,
-    })
-  }
-
-  updateEtcRepairPart = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      etcRepairPart: value,
+      isAccident: isAccident,
     })
   }
 
@@ -99,41 +68,56 @@ class RepairCreateStore {
     })
   }
 
-  updateType = (type: RepairType) => {
+  updateRepairer = (value: string) => {
     this.repairModel = this.repairModel.copyWith({
-      type: type as string,
+      repairer: value,
+    })
+  }
+
+  updateBillingPrice = (value: string) => {
+    const cleanValue = value.replace(/[^0-9]/g, '')
+    const numericValue = cleanValue ? parseInt(cleanValue, 10) : 0
+
+    this.repairModel = this.repairModel.copyWith({
+      billingPrice: numericValue,
+    })
+  }
+
+  updateBatteryVoltage = (value: string) => {
+    this.repairModel = this.repairModel.copyWith({
+      batteryVoltage: value,
+    })
+  }
+
+  updateEtcRepairPart = (value: string) => {
+    this.repairModel = this.repairModel.copyWith({
+      etcRepairPart: value,
+    })
+  }
+
+  updateMemo = (value: string) => {
+    this.repairModel = this.repairModel.copyWith({
+      memo: value,
     })
   }
 
   toggleCategory = (category: RepairCategory) => {
-    const currentCategories = [...this.repairModel.categories]
-    const categoryIndex = currentCategories.indexOf(category)
+    const currentRepairCategories = [...this.repairModel.repairCategories]
+    const categoryIndex = currentRepairCategories.indexOf(category)
 
     if (categoryIndex >= 0) {
-      currentCategories.splice(categoryIndex, 1)
+      currentRepairCategories.splice(categoryIndex, 1)
     } else {
-      currentCategories.push(category)
+      currentRepairCategories.push(category)
     }
 
     this.repairModel = this.repairModel.copyWith({
-      categories: currentCategories,
+      repairCategories: currentRepairCategories,
     })
   }
 
   categorySelected = (category: RepairCategory): boolean => {
-    return this.repairModel.categories.includes(category)
-  }
-
-  updateProblem = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      problem: value,
-    })
-  }
-
-  updateAction = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      action: value,
-    })
+    return this.repairModel.repairCategories.includes(category)
   }
 
   resetForm = () => {
