@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { useLoading } from '@/application/configurations/contexts/contexts'
 import { buildRoute } from '@/application/routers/routes'
 import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase } from '@/domain/use_cases/use_cases'
+import { useLoading } from '@/presentation/hooks/hooks'
 
 const authPhoneVerifyUseCase = new AuthPhoneVerifyUseCase()
 const authPhoneConfirmUseCase = new AuthPhoneConfirmUseCase()
