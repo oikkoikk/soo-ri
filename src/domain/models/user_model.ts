@@ -37,6 +37,10 @@ export class UserModel implements User {
     this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
 
+  get isUser(): boolean {
+    return this.role === 'user'
+  }
+
   get isAdmin(): boolean {
     return this.role === 'admin'
   }

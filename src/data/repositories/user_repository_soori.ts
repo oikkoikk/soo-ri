@@ -49,4 +49,20 @@ export class UserRepositorySoori implements UserRepository {
       throw error
     }
   }
+
+  async getUserRole(token: string): Promise<string> {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+
+      const response = await this.httpClient.get<{ role: string }>(`${this.baseUrl}/role`, config)
+      return response.role
+    } catch (error) {
+      console.error('사용자 역할 조회 실패:', error)
+      throw error
+    }
+  }
 }
