@@ -11,6 +11,7 @@ const RepairsPage = lazy(() => import('@/presentation/pages/RepairsPage/RepairsP
 const RepairCreatePage = lazy(() => import('@/presentation/pages/RepairCreatePage/RepairCreatePageView'))
 const RepairDetailPage = lazy(() => import('@/presentation/pages/RepairDetailPage/RepairDetailPageView'))
 const RepairStationsPage = lazy(() => import('@/presentation/pages/RepairStationsPage/RepairStationsPageView'))
+const VehicleTestPage = lazy(() => import('@/presentation/pages/VehicleTestPage/VehicleTestPageView'))
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requireAuth={true}>
         <RepairStationsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.VEHICLE_TEST,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <VehicleTestPage />
       </ProtectedRoute>
     ),
   },

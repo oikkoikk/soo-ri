@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
@@ -13,6 +15,13 @@ import { TabId, useRepairsViewModel } from './RepairsPageViewModel'
 export const RepairsPageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairsViewModel()
+
+  useEffect(() => {
+    return () => {
+      viewModel.reset()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Container>
@@ -58,17 +67,15 @@ const FloatingActionMenu = observer(() => {
           return (
             <>
               <MenuItemContainer>
-                {/* TODO: Link로 전환 */}
                 <MenuItemContainer>
-                  <MenuItem theme={theme}>
+                  <MenuItem to={viewModel.buildRouteForRepairStationsPage()} theme={theme}>
                     <MenuItemIconContainer theme={theme}>
                       <Map width={25} height={25} color={theme.colors.onSurface} aria-hidden />
                     </MenuItemIconContainer>
                     <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
                   </MenuItem>
                 </MenuItemContainer>
-                {/* TODO: Link로 전환 */}
-                <MenuItem theme={theme}>
+                <MenuItem to={viewModel.buildRouteForVehicleTestPage()} theme={theme}>
                   <MenuItemIconContainer theme={theme}>
                     <Check width={20} height={20} color={theme.colors.onSurface} aria-hidden />
                   </MenuItemIconContainer>
@@ -424,7 +431,7 @@ const MenuItemContainer = styled.div`
   }
 `
 
-const MenuItem = styled.button`
+const MenuItem = styled(Link)`
   display: flex;
   align-items: center;
   padding: 0px 16px 0px 0px;
