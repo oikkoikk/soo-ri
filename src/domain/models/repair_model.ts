@@ -1,70 +1,74 @@
-export type RepairType = 'accident' | 'routine' | null
 export type RepairCategory =
-  | 'drive_unit'
-  | 'electronic_control'
-  | 'brake'
-  | 'seat'
-  | 'footrest'
-  | 'frame'
-  | 'tire_tube'
-  | 'battery'
-  | 'etc'
+  | '구동장치'
+  | '전자제어'
+  | '제동장치'
+  | '시트'
+  | '발걸이'
+  | '프레임'
+  | '타이어 | 튜브'
+  | '배터리'
+  | '기타'
 
-export const REPAIR_CATEGORY_LABELS: Record<RepairCategory, string> = {
-  drive_unit: '구동장치',
-  electronic_control: '전자제어',
-  brake: '제동장치',
-  seat: '시트',
-  footrest: '발걸이',
-  frame: '프레임',
-  tire_tube: '타이어 | 튜브',
-  battery: '배터리',
-  etc: '기타',
-}
-export const REPAIR_CATEGORY_KEYS: RepairCategory[] = Object.keys(REPAIR_CATEGORY_LABELS) as RepairCategory[]
+export const REPAIR_CATEGORIES: RepairCategory[] = [
+  '구동장치',
+  '전자제어',
+  '제동장치',
+  '시트',
+  '발걸이',
+  '프레임',
+  '타이어 | 튜브',
+  '배터리',
+  '기타',
+]
 
 interface Repair {
   id?: string
-  repairedAt?: Date
-  price?: number
-  type?: string
-  shopLabel?: string
-  shopCode?: string
-  problem?: string
-  action?: string
-  categories?: string[]
-  officer?: string
+  vehicleId?: string
+  billingPrice?: number
+  repairStationLabel?: string
+  repairStationCode?: string
+  repairCategories?: string[]
+  repairer?: string
   batteryVoltage?: string
   etcRepairPart?: string
+  memo?: string
+  isAccident?: boolean
+  repairedAt?: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class RepairModel implements Repair {
   readonly id: string
-  readonly repairedAt: Date
-  readonly price: number
-  readonly type: string
-  readonly shopLabel: string
-  readonly shopCode: string
-  readonly problem: string
-  readonly action: string
-  readonly categories: string[]
-  readonly officer: string
+  readonly vehicleId: string
+  readonly billingPrice: number
+  readonly repairStationLabel: string
+  readonly repairStationCode: string
+  readonly repairCategories: string[]
+  readonly repairer: string
   readonly batteryVoltage: string
   readonly etcRepairPart: string
+  readonly memo: string
+  readonly isAccident: boolean
+  readonly repairedAt: Date
+  readonly createdAt: Date
+  readonly updatedAt: Date
 
   constructor(model: Repair) {
     this.id = model.id ?? ''
-    this.repairedAt = new Date(model.repairedAt ?? new Date())
-    this.price = model.price ?? 0
-    this.type = model.type ?? ''
-    this.shopLabel = model.shopLabel ?? ''
-    this.shopCode = model.shopCode ?? ''
-    this.problem = model.problem ?? ''
-    this.action = model.action ?? ''
-    this.categories = model.categories ?? []
-    this.officer = model.officer ?? ''
+    this.vehicleId = model.vehicleId ?? ''
+    this.billingPrice = model.billingPrice ?? 0
+    this.repairStationLabel = model.repairStationLabel ?? ''
+    this.repairStationCode = model.repairStationCode ?? ''
+    this.repairCategories = model.repairCategories ?? []
+    this.repairer = model.repairer ?? ''
     this.batteryVoltage = model.batteryVoltage ?? ''
     this.etcRepairPart = model.etcRepairPart ?? ''
+    this.memo = model.memo ?? ''
+    this.isAccident = model.isAccident ?? false
+    this.repairedAt = new Date(model.repairedAt ?? new Date())
+    this.createdAt = new Date(model.createdAt ?? new Date())
+    this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
 
   get repairedAtDisplayString(): string {
@@ -75,8 +79,15 @@ export class RepairModel implements Repair {
     })
   }
 
-  get priceDisplayString(): string {
-    return this.price.toLocaleString('ko-KR') + '원'
+  get billingPriceDisplayString(): string {
+    return this.billingPrice.toLocaleString('ko-KR') + '원'
+  }
+
+  get type(): string {
+    if (this.isAccident) {
+      return 'accident'
+    }
+    return 'routine'
   }
 
   copyWith(changes: Partial<Repair>): RepairModel {
@@ -84,6 +95,8 @@ export class RepairModel implements Repair {
       ...this,
       ...changes,
       repairedAt: changes.repairedAt ? new Date(changes.repairedAt) : this.repairedAt,
+      createdAt: changes.createdAt ? new Date(changes.createdAt) : this.createdAt,
+      updatedAt: changes.updatedAt ? new Date(changes.updatedAt) : this.updatedAt,
     })
   }
 }

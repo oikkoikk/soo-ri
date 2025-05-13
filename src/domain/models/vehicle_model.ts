@@ -1,21 +1,27 @@
 interface Vehicle {
   id?: string
-  registeredAt?: Date
-  purchasedAt?: Date
   model?: string
+  purchasedAt?: Date
+  registeredAt?: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export class VehicleModel implements Vehicle {
   readonly id: string
-  readonly registeredAt: Date
-  readonly purchasedAt: Date
   readonly model: string
+  readonly purchasedAt: Date
+  readonly registeredAt: Date
+  readonly createdAt: Date
+  readonly updatedAt: Date
 
   constructor(model: Vehicle) {
     this.id = model.id ?? ''
-    this.registeredAt = new Date(model.registeredAt ?? new Date())
-    this.purchasedAt = new Date(model.purchasedAt ?? new Date())
     this.model = model.model ?? ''
+    this.purchasedAt = new Date(model.purchasedAt ?? new Date())
+    this.registeredAt = new Date(model.registeredAt ?? new Date())
+    this.createdAt = new Date(model.createdAt ?? new Date())
+    this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
 
   get registeredAtDisplayString(): string {
@@ -38,8 +44,10 @@ export class VehicleModel implements Vehicle {
     return new VehicleModel({
       ...this,
       ...changes,
-      registeredAt: changes.registeredAt ? new Date(changes.registeredAt) : this.registeredAt,
       purchasedAt: changes.purchasedAt ? new Date(changes.purchasedAt) : this.purchasedAt,
+      registeredAt: changes.registeredAt ? new Date(changes.registeredAt) : this.registeredAt,
+      createdAt: changes.createdAt ? new Date(changes.createdAt) : this.createdAt,
+      updatedAt: changes.updatedAt ? new Date(changes.updatedAt) : this.updatedAt,
     })
   }
 }
