@@ -144,6 +144,12 @@ class RepairsStore {
       return sum
     }, 0)
   }
+
+  reset = () => {
+    this.searchKeyword = ''
+    this.activeTab = TabId.REPAIRS
+    this.fabExpended = false
+  }
 }
 
 const store = new RepairsStore()
@@ -160,6 +166,14 @@ export function useRepairsViewModel() {
     return buildRoute('REPAIR_DETAIL', { repairId: repairId }, { vehicleId: vehicleId })
   }
 
+  const buildRouteForRepairStationsPage = () => {
+    return buildRoute('REPAIR_STATIONS', {}, { vehicleId: vehicleId })
+  }
+
+  const buildRouteForVehicleTestPage = () => {
+    return buildRoute('VEHICLE_TEST', {}, { vehicleId: vehicleId })
+  }
+
   return {
     ...store,
     vehicleId,
@@ -169,5 +183,7 @@ export function useRepairsViewModel() {
     tabItems,
     buildRouteForRepairCreatePage,
     buildRouteForRepairDetailPage,
+    buildRouteForRepairStationsPage,
+    buildRouteForVehicleTestPage,
   }
 }
