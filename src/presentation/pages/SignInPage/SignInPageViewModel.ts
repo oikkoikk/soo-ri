@@ -1,8 +1,11 @@
-import { ConfirmationResult, getAuth } from 'firebase/auth'
+import { ConfirmationResult, getAuth, User as FirebaseUser } from 'firebase/auth'
 import { makeAutoObservable, runInAction } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
-import { buildRoute } from '@/application/routers/routes'
+import { buildRoute } from '@/application/routers/routers'
+import { userRepositorySoori } from '@/data/services/services'
+import { RecipientType, UserModel, VehicleModel } from '@/domain/models/models'
+import { SignUpParams } from '@/domain/repositories/repositories'
 import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase } from '@/domain/use_cases/use_cases'
 import { useLoading } from '@/presentation/hooks/hooks'
 
@@ -19,6 +22,12 @@ class SignInStore {
   expirationTime = EXPIRATION_TIME
   verificationError: string | null = null
   verified = false
+  userExists = false
+  userChecked = false
+  userModel: UserModel = new UserModel({})
+  vehicleModel: VehicleModel = new VehicleModel({})
+  firebaseUser: FirebaseUser | null = null
+  firebaseToken = ''
 
   private timerIntervalId: number | null = null
 
@@ -34,6 +43,10 @@ class SignInStore {
     return /^\d{6}$/.test(this.verificationCode)
   }
 
+  get needToSignUp() {
+    return this.verified && this.userChecked && !this.userExists
+  }
+
   get verificationCodeRequested() {
     return this.confirmationResult !== null
   }
@@ -46,8 +59,31 @@ class SignInStore {
     return this.expirationTime <= 0
   }
 
-  get valid() {
-    return this.validVerificationCode && !this.timerExpired && this.verified
+  get validName() {
+    return this.userModel.name.length > 0
+  }
+
+  get validModel() {
+    return this.vehicleModel.model.length > 0
+  }
+
+  get validPurchasedAt() {
+    return this.vehicleModel.purchasedAt instanceof Date
+  }
+
+  get validRegisteredAt() {
+    return this.vehicleModel.registeredAt instanceof Date
+  }
+
+  get validSignupForm() {
+    return this.validName && this.validModel && this.validPurchasedAt && this.validRegisteredAt
+  }
+
+  dateInputFormatString = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year.toString()}-${month}-${day}`
   }
 
   get errorMessage() {
@@ -93,11 +129,12 @@ class SignInStore {
   handleVerificationCodeKeyDown = async (
     e: React.KeyboardEvent<HTMLInputElement>,
     showLoading: () => void,
-    hideLoading: () => void
+    hideLoading: () => void,
+    onComplete?: () => void
   ) => {
     if (e.key === 'Enter' && this.canVerifyCode) {
       e.preventDefault()
-      await this.verifyCode(showLoading, hideLoading)
+      await this.verifyCode(showLoading, hideLoading, onComplete)
     }
   }
 
@@ -106,14 +143,51 @@ class SignInStore {
     this.phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
   }
 
-  updateVerificationCode = async (code: string, showLoading: () => void, hideLoading: () => void) => {
+  updateVerificationCode = async (
+    code: string,
+    showLoading: () => void,
+    hideLoading: () => void,
+    onComplete?: () => void
+  ) => {
     const newCode = code.replace(/[^0-9]/g, '').slice(0, VERIFICATION_CODE_LENGTH)
     this.verificationCode = newCode
     this.verificationError = null
 
     if (newCode.length === VERIFICATION_CODE_LENGTH && this.canVerifyCode) {
-      await this.verifyCode(showLoading, hideLoading)
+      await this.verifyCode(showLoading, hideLoading, onComplete)
     }
+  }
+
+  updateName = (name: string) => {
+    this.userModel = this.userModel.copyWith({ name })
+  }
+
+  updateModel = (model: string) => {
+    this.vehicleModel = this.vehicleModel.copyWith({ model })
+  }
+
+  updatePurchasedAt = (purchasedAt: string) => {
+    const date = new Date(purchasedAt)
+    if (isNaN(date.getTime())) {
+      this.vehicleModel = this.vehicleModel.copyWith({ purchasedAt: new Date() })
+      return
+    }
+
+    this.vehicleModel = this.vehicleModel.copyWith({ purchasedAt: date })
+  }
+
+  updateRegisteredAt = (registeredAt: string) => {
+    const date = new Date(registeredAt)
+    if (isNaN(date.getTime())) {
+      this.vehicleModel = this.vehicleModel.copyWith({ registeredAt: new Date() })
+      return
+    }
+
+    this.vehicleModel = this.vehicleModel.copyWith({ registeredAt: date })
+  }
+
+  updateRecipientType = (recipientType: string) => {
+    this.userModel = this.userModel.copyWith({ recipientType: recipientType as RecipientType })
   }
 
   async requestVerification(showLoading: () => void, hideLoading: () => void) {
@@ -142,8 +216,8 @@ class SignInStore {
     }
   }
 
-  async verifyCode(showLoading: () => void, hideLoading: () => void) {
-    if (!this.canVerifyCode) return false
+  async verifyCode(showLoading: () => void, hideLoading: () => void, onVerified?: () => void) {
+    if (!this.canVerifyCode) return
 
     showLoading()
 
@@ -157,19 +231,87 @@ class SignInStore {
 
       runInAction(() => {
         this.verified = !!user
-        if (!user) this.verificationError = '인증번호를 다시 확인해주세요'
+        this.firebaseUser = user
+        if (!user) {
+          this.verificationError = '인증번호를 다시 확인해주세요'
+          this.verified = false
+          return
+        }
       })
 
-      return !!user
+      // 인증 성공 시 사용자 확인 진행하고 콜백 전달
+      void this.getTokenAndCheckUser(showLoading, hideLoading, onVerified)
     } catch (error) {
       console.error('인증번호 확인 실패:', error)
-
       runInAction(() => {
         this.verificationError = '인증번호를 다시 확인해주세요'
         this.verified = false
       })
+    } finally {
+      hideLoading()
+    }
+  }
 
-      return false
+  async getTokenAndCheckUser(showLoading: () => void, hideLoading: () => void, onUserChecked?: () => void) {
+    if (this.firebaseUser === null) return
+
+    showLoading()
+
+    try {
+      const firebaseToken = await this.firebaseUser.getIdToken()
+      const checkResult = await userRepositorySoori.checkUserExists(firebaseToken)
+
+      runInAction(() => {
+        this.firebaseToken = firebaseToken
+        this.userExists = checkResult.exists
+        this.userChecked = true
+      })
+
+      // 이미 가입된 유저인 경우 바로 콜백 호출 (수리 페이지로 이동)
+      if (this.userExists && onUserChecked) {
+        onUserChecked()
+      }
+      // 회원가입이 필요한 경우 콜백 실행하지 않고 폼을 표시
+    } catch (error) {
+      console.error('사용자 확인 실패:', error)
+      this.verificationError = '사용자 확인에 실패했습니다. 다시 시도해주세요.'
+      this.userChecked = false
+    } finally {
+      hideLoading()
+    }
+  }
+
+  async signUp(showLoading: () => void, hideLoading: () => void, vehicleId?: string, onSignUpCompleted?: () => void) {
+    if (!this.firebaseToken || !this.validSignupForm) return
+    if (!vehicleId) {
+      alert('전동보장구에 부착된 QR코드 스캔 후 회원가입을 진행해주세요')
+      return
+    }
+
+    showLoading()
+
+    try {
+      const signupData: SignUpParams = {
+        name: this.userModel.name,
+        model: this.vehicleModel.model,
+        purchasedAt: this.vehicleModel.purchasedAt.toISOString(),
+        registeredAt: this.vehicleModel.registeredAt.toISOString(),
+        recipientType: this.userModel.recipientType,
+      }
+
+      signupData.vehicleId = vehicleId
+      await userRepositorySoori.signUp(this.firebaseToken, signupData)
+
+      runInAction(() => {
+        this.userExists = true
+      })
+
+      // 회원가입 완료 후 콜백 실행 (수리 페이지로 이동)
+      if (onSignUpCompleted) {
+        onSignUpCompleted()
+      }
+    } catch (error) {
+      console.error('회원가입 실패:', error)
     } finally {
       hideLoading()
     }
@@ -207,6 +349,12 @@ class SignInStore {
     this.expirationTime = EXPIRATION_TIME
     this.verificationError = null
     this.verified = false
+    this.userExists = false
+    this.userChecked = false
+    this.userModel = new UserModel({})
+    this.vehicleModel = new VehicleModel({})
+    this.firebaseUser = null
+    this.firebaseToken = ''
     this.cleanup()
   }
 }
@@ -219,36 +367,39 @@ export function useSignInViewModel() {
   const vehicleId = searchParams.get('vehicleId') ?? ''
   const { showLoading, hideLoading } = useLoading()
 
-  const goBack = () => {
-    void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
+  const goToRepairsPage = () => {
+    void navigate(buildRoute('REPAIRS', {}, { vehicleId: vehicleId }))
   }
 
-  const redirectToPreviousPage = () => {
-    void navigate(-1)
+  const goBack = () => {
+    void navigate(buildRoute('HOME', {}, { vehicleId: vehicleId }))
   }
 
   return {
     ...store,
     requestVerification: () => store.requestVerification(showLoading, hideLoading),
-    verifyCode: () => store.verifyCode(showLoading, hideLoading),
-    updateVerificationCode: (code: string) => store.updateVerificationCode(code, showLoading, hideLoading),
+    verifyCode: () => store.verifyCode(showLoading, hideLoading, goToRepairsPage),
+    updateVerificationCode: (code: string) =>
+      store.updateVerificationCode(code, showLoading, hideLoading, goToRepairsPage),
     handlePhoneInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) =>
       store.handlePhoneInputKeyDown(e, showLoading, hideLoading),
     handleVerificationCodeKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) =>
-      store.handleVerificationCodeKeyDown(e, showLoading, hideLoading),
+      store.handleVerificationCodeKeyDown(e, showLoading, hideLoading, goToRepairsPage),
+    signUp: () => store.signUp(showLoading, hideLoading, vehicleId, goToRepairsPage),
+    goBack,
+    goToRepairsPage,
     validPhoneNumber: store.validPhoneNumber,
     validVerificationCode: store.validVerificationCode,
+    needToSignUp: store.needToSignUp,
     verificationCodeRequested: store.verificationCodeRequested,
     timerActive: store.timerActive,
     timerExpired: store.timerExpired,
-    valid: store.valid,
+    validSignupForm: store.validSignupForm,
     errorMessage: store.errorMessage,
     canRequestVerification: store.canRequestVerification,
     canVerifyCode: store.canVerifyCode,
     expirationTimeDisplayString: store.expirationTimeDisplayString,
     expirationTimeScreenReaderString: store.expirationTimeScreenReaderString,
-    goBack,
-    redirectToPreviousPage,
     VERIFICATION_CODE_LENGTH,
   }
 }

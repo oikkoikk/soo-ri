@@ -4,6 +4,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
+import { Calendar } from '@/assets/svgs/svgs'
 import { RECAPTCHA_VERIFIER_ID } from '@/domain/use_cases/use_cases'
 import { Header } from '@/presentation/components/components'
 import { SOORITheme } from '@/theme/soori_theme'
@@ -20,7 +21,7 @@ export const SignInPageViewMobile = observer(() => {
       viewModel.reset()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewModel.init, viewModel.reset])
+  }, [])
 
   return (
     <Container>
@@ -28,17 +29,28 @@ export const SignInPageViewMobile = observer(() => {
       <MainContent>
         <PhoneInputFormGroup />
         <VerificationInputFormGroup />
+        {(() => {
+          if (viewModel.needToSignUp) {
+            return <SignupFormGroup />
+          }
+        })()}
       </MainContent>
-      <CTAButtonContainer>
-        <CTAButton
-          onClick={viewModel.redirectToPreviousPage}
-          theme={theme}
-          disabled={!viewModel.valid}
-          aria-disabled={!viewModel.valid}
-        >
-          완료
-        </CTAButton>
-      </CTAButtonContainer>
+      {(() => {
+        if (viewModel.needToSignUp) {
+          return (
+            <CTAButtonContainer>
+              <CTAButton
+                onClick={viewModel.signUp}
+                theme={theme}
+                disabled={!viewModel.validSignupForm}
+                aria-disabled={!viewModel.validSignupForm}
+              >
+                완료
+              </CTAButton>
+            </CTAButtonContainer>
+          )
+        }
+      })()}
     </Container>
   )
 })
@@ -51,7 +63,7 @@ const PhoneInputFormGroup = observer(() => {
     <FormGroup>
       <FormLabel>휴대전화번호</FormLabel>
       <InputGroup>
-        <PhoneInput
+        <FormInput
           autoFocus
           type="tel"
           inputMode="tel"
@@ -133,6 +145,90 @@ const VerificationInputFormGroup = observer(() => {
   )
 })
 
+const SignupFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useSignInViewModel()
+
+  return (
+    <>
+      <FormGroup>
+        <FormLabel id="sign-up-name">이름</FormLabel>
+        <FormInput
+          type="text"
+          value={viewModel.userModel.name}
+          onChange={(e) => {
+            viewModel.updateName(e.target.value)
+          }}
+          placeholder="이름을 입력해주세요"
+          aria-labelledby='"sign-up-name"'
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel id="sign-up-model">전동보장구 모델명</FormLabel>
+        <FormInput
+          type="text"
+          value={viewModel.vehicleModel.model}
+          onChange={(e) => {
+            viewModel.updateModel(e.target.value)
+          }}
+          placeholder="전동보장구 모델명을 입력해주세요"
+          aria-labelledby='"sign-up-model"'
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel id="sign-up-purchased-at">전동보장구 구매일</FormLabel>
+        <DateInputWrapper>
+          <DateInput
+            type="date"
+            value={viewModel.dateInputFormatString(viewModel.vehicleModel.purchasedAt)}
+            onChange={(e) => {
+              viewModel.updatePurchasedAt(e.target.value)
+            }}
+            theme={theme}
+            aria-labelledby='"sign-up-purchased-at"'
+          />
+          <CalendarIconWrapper>
+            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
+          </CalendarIconWrapper>
+        </DateInputWrapper>
+      </FormGroup>
+      <FormGroup>
+        <FormLabel id="sign-up-registered-at">전동보장구 등록일</FormLabel>
+        <DateInputWrapper>
+          <DateInput
+            type="date"
+            value={viewModel.dateInputFormatString(viewModel.vehicleModel.registeredAt)}
+            onChange={(e) => {
+              viewModel.updateRegisteredAt(e.target.value)
+            }}
+            theme={theme}
+            aria-labelledby='"sign-up-registered-at"'
+          />
+          <CalendarIconWrapper>
+            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
+          </CalendarIconWrapper>
+        </DateInputWrapper>
+      </FormGroup>
+      <FormGroup>
+        <FormLabel id="sign-up-recipient-type">수급유형</FormLabel>
+        <SelectWrapper>
+          <SelectBox
+            value={viewModel.userModel.recipientType}
+            onChange={(e) => {
+              viewModel.updateRecipientType(e.target.value)
+            }}
+            aria-labelledby='"sign-up-recipient-type"'
+          >
+            <option value="general">일반</option>
+            <option value="disabled">장애인</option>
+            <option value="lowIncome">차상위</option>
+          </SelectBox>
+        </SelectWrapper>
+      </FormGroup>
+    </>
+  )
+})
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -143,6 +239,7 @@ const MainContent = styled.div`
   flex: 1;
   padding: 28px 27px;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
+  overflow-y: auto;
 `
 
 const FormGroup = styled.div`
@@ -160,7 +257,7 @@ const InputGroup = styled.div`
   display: flex;
 `
 
-const PhoneInput = styled.input`
+const FormInput = styled.input`
   flex: 1;
   width: 100%;
   padding: 3px 12px;
@@ -262,6 +359,54 @@ const RecaptchaVerifier = styled.span`
   display: none;
 `
 
+const DateInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const DateInput = styled.input`
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  position: relative;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  text-align: left;
+
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+  }
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const CalendarIconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+`
+
 const CTAButtonContainer = styled.div`
   position: fixed;
   bottom: 0;
@@ -295,5 +440,28 @@ const CTAButton = styled.button`
 
   &:disabled {
     cursor: not-allowed;
+  }
+`
+const SelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const SelectBox = styled.select`
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
   }
 `
