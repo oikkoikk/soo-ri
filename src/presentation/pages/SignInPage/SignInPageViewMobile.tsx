@@ -152,7 +152,7 @@ const SignupFormGroup = observer(() => {
   return (
     <>
       <FormGroup>
-        <FormLabel>이름</FormLabel>
+        <FormLabel id="sign-up-name">이름</FormLabel>
         <FormInput
           type="text"
           value={viewModel.userModel.name}
@@ -160,10 +160,11 @@ const SignupFormGroup = observer(() => {
             viewModel.updateName(e.target.value)
           }}
           placeholder="이름을 입력해주세요"
+          aria-labelledby='"sign-up-name"'
         />
       </FormGroup>
       <FormGroup>
-        <FormLabel>전동보장구 모델명</FormLabel>
+        <FormLabel id="sign-up-model">전동보장구 모델명</FormLabel>
         <FormInput
           type="text"
           value={viewModel.vehicleModel.model}
@@ -171,10 +172,11 @@ const SignupFormGroup = observer(() => {
             viewModel.updateModel(e.target.value)
           }}
           placeholder="전동보장구 모델명을 입력해주세요"
+          aria-labelledby='"sign-up-model"'
         />
       </FormGroup>
       <FormGroup>
-        <FormLabel>전동보장구 구매일</FormLabel>
+        <FormLabel id="sign-up-purchased-at">전동보장구 구매일</FormLabel>
         <DateInputWrapper>
           <DateInput
             type="date"
@@ -183,14 +185,15 @@ const SignupFormGroup = observer(() => {
               viewModel.updatePurchasedAt(e.target.value)
             }}
             theme={theme}
+            aria-labelledby='"sign-up-purchased-at"'
           />
           <CalendarIconWrapper>
-            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} />
+            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
           </CalendarIconWrapper>
         </DateInputWrapper>
       </FormGroup>
       <FormGroup>
-        <FormLabel>전동보장구 등록일</FormLabel>
+        <FormLabel id="sign-up-registered-at">전동보장구 등록일</FormLabel>
         <DateInputWrapper>
           <DateInput
             type="date"
@@ -199,20 +202,22 @@ const SignupFormGroup = observer(() => {
               viewModel.updateRegisteredAt(e.target.value)
             }}
             theme={theme}
+            aria-labelledby='"sign-up-registered-at"'
           />
           <CalendarIconWrapper>
-            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} />
+            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
           </CalendarIconWrapper>
         </DateInputWrapper>
       </FormGroup>
       <FormGroup>
-        <FormLabel>수급유형</FormLabel>
+        <FormLabel id="sign-up-recipient-type">수급유형</FormLabel>
         <SelectWrapper>
           <SelectBox
             value={viewModel.userModel.recipientType}
             onChange={(e) => {
               viewModel.updateRecipientType(e.target.value)
             }}
+            aria-labelledby='"sign-up-recipient-type"'
           >
             <option value="general">일반</option>
             <option value="disabled">장애인</option>
