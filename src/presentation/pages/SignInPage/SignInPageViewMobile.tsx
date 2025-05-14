@@ -25,6 +25,7 @@ export const SignInPageViewMobile = observer(() => {
 
   return (
     <Container>
+      <RecaptchaVerifierContainer id={RECAPTCHA_VERIFIER_ID} />
       <Header title="번호 인증" onBack={viewModel.goBack} />
       <MainContent>
         <PhoneInputFormGroup />
@@ -83,7 +84,6 @@ const PhoneInputFormGroup = observer(() => {
           disabled={!viewModel.canRequestVerification}
           aria-disabled={!viewModel.canRequestVerification}
         >
-          <RecaptchaVerifier id={RECAPTCHA_VERIFIER_ID} tabIndex={-1} />
           {'인증번호 요청'}
         </RequestButton>
       </InputGroup>
@@ -235,6 +235,10 @@ const Container = styled.div`
   height: 100vh;
 `
 
+const RecaptchaVerifierContainer = styled.div`
+  display: none;
+`
+
 const MainContent = styled.div`
   flex: 1;
   padding: 28px 27px;
@@ -353,10 +357,6 @@ const RequestButton = styled.button`
   &:disabled {
     cursor: not-allowed;
   }
-`
-
-const RecaptchaVerifier = styled.span`
-  display: none;
 `
 
 const DateInputWrapper = styled.div`
