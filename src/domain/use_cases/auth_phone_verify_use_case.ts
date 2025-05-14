@@ -20,11 +20,18 @@ export class AuthPhoneVerifyUseCase implements UseCase<Promise<ConfirmationResul
    * @param value 전화번호
    */
   async call(value: AuthPhoneVerifyParams): Promise<ConfirmationResult> {
-    window.recaptcha?.clear()
-    window.recaptcha = new RecaptchaVerifier(value.auth, RECAPTCHA_VERIFIER_ID, {
-      size: 'invisible',
-    })
-    const confirmationResult = await signInWithPhoneNumber(value.auth, value.phoneNumber, window.recaptcha)
-    return confirmationResult
+    const { auth, phoneNumber } = value
+    window.recaptcha ??= new RecaptchaVerifier(auth, RECAPTCHA_VERIFIER_ID, { size: 'invisible' })
+    try {
+      return await signInWithPhoneNumber(auth, phoneNumber, window.recaptcha)
+    } catch {
+      window.recaptcha.clear()
+      const container = document.getElementById(RECAPTCHA_VERIFIER_ID)
+      if (container) {
+        container.innerHTML = ''
+      }
+      window.recaptcha = new RecaptchaVerifier(auth, RECAPTCHA_VERIFIER_ID, { size: 'invisible' })
+      return await signInWithPhoneNumber(auth, phoneNumber, window.recaptcha)
+    }
   }
 }
