@@ -1,8 +1,8 @@
-import { JSX, useEffect, useMemo } from 'react'
+import { JSX, useEffect, useRef, useMemo } from 'react'
 
 import { Navigate, useLocation } from 'react-router'
 
-import { useLoading, useUserRole } from '@/presentation/hooks/hooks'
+import { useLoading, useAuthState } from '@/presentation/hooks/hooks'
 
 import { buildRoute } from './routes'
 
@@ -19,9 +19,10 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) => {
-  const { userRole, isLoading } = useUserRole()
+  const { user, loading, error } = useAuthState()
   const { showLoading, hideLoading } = useLoading()
   const location = useLocation()
+  const previousPageRef = useRef<JSX.Element | null>(null)
 
   const isLocationState = (state: unknown): state is LocationState => {
     return state !== null && typeof state === 'object' && 'from' in state
@@ -41,15 +42,23 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
   }, [location.search])
 
   useEffect(() => {
-    if (isLoading) showLoading()
-    else hideLoading()
-  }, [isLoading, showLoading, hideLoading])
+    if (loading) {
+      showLoading()
+    } else {
+      hideLoading()
+    }
+  }, [loading, showLoading, hideLoading])
 
-  if (isLoading) {
-    return null
+  if (error) {
+    console.error('Auth state error:', error)
   }
 
-  if (requireAuth && !userRole) {
+  if (loading) {
+    previousPageRef.current ??= children
+    return previousPageRef.current
+  }
+
+  if (requireAuth && !user) {
     return (
       <Navigate
         to={buildRoute('SIGN_IN')}
@@ -59,7 +68,7 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
     )
   }
 
-  if (!requireAuth && userRole) {
+  if (!requireAuth && user) {
     const internalNavigation = locationState?.from !== undefined
 
     if (internalNavigation && locationState.from?.pathname) {
