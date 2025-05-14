@@ -1,3 +1,4 @@
-export { Header } from './Header'
-export { ProgressIndicator } from './ProgressIndicator'
-export { Tabs } from './Tabs'
+export * from './ErrorBoundary'
+export * from './Header'
+export * from './ProgressIndicator'
+export * from './Tabs'
