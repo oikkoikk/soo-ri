@@ -2,6 +2,8 @@ import { lazy } from 'react'
 
 import { createBrowserRouter } from 'react-router'
 
+import { ErrorBoundary } from '@/presentation/components/ErrorBoundary'
+
 import { ProtectedRoute } from './ProtectedRoutes'
 import { ROUTES } from './routes'
 
@@ -21,10 +23,12 @@ export const router = createBrowserRouter([
         <HomePage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.SIGN_IN,
     element: <SignInPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.REPAIRS,
@@ -33,6 +37,7 @@ export const router = createBrowserRouter([
         <RepairsPage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.REPAIR_CREATE,
@@ -41,6 +46,7 @@ export const router = createBrowserRouter([
         <RepairCreatePage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.REPAIR_DETAIL,
@@ -49,6 +55,7 @@ export const router = createBrowserRouter([
         <RepairDetailPage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.REPAIR_STATIONS,
@@ -57,6 +64,7 @@ export const router = createBrowserRouter([
         <RepairStationsPage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
   {
     path: ROUTES.VEHICLE_TEST,
@@ -65,5 +73,6 @@ export const router = createBrowserRouter([
         <VehicleTestPage />
       </ProtectedRoute>
     ),
+    errorElement: <ErrorBoundary />,
   },
 ])
