@@ -4,13 +4,14 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routers'
 import { userRepositorySoori } from '@/data/services/services'
-import { RecipientType, UserModel, VehicleModel } from '@/domain/models/models'
+import { RecipientType, UserModel, VehicleModel, EventModel } from '@/domain/models/models'
 import { SignUpParams } from '@/domain/repositories/repositories'
-import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase } from '@/domain/use_cases/use_cases'
+import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase, EventCreateUseCase } from '@/domain/use_cases/use_cases'
 import { useLoading } from '@/presentation/hooks/hooks'
 
 const authPhoneVerifyUseCase = new AuthPhoneVerifyUseCase()
 const authPhoneConfirmUseCase = new AuthPhoneConfirmUseCase()
+const eventCreateUseCase = new EventCreateUseCase()
 
 const EXPIRATION_TIME = 300
 const VERIFICATION_CODE_LENGTH = 6
@@ -94,7 +95,7 @@ class SignInStore {
   }
 
   get canRequestVerification() {
-    return this.validPhoneNumber && !this.verificationCodeRequested
+    return this.validPhoneNumber && !this.verificationCodeRequested && !this.verificationError
   }
 
   get canVerifyCode() {
@@ -206,11 +207,19 @@ class SignInStore {
 
       runInAction(() => {
         this.confirmationResult = result
+        this.verificationError = null
         this.startTimer()
       })
+      const successEvent = new EventModel({ title: '인증번호 발송 성공', description: this.phoneNumber })
+      void eventCreateUseCase.call(successEvent)
     } catch (error) {
-      console.error('인증번호 요청 실패:', error)
       this.verificationError = '인증번호 요청에 실패했습니다. 다시 시도해주세요.'
+      const failEvent = new EventModel({
+        title: '인증번호 발송 실패',
+        description: `${this.phoneNumber}\n${String(error)}`,
+        fatal: true,
+      })
+      void eventCreateUseCase.call(failEvent)
     } finally {
       hideLoading()
     }
@@ -239,10 +248,8 @@ class SignInStore {
         }
       })
 
-      // 인증 성공 시 사용자 확인 진행하고 콜백 전달
       void this.getTokenAndCheckUser(showLoading, hideLoading, onVerified)
-    } catch (error) {
-      console.error('인증번호 확인 실패:', error)
+    } catch {
       runInAction(() => {
         this.verificationError = '인증번호를 다시 확인해주세요'
         this.verified = false
@@ -267,13 +274,10 @@ class SignInStore {
         this.userChecked = true
       })
 
-      // 이미 가입된 유저인 경우 바로 콜백 호출 (수리 페이지로 이동)
       if (this.userExists && onUserChecked) {
         onUserChecked()
       }
-      // 회원가입이 필요한 경우 콜백 실행하지 않고 폼을 표시
-    } catch (error) {
-      console.error('사용자 확인 실패:', error)
+    } catch {
       this.verificationError = '사용자 확인에 실패했습니다. 다시 시도해주세요.'
       this.userChecked = false
     } finally {
@@ -306,12 +310,18 @@ class SignInStore {
         this.userExists = true
       })
 
-      // 회원가입 완료 후 콜백 실행 (수리 페이지로 이동)
       if (onSignUpCompleted) {
         onSignUpCompleted()
       }
-    } catch (error) {
-      console.error('회원가입 실패:', error)
+    } catch {
+      const signUpFailEvent = new EventModel({
+        title: '회원가입 실패',
+        description: `이름: ${this.userModel.name}, 전화번호: ${this.phoneNumber}, 모델: ${this.vehicleModel.model}, 구매일: ${this.dateInputFormatString(
+          this.vehicleModel.purchasedAt
+        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}`,
+        fatal: true,
+      })
+      void eventCreateUseCase.call(signUpFailEvent)
     } finally {
       hideLoading()
     }

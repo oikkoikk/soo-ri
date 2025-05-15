@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite'
 import { Calendar } from '@/assets/svgs/svgs'
 import { RECAPTCHA_VERIFIER_ID } from '@/domain/use_cases/use_cases'
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/soori_theme'
+import { SOORITheme } from '@/theme/theme'
 
 import { useSignInViewModel } from './SignInPageViewModel'
 
@@ -63,7 +63,9 @@ const PhoneInputFormGroup = observer(() => {
     <FormGroup>
       <FormLabel>휴대전화번호</FormLabel>
       <InputGroup>
-        <FormInput
+        <PhoneInput
+          theme={theme}
+          error={!!viewModel.verificationError}
           autoFocus
           type="tel"
           inputMode="tel"
@@ -74,11 +76,12 @@ const PhoneInputFormGroup = observer(() => {
           onKeyDown={viewModel.handlePhoneInputKeyDown}
           placeholder="휴대전화번호를 입력해주세요"
           disabled={viewModel.verificationCodeRequested}
+          aria-describedby={viewModel.verificationError ? 'phone-verification-error' : undefined}
         />
         <RequestButton
           theme={theme}
-          onClick={async () => {
-            await viewModel.requestVerification()
+          onClick={() => {
+            void viewModel.requestVerification()
           }}
           disabled={!viewModel.canRequestVerification}
           aria-disabled={!viewModel.canRequestVerification}
@@ -87,6 +90,14 @@ const PhoneInputFormGroup = observer(() => {
           {'인증번호 요청'}
         </RequestButton>
       </InputGroup>
+      {(() => {
+        if (viewModel.verificationError)
+          return (
+            <ErrorMessage id="phone-verification-error" aria-live="assertive">
+              *{viewModel.verificationError}
+            </ErrorMessage>
+          )
+      })()}
     </FormGroup>
   )
 })
@@ -124,8 +135,8 @@ const VerificationInputFormGroup = observer(() => {
         </VerificationInputContainer>
         <RequestButton
           theme={theme}
-          onClick={async () => {
-            await viewModel.verifyCode()
+          onClick={() => {
+            void viewModel.verifyCode()
           }}
           disabled={!viewModel.canVerifyCode}
           aria-disabled={!viewModel.canVerifyCode}
@@ -263,6 +274,23 @@ const FormInput = styled.input`
   padding: 3px 12px;
   height: 42px;
   border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-radius: 6px;
+  ${({ theme }) => css`
+    ${theme.typography.bodySmall};
+  `}
+
+  &::placeholder {
+    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  }
+`
+
+const PhoneInput = styled.input`
+  flex: 1;
+  width: 100%;
+  padding: 3px 12px;
+  height: 42px;
+  border: 0.8px solid
+    ${({ theme, error }: { theme: SOORITheme; error: boolean }) => (error ? theme.colors.error : theme.colors.outline)};
   border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};

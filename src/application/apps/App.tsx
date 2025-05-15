@@ -33,7 +33,7 @@ window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => 
   const rejectionEvent = new EventModel({
     title: 'Unhandled Rejection',
     description: stack,
-    fatal: false,
+    fatal: true,
   })
   void eventCreateUseCase.call(rejectionEvent)
 })
