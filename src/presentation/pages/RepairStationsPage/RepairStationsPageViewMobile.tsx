@@ -2,7 +2,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
-import { ChevronRight } from '@/assets/svgs/svgs'
+import { Link as LinkIcon } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/components'
 import { SOORITheme } from '@/theme/theme'
 
@@ -44,9 +44,9 @@ export const RepairStationsPageViewMobile = observer(() => {
               <StationName theme={theme}>{station.name}</StationName>
               <StationInfoContainer>
                 <StationDistrict theme={theme}>{station.district}</StationDistrict>
-                <ChevronIconContainer>
-                  <ChevronRight color={theme.colors.primary} aria-hidden />
-                </ChevronIconContainer>
+                <LinkIconContainer>
+                  <LinkIcon color={theme.colors.primary} aria-hidden />
+                </LinkIconContainer>
               </StationInfoContainer>
             </StationItem>
           ))}
@@ -78,22 +78,22 @@ const MainContent = styled.section`
 
 const SortFilterContainer = styled.div`
   display: flex;
-  padding: 12px 16px;
+  padding: 7px 11px;
   gap: 10px;
   border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
 `
 
 const SortChip = styled.button<{ selected: boolean }>`
-  padding: 8px 16px;
-  border-radius: 16px;
+  width: 67px;
+  padding: 1.5px 3px;
+  border-radius: 12px;
   border: 0.8px solid
     ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
       selected ? theme.colors.primary : theme.colors.outline};
   background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
     selected ? theme.colors.primary : theme.colors.background};
   color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
-  cursor: pointer;
+    selected ? theme.colors.onSurface : theme.colors.primary};
   transition: all 0.2s ease;
   ${({ theme }) => css`
     ${theme.typography.labelSmall};
@@ -107,12 +107,12 @@ const StationList = styled.ul`
 `
 
 const StationItem = styled.li`
+  height: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 0px 15px;
   border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
   cursor: pointer;
 `
 
@@ -120,13 +120,13 @@ const StationName = styled.p`
   ${({ theme }: { theme: SOORITheme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
+  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
 `
 
 const StationInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
 `
 
 const StationDistrict = styled.span`
@@ -134,9 +134,10 @@ const StationDistrict = styled.span`
     ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  font-weight: 300;
 `
 
-const ChevronIconContainer = styled.div`
+const LinkIconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
