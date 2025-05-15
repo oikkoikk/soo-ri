@@ -12,6 +12,8 @@ export const RepairStationsPageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairStationsViewModel()
 
+  // Error will be thrown by the useRepairStations hook if any
+
   return (
     <Container>
       <StickyTop theme={theme}>
