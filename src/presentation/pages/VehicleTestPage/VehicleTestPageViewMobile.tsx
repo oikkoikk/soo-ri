@@ -1,9 +1,8 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { useVehicleTestViewModel } from './VehicleTestPageViewModel'
 
@@ -16,7 +15,7 @@ export const VehicleTestPageViewMobile = observer(() => {
       <StickyTop theme={theme}>
         <Header title="나의 전동보장구 자가점검" onBack={viewModel.goBack} />
       </StickyTop>
-      <MainContent role="main">
+      <MainContent>
         <TestItemList aria-label="자가점검 항목 목록">
           {viewModel.testItems.map((item) => (
             <TestItem key={item.id} theme={theme}>
@@ -77,7 +76,7 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
 const MainContent = styled.section`
@@ -95,7 +94,7 @@ const TestItem = styled.li`
   display: flex;
   align-items: flex-start;
   padding: 16px 0;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const TestItemNumber = styled.span`
@@ -105,10 +104,10 @@ const TestItemNumber = styled.span`
   min-width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurface};
   margin-right: 12px;
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
@@ -123,7 +122,7 @@ const TestItemRow = styled.div`
 const TestItemQuestion = styled.p`
   flex: 1;
   padding-right: 10px;
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
   word-break: keep-all;
@@ -134,17 +133,31 @@ const TestItemAnswers = styled.div`
   gap: 10px;
 `
 
-const AnswerButton = styled.button<{ selected: boolean }>`
+const AnswerButton = styled.button`
   padding: 8px 16px;
   border-radius: 6px;
   border: 0.8px solid
-    ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-      selected ? theme.colors.primary : theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
-  cursor: pointer;
+    ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+      if (selected) {
+        return theme.colors.primary
+      } else {
+        return theme.colors.outline
+      }
+    }};
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.primary
+    } else {
+      return theme.colors.background
+    }
+  }};
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.onSurfaceVariant
+    }
+  }};
   transition: all 0.2s ease;
   ${({ theme }) => css`
     ${theme.typography.labelSmall};
@@ -162,11 +175,11 @@ const CTAButtonContainer = styled.div`
   height: 80px;
   padding: 12px 25px;
   z-index: 5;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
-  border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surfaceContainer};
+  border-top: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
-const CTAButton = styled.button<{ disabled: boolean }>`
+const CTAButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,12 +187,29 @@ const CTAButton = styled.button<{ disabled: boolean }>`
   height: 100%;
   border-radius: 12px;
   border: none;
-  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
-    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
-  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  background-color: ${({ theme, disabled }: { theme: Theme; disabled: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurfaceVariant
+    } else {
+      return theme.colors.primary
+    }
+  }};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.background};
+  opacity: ${({ disabled }) => {
+    if (disabled) {
+      return 0.6
+    } else {
+      return 1
+    }
+  }};
+  cursor: ${({ disabled }) => {
+    if (disabled) {
+      return 'not-allowed'
+    } else {
+      return 'pointer'
+    }
+  }};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyLarge};
   `}
 `

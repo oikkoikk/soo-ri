@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
 
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Calendar } from '@/assets/svgs/svgs'
 import { RECAPTCHA_VERIFIER_ID } from '@/domain/use_cases/use_cases'
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { useSignInViewModel } from './SignInPageViewModel'
 
@@ -246,7 +245,7 @@ const Container = styled.div`
   height: 100vh;
 `
 
-const MainContent = styled.div`
+const MainContent = styled.main`
   flex: 1;
   padding: 28px 27px;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
@@ -259,7 +258,7 @@ const FormGroup = styled.div`
 
 const FormLabel = styled.label`
   display: block;
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.labelSmall};
   `}
 `
@@ -273,14 +272,14 @@ const FormInput = styled.input`
   width: 100%;
   padding: 3px 12px;
   height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
   `}
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -290,14 +289,20 @@ const PhoneInput = styled.input`
   padding: 3px 12px;
   height: 42px;
   border: 0.8px solid
-    ${({ theme, error }: { theme: SOORITheme; error: boolean }) => (error ? theme.colors.error : theme.colors.outline)};
+    ${({ theme, error }: { theme: Theme; error: boolean }) => {
+      if (error) {
+        return theme.colors.error
+      } else {
+        return theme.colors.outline
+      }
+    }};
   border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
   `}
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -305,14 +310,20 @@ const VerificationInputContainer = styled.div`
   flex: 1;
   position: relative;
   border: 0.8px solid
-    ${({ theme, error }: { theme: SOORITheme; error: boolean }) => (error ? theme.colors.error : theme.colors.outline)};
+    ${({ theme, error }: { theme: Theme; error: boolean }) => {
+      if (error) {
+        return theme.colors.error
+      } else {
+        return theme.colors.outline
+      }
+    }};
   border-radius: 6px;
   display: flex;
   align-items: center;
 
   &:focus-within {
-    border-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
-    outline: 2px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
+    border-color: ${({ theme }: { theme: Theme }) => theme.colors.tertiary};
+    outline: 2px solid ${({ theme }: { theme: Theme }) => theme.colors.tertiary};
     outline-offset: -1px;
   }
 `
@@ -329,7 +340,7 @@ const VerificationInput = styled.input`
   `}
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 
   &:focus {
@@ -340,9 +351,14 @@ const VerificationInput = styled.input`
 const TimerOverlay = styled.div`
   position: absolute;
   right: 12px;
-  ${({ theme }: { theme: SOORITheme }) => theme.typography.bodyMedium};
-  color: ${({ theme, expired }: { theme: SOORITheme; expired: boolean }) =>
-    expired ? theme.colors.error : theme.colors.primary};
+  ${({ theme }: { theme: Theme }) => theme.typography.bodyMedium};
+  color: ${({ theme, expired }: { theme: Theme; expired: boolean }) => {
+    if (expired) {
+      return theme.colors.error
+    } else {
+      return theme.colors.primary
+    }
+  }};
 `
 
 const VisibleOnly = styled.span``
@@ -360,8 +376,8 @@ const ScreenReaderOnly = styled.span`
 
 const ErrorMessage = styled.p`
   margin-top: 2px;
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.error};
-  ${({ theme }: { theme: SOORITheme }) => theme.typography.labelSmall};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.error};
+  ${({ theme }: { theme: Theme }) => theme.typography.labelSmall};
 `
 
 const RequestButton = styled.button`
@@ -372,11 +388,21 @@ const RequestButton = styled.button`
   padding: 0 8px;
   border-radius: 6px;
   border: none;
-  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
-    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
-  color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
-    disabled ? theme.colors.outlineVariant : theme.colors.onSurface};
-  ${({ theme }: { theme: SOORITheme }) => theme.typography.bodyMedium};
+  background-color: ${({ theme, disabled }: { theme: Theme; disabled: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurfaceVariant
+    } else {
+      return theme.colors.primary
+    }
+  }};
+  color: ${({ theme, disabled }: { theme: Theme; disabled: boolean }) => {
+    if (disabled) {
+      return theme.colors.outlineVariant
+    } else {
+      return theme.colors.onSurface
+    }
+  }};
+  ${({ theme }: { theme: Theme }) => theme.typography.bodyMedium};
 
   &:disabled {
     cursor: not-allowed;
@@ -396,7 +422,7 @@ const DateInput = styled.input`
   width: 100%;
   padding: 3px 12px;
   height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   position: relative;
   ${({ theme }) => css`
@@ -420,7 +446,7 @@ const DateInput = styled.input`
   }
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -446,8 +472,8 @@ const CTAButtonContainer = styled.div`
   height: 80px;
   padding: 12px 25px;
   z-index: 5;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
-  border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surfaceContainer};
+  border-top: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const CTAButton = styled.button`
@@ -457,11 +483,21 @@ const CTAButton = styled.button`
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
-    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
-  color: ${({ theme, disabled }: { theme: SOORITheme; disabled?: boolean }) =>
-    disabled ? theme.colors.onSurface : theme.colors.background};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  background-color: ${({ theme, disabled }: { theme: Theme; disabled: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurfaceVariant
+    } else {
+      return theme.colors.primary
+    }
+  }};
+  color: ${({ theme, disabled }: { theme: Theme; disabled?: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.background
+    }
+  }};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyLarge};
   `}
   transition: all 0.2s ease;
@@ -479,7 +515,7 @@ const SelectBox = styled.select`
   width: 100%;
   padding: 3px 12px;
   height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
@@ -490,6 +526,6 @@ const SelectBox = styled.select`
   cursor: pointer;
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
