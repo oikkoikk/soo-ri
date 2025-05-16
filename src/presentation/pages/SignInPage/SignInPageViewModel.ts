@@ -22,6 +22,7 @@ class SignInStore {
   confirmationResult: ConfirmationResult | null = null
   expirationTime = EXPIRATION_TIME
   verificationError: string | null = null
+  verificationRequestError: string | null = null
   verified = false
   userExists = false
   userChecked = false
@@ -95,7 +96,7 @@ class SignInStore {
   }
 
   get canRequestVerification() {
-    return this.validPhoneNumber && !this.verificationCodeRequested && !this.verificationError
+    return this.validPhoneNumber && !this.verificationCodeRequested && !this.verificationRequestError
   }
 
   get canVerifyCode() {
@@ -207,13 +208,13 @@ class SignInStore {
 
       runInAction(() => {
         this.confirmationResult = result
-        this.verificationError = null
+        this.verificationRequestError = null
         this.startTimer()
       })
       const successEvent = new EventModel({ title: '인증번호 발송 성공', description: this.phoneNumber })
       void eventCreateUseCase.call(successEvent)
     } catch (error) {
-      this.verificationError = '인증번호 요청에 실패했습니다. 다시 시도해주세요.'
+      this.verificationRequestError = '인증번호 요청에 실패했습니다. 다시 시도해주세요.'
       const failEvent = new EventModel({
         title: '인증번호 발송 실패',
         description: `${this.phoneNumber}\n${String(error)}`,
@@ -357,6 +358,7 @@ class SignInStore {
     this.verificationCode = ''
     this.confirmationResult = null
     this.expirationTime = EXPIRATION_TIME
+    this.verificationRequestError = null
     this.verificationError = null
     this.verified = false
     this.userExists = false
