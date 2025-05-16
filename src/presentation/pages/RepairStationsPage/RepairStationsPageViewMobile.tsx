@@ -1,18 +1,15 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Link as LinkIcon } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { SortType, useRepairStationsViewModel } from './RepairStationsPageViewModel'
 
 export const RepairStationsPageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairStationsViewModel()
-
-  // Error will be thrown by the useRepairStations hook if any
 
   return (
     <Container>
@@ -39,7 +36,7 @@ export const RepairStationsPageViewMobile = observer(() => {
           거리순
         </SortChip>
       </SortFilterContainer>
-      <MainContent role="main">
+      <MainContent>
         <StationList aria-label="정비소 목록">
           {viewModel.sortedStations.map((station) => (
             <StationItem key={station.id} theme={theme} tabIndex={0}>
@@ -58,7 +55,7 @@ export const RepairStationsPageViewMobile = observer(() => {
   )
 })
 
-const Container = styled.main`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -71,10 +68,10 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
-const MainContent = styled.section`
+const MainContent = styled.main`
   flex: 1;
 `
 
@@ -82,7 +79,7 @@ const SortFilterContainer = styled.div`
   display: flex;
   padding: 7px 11px;
   gap: 10px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const SortChip = styled.button<{ selected: boolean }>`
@@ -90,12 +87,27 @@ const SortChip = styled.button<{ selected: boolean }>`
   padding: 1.5px 3px;
   border-radius: 12px;
   border: 0.8px solid
-    ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-      selected ? theme.colors.primary : theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.primary};
+    ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+      if (selected) {
+        return theme.colors.primary
+      } else {
+        return theme.colors.outline
+      }
+    }};
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.primary
+    } else {
+      return theme.colors.background
+    }
+  }};
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.primary
+    }
+  }};
   transition: all 0.2s ease;
   ${({ theme }) => css`
     ${theme.typography.labelSmall};
@@ -114,15 +126,15 @@ const StationItem = styled.li`
   justify-content: space-between;
   align-items: center;
   padding: 0px 15px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   cursor: pointer;
 `
 
 const StationName = styled.p`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
 `
 
 const StationInfoContainer = styled.div`
@@ -132,10 +144,10 @@ const StationInfoContainer = styled.div`
 `
 
 const StationDistrict = styled.span`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   font-weight: 300;
 `
 
