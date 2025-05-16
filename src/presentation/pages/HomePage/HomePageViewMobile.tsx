@@ -1,10 +1,9 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { Link, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { WordMark } from '@/assets/images/images'
-import { SOORITheme } from '@/theme/theme'
 
 export function HomePageViewMobile() {
   const theme = useTheme()
@@ -26,18 +25,18 @@ export function HomePageViewMobile() {
   )
 }
 
-const Container = styled.main`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   padding: 100px 25px;
   gap: 24px 0px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.secondary};
 `
 
-const MainContent = styled.div`
+const MainContent = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -61,9 +60,9 @@ const LoginButton = styled(Link)`
   width: 270px;
   height: 45px;
   border-radius: 6px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.tertiary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurface};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `

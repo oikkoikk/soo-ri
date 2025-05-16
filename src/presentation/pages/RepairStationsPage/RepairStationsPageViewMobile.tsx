@@ -1,10 +1,9 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { ChevronRight } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { SortType, useRepairStationsViewModel } from './RepairStationsPageViewModel'
 
@@ -56,7 +55,7 @@ export const RepairStationsPageViewMobile = observer(() => {
   )
 })
 
-const Container = styled.main`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -69,10 +68,10 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
-const MainContent = styled.section`
+const MainContent = styled.main`
   flex: 1;
 `
 
@@ -80,20 +79,29 @@ const SortFilterContainer = styled.div`
   display: flex;
   padding: 12px 16px;
   gap: 10px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
-const SortChip = styled.button<{ selected: boolean }>`
+const SortChip = styled.button`
   padding: 8px 16px;
   border-radius: 16px;
   border: 0.8px solid
-    ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
       selected ? theme.colors.primary : theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
-  cursor: pointer;
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.primary
+    } else {
+      return theme.colors.background
+    }
+  }};
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.onSurfaceVariant
+    }
+  }};
   transition: all 0.2s ease;
   ${({ theme }) => css`
     ${theme.typography.labelSmall};
@@ -111,16 +119,16 @@ const StationItem = styled.li`
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.onSurface};
   cursor: pointer;
 `
 
 const StationName = styled.p`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.tertiary};
 `
 
 const StationInfoContainer = styled.div`
@@ -130,10 +138,10 @@ const StationInfoContainer = styled.div`
 `
 
 const StationDistrict = styled.span`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
 `
 
 const ChevronIconContainer = styled.div`

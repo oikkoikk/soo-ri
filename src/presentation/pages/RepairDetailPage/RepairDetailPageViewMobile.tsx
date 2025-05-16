@@ -1,11 +1,10 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Setting, User } from '@/assets/svgs/svgs'
 import { REPAIR_CATEGORIES } from '@/domain/models/repair_model'
 import { Header } from '@/presentation/components/Header'
-import { SOORITheme } from '@/theme/soori_theme'
 
 import { useRepairDetailViewModel } from './RepairDetailPageViewModel'
 
@@ -22,7 +21,7 @@ export const RepairDetailPageViewMobile = observer(() => {
           onBack={viewModel.goBack}
         />
       </StickyTop>
-      <MainContent role="main">
+      <MainContent>
         <BasicInfoSection />
         <RepairInfoSection />
       </MainContent>
@@ -203,7 +202,7 @@ const RepairMemoFormGroup = observer(() => {
   )
 })
 
-const Container = styled.main`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -216,10 +215,10 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
-const MainContent = styled.section`
+const MainContent = styled.main`
   flex: 1;
   padding: 15px 16px;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
@@ -236,7 +235,7 @@ const SectionHeader = styled.div`
   gap: 8px;
   padding: 7px 13px;
   border-radius: 12px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outlineVariant};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.outlineVariant};
 `
 
 const IconContainer = styled.div`
@@ -269,9 +268,9 @@ const ReadonlyValue = styled.div`
   height: 42px;
   display: flex;
   align-items: center;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.primary};
   border-radius: 6px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.secondary};
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
   `}
@@ -284,15 +283,25 @@ const CategoryGrid = styled.div`
   justify-content: center;
 `
 
-const CategoryBadge = styled.div<{ selected: boolean }>`
+const CategoryBadge = styled.div`
   flex: 1;
   padding: 3px 12px;
   border-radius: 6px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
+  border: 0.8px solid ${({ theme }: { theme: Theme; selected: boolean }) => theme.colors.outline};
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.primary
+    } else {
+      return theme.colors.background
+    }
+  }};
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.onSurfaceVariant
+    }
+  }};
   transition: all 0.2s ease;
   ${({ theme }) => css`
     ${theme.typography.labelSmall};
@@ -302,9 +311,9 @@ const CategoryBadge = styled.div<{ selected: boolean }>`
 const ReadonlyTextArea = styled.textarea`
   width: 100%;
   padding: 12px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.primary};
   border-radius: 6px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.secondary};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.secondary};
   resize: none;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
@@ -313,7 +322,7 @@ const ReadonlyTextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+    border-color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
   }
 `
 
@@ -323,16 +332,16 @@ const ButtonGroup = styled.div`
   width: 100%;
 `
 
-const ReadonlySelectButton = styled.button<{ selected: boolean }>`
+const ReadonlySelectButton = styled.button`
   flex: 1;
   padding: 3px 12px;
   border-radius: 6px;
   border: 0.8px solid
-    ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+    ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
       selected ? theme.colors.primary : theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
     selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
     selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
   cursor: default;
   ${({ theme }) => css`
