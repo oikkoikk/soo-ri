@@ -65,7 +65,7 @@ const PhoneInputFormGroup = observer(() => {
       <InputGroup>
         <PhoneInput
           theme={theme}
-          error={!!viewModel.verificationError}
+          error={!!viewModel.verificationRequestError}
           autoFocus
           type="tel"
           inputMode="tel"
@@ -76,7 +76,7 @@ const PhoneInputFormGroup = observer(() => {
           onKeyDown={viewModel.handlePhoneInputKeyDown}
           placeholder="휴대전화번호를 입력해주세요"
           disabled={viewModel.verificationCodeRequested}
-          aria-describedby={viewModel.verificationError ? 'phone-verification-error' : undefined}
+          aria-describedby={viewModel.verificationRequestError ? 'phone-verification-error' : undefined}
         />
         <RequestButton
           theme={theme}
@@ -91,10 +91,10 @@ const PhoneInputFormGroup = observer(() => {
         </RequestButton>
       </InputGroup>
       {(() => {
-        if (viewModel.verificationError)
+        if (viewModel.verificationRequestError)
           return (
             <ErrorMessage id="phone-verification-error" aria-live="assertive">
-              *{viewModel.verificationError}
+              *{viewModel.verificationRequestError}
             </ErrorMessage>
           )
       })()}
