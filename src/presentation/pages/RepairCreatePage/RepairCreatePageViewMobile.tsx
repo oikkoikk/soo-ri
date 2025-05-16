@@ -1,11 +1,10 @@
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
 import { Calendar, Setting, User } from '@/assets/svgs/svgs'
 import { REPAIR_CATEGORIES } from '@/domain/models/models'
 import { Header } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { useRepairCreateViewModel } from './RepairCreatePageViewModel'
 
@@ -18,7 +17,7 @@ export const RepairCreatePageViewMobile = observer(() => {
       <StickyTop theme={theme}>
         <Header title="전동보장구 정비사항 작성" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
       </StickyTop>
-      <MainContent role="main">
+      <MainContent>
         <BasicInfoSection />
         <RepairInfoSection />
       </MainContent>
@@ -277,7 +276,7 @@ const RepairMemoFormGroup = observer(() => {
   )
 })
 
-const Container = styled.main`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -290,10 +289,10 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
-const MainContent = styled.section`
+const MainContent = styled.main`
   flex: 1;
   padding: 15px 16px;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */
@@ -310,7 +309,7 @@ const SectionHeader = styled.div`
   gap: 8px;
   padding: 7px 13px;
   border-radius: 12px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outlineVariant};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.outlineVariant};
 `
 
 const IconContainer = styled.div`
@@ -341,14 +340,14 @@ const FormInput = styled.input`
   width: 100%;
   padding: 3px 12px;
   height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
   `}
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -358,14 +357,14 @@ const ButtonGroup = styled.div`
   width: 100%;
 `
 
-const SelectButton = styled.button<{ selected: boolean }>`
+const SelectButton = styled.button`
   flex: 1;
   padding: 3px 12px;
   border-radius: 6px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.primary};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+  border: 0.8px solid ${({ theme }: { theme: Theme; selected: boolean }) => theme.colors.primary};
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
     selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) =>
     selected ? theme.colors.onSurface : theme.colors.primary};
   cursor: pointer;
   transition: all 0.2s ease;
@@ -381,15 +380,25 @@ const CategoryGrid = styled.div`
   justify-content: center;
 `
 
-const CategoryButton = styled.button<{ selected: boolean }>`
+const CategoryButton = styled.button`
   flex: 1;
   padding: 3px 12px;
   border-radius: 6px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme; selected: boolean }) => theme.colors.outline};
-  background-color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.primary : theme.colors.background};
-  color: ${({ theme, selected }: { theme: SOORITheme; selected: boolean }) =>
-    selected ? theme.colors.onSurface : theme.colors.onSurfaceVariant};
+  border: 0.8px solid ${({ theme }: { theme: Theme; selected: boolean }) => theme.colors.outline};
+  background-color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.primary
+    } else {
+      return theme.colors.background
+    }
+  }};
+  color: ${({ theme, selected }: { theme: Theme; selected: boolean }) => {
+    if (selected) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.onSurfaceVariant
+    }
+  }};
   cursor: pointer;
   transition: all 0.2s ease;
   ${({ theme }) => css`
@@ -400,7 +409,7 @@ const CategoryButton = styled.button<{ selected: boolean }>`
 const TextArea = styled.textarea`
   width: 100%;
   padding: 12px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   resize: none;
   ${({ theme }) => css`
@@ -408,7 +417,7 @@ const TextArea = styled.textarea`
   `}
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -423,8 +432,8 @@ const CTAButtonContainer = styled.div`
   height: 80px;
   padding: 12px 25px;
   z-index: 5;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
-  border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surfaceContainer};
+  border-top: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const CTAButton = styled.button`
@@ -434,11 +443,21 @@ const CTAButton = styled.button`
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  background-color: ${({ theme, disabled }: { theme: SOORITheme; disabled: boolean }) =>
-    disabled ? theme.colors.onSurfaceVariant : theme.colors.primary};
-  color: ${({ theme, disabled }: { theme: SOORITheme; disabled?: boolean }) =>
-    disabled ? theme.colors.onSurface : theme.colors.background};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  background-color: ${({ theme, disabled }: { theme: Theme; disabled: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurfaceVariant
+    } else {
+      return theme.colors.primary
+    }
+  }};
+  color: ${({ theme, disabled }: { theme: Theme; disabled?: boolean }) => {
+    if (disabled) {
+      return theme.colors.onSurface
+    } else {
+      return theme.colors.background
+    }
+  }};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyLarge};
   `}
   transition: all 0.2s ease;
@@ -457,7 +476,7 @@ const DateInput = styled.input`
   width: 100%;
   padding: 3px 12px;
   height: 42px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
   border-radius: 6px;
   position: relative;
   ${({ theme }) => css`
@@ -481,7 +500,7 @@ const DateInput = styled.input`
   }
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 

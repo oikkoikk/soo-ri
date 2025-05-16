@@ -82,7 +82,7 @@ const SortFilterContainer = styled.div`
   border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
-const SortChip = styled.button<{ selected: boolean }>`
+const SortChip = styled.button`
   width: 67px;
   padding: 1.5px 3px;
   border-radius: 12px;

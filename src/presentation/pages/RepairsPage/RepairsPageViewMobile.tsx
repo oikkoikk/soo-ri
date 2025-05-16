@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { css, useTheme } from '@emotion/react'
+import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { Link } from 'react-router'
@@ -8,7 +8,6 @@ import { Link } from 'react-router'
 import { Add, Calendar, Cancel, Check, ChevronRight, Map, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
-import { SOORITheme } from '@/theme/theme'
 
 import { TabId, useRepairsViewModel } from './RepairsPageViewModel'
 
@@ -36,7 +35,7 @@ export const RepairsPageViewMobile = observer(() => {
         />
         <SearchBar />
       </StickyTop>
-      <MainContent role="main">
+      <MainContent>
         {(() => {
           if (viewModel.activeTab === TabId.REPAIRS) {
             return <RepairHistoryList />
@@ -220,7 +219,7 @@ const Vehicle = () => {
   )
 }
 
-const Container = styled.main`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -234,10 +233,10 @@ const StickyTop = styled.div`
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
 `
 
-const MainContent = styled.section`
+const MainContent = styled.main`
   flex: 1;
 `
 
@@ -246,9 +245,9 @@ const SearchBarOuterContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 46px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surfaceContainer};
   padding: 8px 11px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const SearchBarInnerContainer = styled.div`
@@ -257,8 +256,8 @@ const SearchBarInnerContainer = styled.div`
   height: 100%;
   padding: 7px 10px;
   border-radius: 12px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.onSurface};
 `
 
 const IconContainer = styled.div`
@@ -273,13 +272,13 @@ const SearchInput = styled.input`
   border: none;
   padding: 8px;
   background-color: transparent;
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.tertiary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.tertiary};
 
   &::placeholder {
-    color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+    color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   }
 `
 
@@ -294,8 +293,8 @@ const CTAButtonContainer = styled.div`
   height: 80px;
   padding: 12px 25px;
   z-index: 5;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.surfaceContainer};
-  border-top: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.surfaceContainer};
+  border-top: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const CTAButton = styled(Link)`
@@ -305,9 +304,9 @@ const CTAButton = styled(Link)`
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.background};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyLarge};
   `}
 `
@@ -323,9 +322,9 @@ const RepairCard = styled(Link)`
   flex-direction: column;
   height: 100px;
   gap: 11px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurface};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.onSurface};
   padding: 15px 21px;
-  border-bottom: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const RepairCardHeader = styled.div`
@@ -342,10 +341,10 @@ const RepairDateContainer = styled.div`
 `
 
 const RepairDate = styled.span`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
 `
 
 const RepairBillingPriceContainer = styled.div`
@@ -355,7 +354,7 @@ const RepairBillingPriceContainer = styled.div`
 `
 
 const RepairBillingPrice = styled.p`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
@@ -367,19 +366,19 @@ const RepairTypeBadge = styled.span`
   width: 100px;
   height: 16px;
   margin: 1px 0px;
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
   border-radius: 4px;
-  border: 0.8px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
-  ${({ theme }: { theme: SOORITheme }) => css`
+  border: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.primary};
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.labelSmall};
   `}
 `
 
 const RepairShop = styled.p`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
   height: 15px;
 `
 
@@ -389,7 +388,7 @@ const VehicleCard = styled.div`
   margin: 40px 26px;
   padding: 15px 12px 45px 12px;
   border-radius: 24px;
-  border: 1px solid ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  border: 1px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const VehicleInfoRow = styled.dl`
@@ -400,14 +399,14 @@ const VehicleInfoRow = styled.dl`
 `
 
 const VehicleInfoLabel = styled.dt`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.onSurfaceVariant};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.onSurfaceVariant};
 `
 
 const VehicleInfoValue = styled.dd`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
@@ -415,7 +414,7 @@ const VehicleInfoValue = styled.dd`
 const Divider = styled.div`
   width: 100%;
   height: 0.8px;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.outline};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.outline};
 `
 
 const FloatingMenuContainer = styled.div`
@@ -449,9 +448,9 @@ const MenuItem = styled(Link)`
   align-items: center;
   padding: 0px 16px 0px 0px;
   background-color: transparent;
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
   cursor: pointer;
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
@@ -464,11 +463,11 @@ const MenuItemIconContainer = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: ${({ theme }: { theme: SOORITheme }) => theme.colors.primary};
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
 `
 
 const MenuItemText = styled.span`
-  ${({ theme }: { theme: SOORITheme }) => css`
+  ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
 `
@@ -481,14 +480,14 @@ const FABContainer = styled.button`
   height: 40px;
   border: none;
   border-radius: 50%;
-  background-color: ${({ theme, fabExpended }: { theme: SOORITheme; fabExpended?: boolean }) => {
+  background-color: ${({ theme, fabExpended }: { theme: Theme; fabExpended?: boolean }) => {
     if (fabExpended) {
       return theme.colors.outlineVariant
     } else {
       return theme.colors.primary
     }
   }};
-  color: ${({ theme }: { theme: SOORITheme }) => theme.colors.background};
+  color: ${({ theme }: { theme: Theme }) => theme.colors.background};
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.3s ease;
