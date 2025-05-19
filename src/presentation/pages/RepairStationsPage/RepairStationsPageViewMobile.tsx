@@ -19,7 +19,7 @@ export const RepairStationsPageViewMobile = observer(() => {
       <SortFilterContainer>
         <SortChip
           onClick={() => {
-            viewModel.changeSort(SortType.DEFAULT)
+            viewModel.setSortType(SortType.DEFAULT)
           }}
           selected={viewModel.sortType === SortType.DEFAULT}
           theme={theme}
@@ -28,7 +28,7 @@ export const RepairStationsPageViewMobile = observer(() => {
         </SortChip>
         <SortChip
           onClick={() => {
-            viewModel.changeSort(SortType.DISTANCE)
+            viewModel.setSortType(SortType.DISTANCE)
           }}
           selected={viewModel.sortType === SortType.DISTANCE}
           theme={theme}
@@ -37,30 +37,47 @@ export const RepairStationsPageViewMobile = observer(() => {
         </SortChip>
       </SortFilterContainer>
       <MainContent>
-        <StationList aria-label="정비소 목록">
-          {viewModel.sortedStations.map((station) => (
-            <StationItem key={station.id} theme={theme} tabIndex={0}>
-              <StationName theme={theme}>{station.name}</StationName>
-              <StationInfoContainer>
-                <StationDistrict theme={theme}>{station.district}</StationDistrict>
-                <LinkIconContainer>
-                  <LinkIcon color={theme.colors.primary} aria-hidden />
-                </LinkIconContainer>
-              </StationInfoContainer>
-            </StationItem>
-          ))}
-        </StationList>
+        <RepairStationListSection />
       </MainContent>
     </Container>
   )
 })
 
+function RepairStationListSection() {
+  const theme = useTheme()
+  const viewModel = useRepairStationsViewModel()
+  return (
+    <RepairStationList aria-label="정비소 목록">
+      {viewModel.sortedRepairStations.map((repairStation) => {
+        const query = encodeURIComponent(repairStation.name + ' ' + repairStation.district)
+        return (
+          <RepairStationItem
+            key={repairStation.id}
+            theme={theme}
+            href={`https://map.naver.com/p/search/${query}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <RepairStationName theme={theme}>{repairStation.name}</RepairStationName>
+            <RepairStationInfoContainer>
+              <RepairStationDistrict theme={theme}>
+                {viewModel.getRepairStationInfoText(repairStation)}
+              </RepairStationDistrict>
+              <LinkIconContainer>
+                <LinkIcon color={theme.colors.primary} aria-hidden />
+              </LinkIconContainer>
+            </RepairStationInfoContainer>
+          </RepairStationItem>
+        )
+      })}
+    </RepairStationList>
+  )
+}
+
 const Container = styled.div`
   width: 100%;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
 `
 
 const StickyTop = styled.div`
@@ -114,36 +131,35 @@ const SortChip = styled.button`
   `}
 `
 
-const StationList = styled.ul`
+const RepairStationList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
 `
 
-const StationItem = styled.li`
+const RepairStationItem = styled.a`
   height: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0px 15px;
   border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
-  cursor: pointer;
 `
 
-const StationName = styled.p`
+const RepairStationName = styled.p`
   ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}
   color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
 `
 
-const StationInfoContainer = styled.div`
+const RepairStationInfoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
 `
 
-const StationDistrict = styled.span`
+const RepairStationDistrict = styled.span`
   ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyMedium};
   `}

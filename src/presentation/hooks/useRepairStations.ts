@@ -58,7 +58,7 @@ export function useRepairStations() {
               { lat: model.coordinate[1], lon: model.coordinate[0] }
             )
           : 0
-        const name = model.label || model.code
+        const name = model.label
         const district = model.region
         return {
           id: model.id,
