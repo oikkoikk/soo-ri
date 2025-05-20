@@ -1,5 +1,7 @@
 import { createContext, useState, ReactNode, useRef, useCallback } from 'react'
 
+const MIN_LOADING_TIME = 500
+
 interface LoadingContextProps {
   loading: boolean
   showLoading: () => void
@@ -12,8 +14,6 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false)
   const loadingStartTime = useRef<number | null>(null)
   const hideLoadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const MIN_LOADING_TIME = 500
 
   const showLoading = useCallback(() => {
     if (hideLoadingTimeoutRef.current) {
