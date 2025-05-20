@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useRef } from 'react'
+import { createContext, useState, ReactNode, useRef, useCallback } from 'react'
 
 interface LoadingContextProps {
   loading: boolean
@@ -15,7 +15,7 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
 
   const MIN_LOADING_TIME = 500
 
-  const showLoading = () => {
+  const showLoading = useCallback(() => {
     if (hideLoadingTimeoutRef.current) {
       clearTimeout(hideLoadingTimeoutRef.current)
       hideLoadingTimeoutRef.current = null
@@ -23,9 +23,9 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
 
     loadingStartTime.current = Date.now()
     setLoading(true)
-  }
+  }, [])
 
-  const hideLoading = () => {
+  const hideLoading = useCallback(() => {
     const startTime = loadingStartTime.current
     const currentTime = Date.now()
 
@@ -40,7 +40,7 @@ export const LoadingProvider = ({ children }: { children: ReactNode }) => {
         hideLoadingTimeoutRef.current = null
       }, remainingTime)
     }
-  }
+  }, [])
 
   return <LoadingContext.Provider value={{ loading, showLoading, hideLoading }}>{children}</LoadingContext.Provider>
 }
