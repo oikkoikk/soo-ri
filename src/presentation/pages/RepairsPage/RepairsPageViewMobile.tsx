@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { Link } from 'react-router'
 
-import { Add, Calendar, Cancel, Check, ChevronRight, Map, Search } from '@/assets/svgs/svgs'
+import { Calendar, Cancel, Check, ChevronRight, Map, Menu, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
 
@@ -105,9 +105,9 @@ const FloatingActionMenu = observer(() => {
       >
         {(() => {
           if (viewModel.fabExpended) {
-            return <Cancel width={15} height={15} color={theme.colors.primary} aria-hidden />
+            return <Cancel width={20} height={20} color={theme.colors.primary} aria-hidden />
           } else {
-            return <Add width={15} height={15} color={theme.colors.onSurface} aria-hidden />
+            return <Menu width={20} height={20} color={theme.colors.onSurface} aria-hidden />
           }
         })()}
       </FABContainer>
