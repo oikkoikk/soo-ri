@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 import { Link } from 'react-router'
 
-import { Menu, Calendar, Cancel, Check, ChevronRight, Map, Search } from '@/assets/svgs/svgs'
+import { Calendar, Cancel, Check, ChevronRight, Map, Menu, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
 import { Header, Tabs } from '@/presentation/components/components'
 
