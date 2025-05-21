@@ -1,9 +1,11 @@
-import { makeAutoObservable } from 'mobx'
+import { useEffect } from 'react'
+
+import { makeAutoObservable, runInAction } from 'mobx'
 import { useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairModel, VehicleModel } from '@/domain/models/models'
-import { useUserRole } from '@/presentation/hooks/hooks'
+import { useRepairs, useUserRole } from '@/presentation/hooks/hooks'
 
 export enum TabId {
   REPAIRS = 'repairs',
@@ -31,9 +33,6 @@ class RepairsStore {
 
   constructor() {
     makeAutoObservable(this)
-    this.loadSampleData()
-    this.calculateTotalRepairsCount()
-    this.calculateRepairBillingPriceSumThisMonth()
   }
 
   get filteredRepairs() {
@@ -65,81 +64,8 @@ class RepairsStore {
     this.fabExpended = !this.fabExpended
   }
 
-  loadSampleData = () => {
-    // 샘플 데이터
-    const sampleRepairs = [
-      new RepairModel({
-        id: '1',
-        repairedAt: new Date('2025-04-22'),
-        billingPrice: 42000,
-        isAccident: false,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['제동장치'],
-        repairer: '박정비',
-      }),
-      new RepairModel({
-        id: '2',
-        repairedAt: new Date('2025-04-12'),
-        billingPrice: 83000,
-        isAccident: true,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['타이어 | 튜브', '전자제어'],
-        repairer: '김수리',
-      }),
-      new RepairModel({
-        id: '3',
-        repairedAt: new Date('2023-04-18'),
-        billingPrice: 62000,
-        isAccident: true,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['시트', '프레임'],
-        repairer: '이정비',
-      }),
-      new RepairModel({
-        id: '4',
-        repairedAt: new Date('2023-01-12'),
-        billingPrice: 12000,
-        isAccident: false,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['구동장치'],
-        repairer: '박정비',
-      }),
-      new RepairModel({
-        id: '5',
-        repairedAt: new Date('2022-07-25'),
-        billingPrice: 15000,
-        isAccident: false,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['배터리'],
-        repairer: '김수리',
-        batteryVoltage: '12V',
-      }),
-      new RepairModel({
-        id: '6',
-        repairedAt: new Date('2022-05-01'),
-        billingPrice: 47000,
-        isAccident: false,
-        repairStationLabel: '성동장애인복지관',
-        repairStationCode: 'SD001',
-        repairCategories: ['발걸이', '전자제어'],
-        repairer: '이정비',
-      }),
-    ]
-
-    const sampleVehicle = new VehicleModel({
-      id: 'V001',
-      registeredAt: new Date('2025-03-15'),
-      purchasedAt: new Date('2024-02-04'),
-      model: 'PM2024007',
-    })
-
-    this.repairs = sampleRepairs
-    this.vehicle = sampleVehicle
+  setRepairs = (repairs: RepairModel[]) => {
+    this.repairs = repairs
   }
 
   calculateTotalRepairsCount = () => {
@@ -172,6 +98,18 @@ export function useRepairsViewModel() {
   const [searchParams] = useSearchParams()
   const { isAdmin, isRepairer, isUser, isGuardian } = useUserRole()
   const vehicleId = searchParams.get('vehicleId') ?? ''
+
+  const { repairs, isLoading, isError } = useRepairs({ vehicleId })
+
+  useEffect(() => {
+    if (repairs.length > 0 && !isLoading && !isError) {
+      runInAction(() => {
+        store.setRepairs(repairs)
+        store.calculateTotalRepairsCount()
+        store.calculateRepairBillingPriceSumThisMonth()
+      })
+    }
+  }, [repairs, isLoading, isError])
 
   const buildRouteForRepairCreatePage = () => {
     return buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId })
