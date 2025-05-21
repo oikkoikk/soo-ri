@@ -8,17 +8,26 @@ import { VehicleModel } from '@/domain/models/models'
 import { useAuthState } from './useAuthState'
 import { useLoading } from './useLoading'
 
-export const useVehicle = () => {
+interface UseVehicleParams {
+  vehicleId?: string
+}
+
+export const useVehicle = ({ vehicleId }: UseVehicleParams = {}) => {
   const { user, loading: authLoading } = useAuthState()
   const { showLoading, hideLoading } = useLoading()
 
   const query = useQuery<VehicleModel>({
-    queryKey: ['vehicle'],
+    queryKey: ['vehicles', vehicleId],
     queryFn: async () => {
       if (!user) throw new Error('로그인 후 이용 가능합니다')
 
       const token = await user.getIdToken()
-      return await vehicleRepositorySoori.getUserVehicle(token)
+
+      if (vehicleId) {
+        return await vehicleRepositorySoori.getVehicleById(vehicleId, token)
+      } else {
+        return await vehicleRepositorySoori.getUserVehicle(token)
+      }
     },
     enabled: !authLoading && !!user,
   })
