@@ -5,6 +5,10 @@ import { HttpClientAdapter } from '../adapters/adapters'
 
 interface VehicleApiResponse {
   vehicleId: string
+  userId: string
+  model: string
+  purchasedAt: string
+  registeredAt: string
 }
 
 export class VehicleRepositorySoori implements VehicleRepository {
@@ -23,6 +27,31 @@ export class VehicleRepositorySoori implements VehicleRepository {
 
       return new VehicleModel({
         id: response.vehicleId,
+        model: response.model,
+        purchasedAt: new Date(response.purchasedAt),
+        registeredAt: new Date(response.registeredAt),
+      })
+    } catch (error) {
+      console.error('전동보장구 정보 조회 실패:', error)
+      throw error
+    }
+  }
+
+  async getVehicleById(vehicleId: string, token: string): Promise<VehicleModel> {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+
+      const response = await this.httpClient.get<VehicleApiResponse>(`${this.baseUrl}/${vehicleId}`, config)
+
+      return new VehicleModel({
+        id: response.vehicleId,
+        model: response.model,
+        purchasedAt: new Date(response.purchasedAt),
+        registeredAt: new Date(response.registeredAt),
       })
     } catch (error) {
       console.error('전동보장구 정보 조회 실패:', error)
