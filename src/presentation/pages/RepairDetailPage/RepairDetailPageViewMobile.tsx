@@ -137,7 +137,7 @@ const RepairInfoSection = observer(() => {
       </SectionHeader>
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
-      <EtcRepairPartFormGroup />
+      <EtcRepairPartsFormGroup />
       <RepairMemoFormGroup />
     </SectionBox>
   )
@@ -178,15 +178,15 @@ const BatteryVoltageFormGroup = observer(() => {
   )
 })
 
-const EtcRepairPartFormGroup = observer(() => {
+const EtcRepairPartsFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
-  if (!viewModel.repairModel.etcRepairPart) return null
+  if (!viewModel.repairModel.etcRepairParts) return null
 
   return (
     <FormGroup aria-label="기타 수리 부위">
-      <ReadonlyValue theme={theme}>{viewModel.repairModel.etcRepairPart}</ReadonlyValue>
+      <ReadonlyValue theme={theme}>{viewModel.repairModel.etcRepairParts}</ReadonlyValue>
     </FormGroup>
   )
 })

@@ -29,7 +29,7 @@ class RepairCreateStore {
 
   get valid(): boolean {
     const batteryFieldValid = !this.hasBattery || this.repairModel.batteryVoltage.trim() !== ''
-    const etcFieldValid = !this.hasEtc || this.repairModel.etcRepairPart.trim() !== ''
+    const etcFieldValid = !this.hasEtc || this.repairModel.etcRepairParts.trim() !== ''
 
     return Boolean(
       this.repairModel.type !== '' &&
@@ -43,11 +43,11 @@ class RepairCreateStore {
   }
 
   get hasBattery(): boolean {
-    return this.repairModel.repairCategories.includes('battery')
+    return this.repairModel.repairCategories.includes('배터리')
   }
 
   get hasEtc(): boolean {
-    return this.repairModel.repairCategories.includes('etc')
+    return this.repairModel.repairCategories.includes('기타')
   }
 
   updateIsAccident = (isAccident: boolean) => {
@@ -90,9 +90,9 @@ class RepairCreateStore {
     })
   }
 
-  updateEtcRepairPart = (value: string) => {
+  updateEtcRepairParts = (value: string) => {
     this.repairModel = this.repairModel.copyWith({
-      etcRepairPart: value,
+      etcRepairParts: value,
     })
   }
 

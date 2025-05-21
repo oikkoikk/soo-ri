@@ -142,6 +142,15 @@ const SearchBar = observer(() => {
 
 const RepairHistoryList = observer(() => {
   const viewModel = useRepairsViewModel()
+  const theme = useTheme()
+
+  if (viewModel.filteredRepairs.length === 0) {
+    return (
+      <EmptyContainer>
+        <EmptyText theme={theme}>등록된 정비 이력이 없습니다.</EmptyText>
+      </EmptyContainer>
+    )
+  }
 
   return (
     <RepairList aria-label="정비 이력 목록">
@@ -517,4 +526,20 @@ const ModalOverlay = styled.div`
       opacity: 1;
     }
   }
+`
+
+const EmptyContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+`
+
+const EmptyText = styled.p`
+  ${({ theme }: { theme: Theme }) => css`
+    ${theme.typography.bodyLarge};
+    color: ${theme.colors.onSurfaceVariant};
+  `}
 `

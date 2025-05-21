@@ -27,10 +27,10 @@ interface Repair {
   billingPrice?: number
   repairStationLabel?: string
   repairStationCode?: string
-  repairCategories?: string[]
+  repairCategories?: RepairCategory[]
   repairer?: string
   batteryVoltage?: string
-  etcRepairPart?: string
+  etcRepairParts?: string
   memo?: string
   isAccident?: boolean
   repairedAt?: Date
@@ -44,10 +44,10 @@ export class RepairModel implements Repair {
   readonly billingPrice: number
   readonly repairStationLabel: string
   readonly repairStationCode: string
-  readonly repairCategories: string[]
+  readonly repairCategories: RepairCategory[]
   readonly repairer: string
   readonly batteryVoltage: string
-  readonly etcRepairPart: string
+  readonly etcRepairParts: string
   readonly memo: string
   readonly isAccident: boolean
   readonly repairedAt: Date
@@ -63,7 +63,7 @@ export class RepairModel implements Repair {
     this.repairCategories = model.repairCategories ?? []
     this.repairer = model.repairer ?? ''
     this.batteryVoltage = model.batteryVoltage ?? ''
-    this.etcRepairPart = model.etcRepairPart ?? ''
+    this.etcRepairParts = model.etcRepairParts ?? ''
     this.memo = model.memo ?? ''
     this.isAccident = model.isAccident ?? false
     this.repairedAt = new Date(model.repairedAt ?? new Date())

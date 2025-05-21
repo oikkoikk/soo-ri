@@ -171,7 +171,7 @@ const RepairInfoSection = observer(() => {
       </SectionHeader>
       <RepairCategoryFormGroup />
       <BatteryVoltageFormGroup />
-      <EtcRepairPartFormGroup />
+      <EtcRepairPartsFormGroup />
       <RepairMemoFormGroup />
     </SectionBox>
   )
@@ -230,7 +230,7 @@ const BatteryVoltageFormGroup = observer(() => {
   )
 })
 
-const EtcRepairPartFormGroup = observer(() => {
+const EtcRepairPartsFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairCreateViewModel()
 
@@ -240,9 +240,9 @@ const EtcRepairPartFormGroup = observer(() => {
     <FormGroup>
       <FormInput
         type="text"
-        value={viewModel.repairModel.etcRepairPart}
+        value={viewModel.repairModel.etcRepairParts}
         onChange={(e) => {
-          viewModel.updateEtcRepairPart(e.target.value)
+          viewModel.updateEtcRepairParts(e.target.value)
         }}
         theme={theme}
         style={{
