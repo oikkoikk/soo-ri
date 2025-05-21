@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairModel, VehicleModel } from '@/domain/models/models'
-import { useRepairs, useUserRole } from '@/presentation/hooks/hooks'
+import { useRepairs, useUserRole, useVehicle } from '@/presentation/hooks/hooks'
 
 export enum TabId {
   REPAIRS = 'repairs',
@@ -68,6 +68,10 @@ class RepairsStore {
     this.repairs = repairs
   }
 
+  setVehicle = (vehicle: VehicleModel) => {
+    this.vehicle = vehicle
+  }
+
   calculateTotalRepairsCount = () => {
     this.totalRepairsCount = this.repairs.length
   }
@@ -99,17 +103,26 @@ export function useRepairsViewModel() {
   const { isAdmin, isRepairer, isUser, isGuardian } = useUserRole()
   const vehicleId = searchParams.get('vehicleId') ?? ''
 
-  const { repairs, isLoading, isError } = useRepairs({ vehicleId })
+  const { repairs, isLoading: repairsLoading, isError: repairsError } = useRepairs({ vehicleId })
+  const { vehicle, isLoading: vehicleLoading, isError: vehicleError } = useVehicle({ vehicleId })
 
   useEffect(() => {
-    if (repairs.length > 0 && !isLoading && !isError) {
+    if (repairs.length > 0 && !repairsLoading && !repairsError) {
       runInAction(() => {
         store.setRepairs(repairs)
         store.calculateTotalRepairsCount()
         store.calculateRepairBillingPriceSumThisMonth()
       })
     }
-  }, [repairs, isLoading, isError])
+  }, [repairs, repairsLoading, repairsError])
+
+  useEffect(() => {
+    if (vehicle && !vehicleLoading && !vehicleError) {
+      runInAction(() => {
+        store.setVehicle(vehicle)
+      })
+    }
+  }, [vehicle, vehicleLoading, vehicleError])
 
   const buildRouteForRepairCreatePage = () => {
     return buildRoute('REPAIR_CREATE', {}, { vehicleId: vehicleId })
