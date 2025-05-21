@@ -56,7 +56,7 @@ export class RepairRepositorySoori implements RepairRepository {
           })
       )
     } catch (error) {
-      console.error('차량 수리 내역 조회 실패:', error)
+      console.error('전동보장구 수리 내역 조회 실패:', error)
       throw error
     }
   }
