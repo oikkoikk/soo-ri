@@ -86,7 +86,7 @@ const FloatingActionMenu = observer(() => {
                     <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
                   </MenuItem>
                 </MenuItemContainer>
-                <MenuItem to={viewModel.buildRouteForVehicleTestPage()} theme={theme}>
+                <MenuItem to={viewModel.buildRouteForVehicleSelfCheckPage()} theme={theme}>
                   <MenuItemIconContainer theme={theme}>
                     <Check width={20} height={20} color={theme.colors.onSurface} aria-hidden />
                   </MenuItemIconContainer>
