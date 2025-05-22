@@ -1,8 +1,24 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { SelfCheckModel } from '@/domain/models/models'
 import { useSelfCheck, useLoading } from '@/presentation/hooks/hooks'
+
+export enum TabId {
+  SELF_CHECK = 'self_check',
+  HISTORY = 'history',
+}
+
+interface TabItem {
+  id: TabId
+  label: string
+}
+
+const tabItems: TabItem[] = [
+  { id: TabId.SELF_CHECK, label: '자가점검 하기' },
+  { id: TabId.HISTORY, label: '자가점검 기록' },
+]
 
 interface SelfCheckItem {
   id: string
@@ -15,6 +31,7 @@ class VehicleSelfCheckStore {
   selfCheckItems: SelfCheckItem[] = []
   submitting = false
   error: Error | null = null
+  activeTab: TabId = TabId.SELF_CHECK
 
   constructor() {
     makeAutoObservable(this)
@@ -30,6 +47,10 @@ class VehicleSelfCheckStore {
     if (item) {
       item.answer = answer
     }
+  }
+
+  changeTab = (tabId: TabId) => {
+    this.activeTab = tabId
   }
 
   setSubmitting = (value: boolean) => {
@@ -158,11 +179,13 @@ export function useVehicleSelfCheckViewModel() {
   const { loading, showLoading, hideLoading } = useLoading()
 
   const vehicleId = searchParams.get('vehicleId') ?? ''
-  const { createSelfCheck, error: apiError } = useSelfCheck({ vehicleId })
+  const { createSelfCheck, error: apiError, selfChecks } = useSelfCheck({ vehicleId })
 
   const goBack = () => {
     void navigate(-1)
   }
+
+  const queryClient = useQueryClient()
 
   const handleSaveSelfCheckResults = async () => {
     if (!vehicleId) {
@@ -189,7 +212,9 @@ export function useVehicleSelfCheckViewModel() {
       if (result) {
         alert('자가점검이 성공적으로 저장되었습니다')
         store.reset()
-        goBack()
+
+        store.changeTab(TabId.HISTORY)
+        void queryClient.invalidateQueries({ queryKey: ['selfChecks', vehicleId] })
       } else if (apiError) {
         throw apiError
       }
@@ -210,5 +235,9 @@ export function useVehicleSelfCheckViewModel() {
     saveSelfCheckResults: handleSaveSelfCheckResults,
     submitting: loading,
     goBack,
+    activeTab: store.activeTab,
+    changeTab: store.changeTab,
+    selfChecks,
+    tabItems,
   }
 }
