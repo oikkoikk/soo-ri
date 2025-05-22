@@ -4,8 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routers'
 import { userRepositorySoori } from '@/data/services/services'
-import { RecipientType, UserModel, VehicleModel, EventModel } from '@/domain/models/models'
-import { SignUpParams } from '@/domain/repositories/repositories'
+import { EventModel, RecipientType, SupportedDistrict, UserModel, VehicleModel } from '@/domain/models/models'
 import { AuthPhoneVerifyUseCase, AuthPhoneConfirmUseCase, EventCreateUseCase } from '@/domain/use_cases/use_cases'
 import { useLoading } from '@/presentation/hooks/hooks'
 
@@ -15,6 +14,37 @@ const eventCreateUseCase = new EventCreateUseCase()
 
 const EXPIRATION_TIME = 300
 const VERIFICATION_CODE_LENGTH = 6
+
+const RECIPIENT_TYPES: RecipientType[] = ['일반', '장애인', '차상위', '미등록']
+
+const SUPPORTED_DISTRICTS: SupportedDistrict[] = [
+  '강남구',
+  '강동구',
+  '강북구',
+  '강서구',
+  '관악구',
+  '광진구',
+  '구로구',
+  '금천구',
+  '노원구',
+  '도봉구',
+  '동대문구',
+  '동작구',
+  '마포구',
+  '서대문구',
+  '서초구',
+  '성동구',
+  '성북구',
+  '송파구',
+  '양천구',
+  '영등포구',
+  '용산구',
+  '은평구',
+  '종로구',
+  '중구',
+  '중랑구',
+  '서울 외',
+]
 
 class SignInStore {
   phoneNumber = ''
@@ -35,6 +65,14 @@ class SignInStore {
 
   constructor() {
     makeAutoObservable(this)
+  }
+
+  get recipientTypeOptions(): RecipientType[] {
+    return RECIPIENT_TYPES
+  }
+
+  get supportedDistrictOptions(): string[] {
+    return SUPPORTED_DISTRICTS
   }
 
   get validPhoneNumber() {
@@ -192,6 +230,10 @@ class SignInStore {
     this.userModel = this.userModel.copyWith({ recipientType: recipientType as RecipientType })
   }
 
+  updateSupportedDistrict = (supportedDistrict: string) => {
+    this.userModel = this.userModel.copyWith({ supportedDistrict: supportedDistrict as SupportedDistrict })
+  }
+
   async requestVerification(showLoading: () => void, hideLoading: () => void) {
     if (!this.canRequestVerification) return
 
@@ -296,16 +338,7 @@ class SignInStore {
     showLoading()
 
     try {
-      const signupData: SignUpParams = {
-        name: this.userModel.name,
-        model: this.vehicleModel.model,
-        purchasedAt: this.vehicleModel.purchasedAt.toISOString(),
-        registeredAt: this.vehicleModel.registeredAt.toISOString(),
-        recipientType: this.userModel.recipientType,
-      }
-
-      signupData.vehicleId = vehicleId
-      await userRepositorySoori.signUp(this.firebaseToken, signupData)
+      await userRepositorySoori.signUp(this.firebaseToken, this.userModel, this.vehicleModel, vehicleId)
 
       runInAction(() => {
         this.userExists = true
@@ -319,7 +352,7 @@ class SignInStore {
         title: '회원가입 실패',
         description: `이름: ${this.userModel.name}, 전화번호: ${this.phoneNumber}, 모델: ${this.vehicleModel.model}, 구매일: ${this.dateInputFormatString(
           this.vehicleModel.purchasedAt
-        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}`,
+        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}, 지원 자치구: ${this.userModel.supportedDistrict}`,
         fatal: true,
       })
       void eventCreateUseCase.call(signUpFailEvent)
@@ -400,6 +433,8 @@ export function useSignInViewModel() {
     signUp: () => store.signUp(showLoading, hideLoading, vehicleId, goToRepairsPage),
     goBack,
     goToRepairsPage,
+    recipientTypeOptions: store.recipientTypeOptions,
+    supportedDistrictOptions: store.supportedDistrictOptions,
     validPhoneNumber: store.validPhoneNumber,
     validVerificationCode: store.validVerificationCode,
     needToSignUp: store.needToSignUp,

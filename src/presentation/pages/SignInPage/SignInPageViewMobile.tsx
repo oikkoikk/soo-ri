@@ -30,7 +30,7 @@ export const SignInPageViewMobile = observer(() => {
         <VerificationInputFormGroup />
         {(() => {
           if (viewModel.needToSignUp) {
-            return <SignupFormGroup />
+            return <SignUpFormGroup />
           }
         })()}
       </MainContent>
@@ -155,87 +155,154 @@ const VerificationInputFormGroup = observer(() => {
   )
 })
 
-const SignupFormGroup = observer(() => {
+const SignUpFormGroup = observer(() => {
+  return (
+    <>
+      <NameFormGroup />
+      <ModelFormGroup />
+      <PurchasedAtFormGroup />
+      <RegisteredAtFormGroup />
+      <RecipientTypeFormGroup />
+      <SupportedDistrictFormGroup />
+    </>
+  )
+})
+
+const NameFormGroup = observer(() => {
+  const viewModel = useSignInViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="sign-up-name">이름</FormLabel>
+      <FormInput
+        type="text"
+        value={viewModel.userModel.name}
+        onChange={(e) => {
+          viewModel.updateName(e.target.value)
+        }}
+        placeholder="이름을 입력해주세요"
+        aria-labelledby='"sign-up-name"'
+      />
+    </FormGroup>
+  )
+})
+
+const ModelFormGroup = observer(() => {
+  const viewModel = useSignInViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="sign-up-model">전동보장구 모델명</FormLabel>
+      <FormInput
+        type="text"
+        value={viewModel.vehicleModel.model}
+        onChange={(e) => {
+          viewModel.updateModel(e.target.value)
+        }}
+        placeholder="전동보장구 모델명을 입력해주세요"
+        aria-labelledby='"sign-up-model"'
+      />
+    </FormGroup>
+  )
+})
+
+const PurchasedAtFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useSignInViewModel()
 
   return (
-    <>
-      <FormGroup>
-        <FormLabel id="sign-up-name">이름</FormLabel>
-        <FormInput
-          type="text"
-          value={viewModel.userModel.name}
+    <FormGroup>
+      <FormLabel id="sign-up-purchased-at">전동보장구 구매일</FormLabel>
+      <DateInputWrapper>
+        <DateInput
+          type="date"
+          value={viewModel.dateInputFormatString(viewModel.vehicleModel.purchasedAt)}
           onChange={(e) => {
-            viewModel.updateName(e.target.value)
+            viewModel.updatePurchasedAt(e.target.value)
           }}
-          placeholder="이름을 입력해주세요"
-          aria-labelledby='"sign-up-name"'
+          theme={theme}
+          aria-labelledby='"sign-up-purchased-at"'
         />
-      </FormGroup>
-      <FormGroup>
-        <FormLabel id="sign-up-model">전동보장구 모델명</FormLabel>
-        <FormInput
-          type="text"
-          value={viewModel.vehicleModel.model}
+        <CalendarIconWrapper>
+          <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
+        </CalendarIconWrapper>
+      </DateInputWrapper>
+    </FormGroup>
+  )
+})
+
+const RegisteredAtFormGroup = observer(() => {
+  const theme = useTheme()
+  const viewModel = useSignInViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="sign-up-registered-at">전동보장구 등록일</FormLabel>
+      <DateInputWrapper>
+        <DateInput
+          type="date"
+          value={viewModel.dateInputFormatString(viewModel.vehicleModel.registeredAt)}
           onChange={(e) => {
-            viewModel.updateModel(e.target.value)
+            viewModel.updateRegisteredAt(e.target.value)
           }}
-          placeholder="전동보장구 모델명을 입력해주세요"
-          aria-labelledby='"sign-up-model"'
+          theme={theme}
+          aria-labelledby='"sign-up-registered-at"'
         />
-      </FormGroup>
-      <FormGroup>
-        <FormLabel id="sign-up-purchased-at">전동보장구 구매일</FormLabel>
-        <DateInputWrapper>
-          <DateInput
-            type="date"
-            value={viewModel.dateInputFormatString(viewModel.vehicleModel.purchasedAt)}
-            onChange={(e) => {
-              viewModel.updatePurchasedAt(e.target.value)
-            }}
-            theme={theme}
-            aria-labelledby='"sign-up-purchased-at"'
-          />
-          <CalendarIconWrapper>
-            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
-          </CalendarIconWrapper>
-        </DateInputWrapper>
-      </FormGroup>
-      <FormGroup>
-        <FormLabel id="sign-up-registered-at">전동보장구 등록일</FormLabel>
-        <DateInputWrapper>
-          <DateInput
-            type="date"
-            value={viewModel.dateInputFormatString(viewModel.vehicleModel.registeredAt)}
-            onChange={(e) => {
-              viewModel.updateRegisteredAt(e.target.value)
-            }}
-            theme={theme}
-            aria-labelledby='"sign-up-registered-at"'
-          />
-          <CalendarIconWrapper>
-            <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
-          </CalendarIconWrapper>
-        </DateInputWrapper>
-      </FormGroup>
-      <FormGroup>
-        <FormLabel id="sign-up-recipient-type">수급유형</FormLabel>
-        <SelectWrapper>
-          <SelectBox
-            value={viewModel.userModel.recipientType}
-            onChange={(e) => {
-              viewModel.updateRecipientType(e.target.value)
-            }}
-            aria-labelledby='"sign-up-recipient-type"'
-          >
-            <option value="general">일반</option>
-            <option value="disabled">장애인</option>
-            <option value="lowIncome">차상위</option>
-          </SelectBox>
-        </SelectWrapper>
-      </FormGroup>
-    </>
+        <CalendarIconWrapper>
+          <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
+        </CalendarIconWrapper>
+      </DateInputWrapper>
+    </FormGroup>
+  )
+})
+
+const RecipientTypeFormGroup = observer(() => {
+  const viewModel = useSignInViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="sign-up-recipient-type">수급유형</FormLabel>
+      <SelectWrapper>
+        <SelectBox
+          value={viewModel.userModel.recipientType}
+          onChange={(e) => {
+            viewModel.updateRecipientType(e.target.value)
+          }}
+          aria-labelledby='"sign-up-recipient-type"'
+        >
+          {viewModel.recipientTypeOptions.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </SelectBox>
+      </SelectWrapper>
+    </FormGroup>
+  )
+})
+
+const SupportedDistrictFormGroup = observer(() => {
+  const viewModel = useSignInViewModel()
+
+  return (
+    <FormGroup>
+      <FormLabel id="sign-up-supported-district">지원 자치구</FormLabel>
+      <SelectWrapper>
+        <SelectBox
+          value={viewModel.userModel.supportedDistrict}
+          onChange={(e) => {
+            viewModel.updateSupportedDistrict(e.target.value)
+          }}
+          aria-labelledby='"sign-up-supported-district"'
+        >
+          {viewModel.supportedDistrictOptions.map((district) => (
+            <option key={district} value={district}>
+              {district}
+            </option>
+          ))}
+        </SelectBox>
+      </SelectWrapper>
+    </FormGroup>
   )
 })
 
