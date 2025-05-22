@@ -5,7 +5,7 @@ export const ROUTES = {
   REPAIR_DETAIL: '/repairs/:id',
   REPAIR_CREATE: '/repairs/new',
   REPAIR_STATIONS: '/repair-stations',
-  VEHICLE_TEST: '/vehicle-test',
+  VEHICLE_SELF_CHECK: '/vehicle-self-check',
 } as const
 
 export type RouteKey = keyof typeof ROUTES
