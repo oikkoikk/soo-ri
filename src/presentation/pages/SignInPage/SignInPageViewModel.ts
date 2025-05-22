@@ -15,7 +15,7 @@ const eventCreateUseCase = new EventCreateUseCase()
 const EXPIRATION_TIME = 300
 const VERIFICATION_CODE_LENGTH = 6
 
-const RECIPIENT_TYPES: RecipientType[] = ['일반', '장애인', '차상위', '미등록']
+const RECIPIENT_TYPES: RecipientType[] = ['일반', '수급', '차상위', '미등록']
 
 const SUPPORTED_DISTRICTS: SupportedDistrict[] = [
   '강남구',

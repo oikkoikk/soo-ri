@@ -1,6 +1,6 @@
 export type UserRole = 'user' | 'admin' | 'repairer' | 'guardian'
 
-export type RecipientType = '일반' | '장애인' | '차상위' | '미등록'
+export type RecipientType = '일반' | '수급' | '차상위' | '미등록'
 
 export type SupportedDistrict =
   | '강남구'
@@ -86,22 +86,6 @@ export class UserModel implements User {
 
   get hasGuardians(): boolean {
     return this.guardianIds.length > 0
-  }
-
-  get general(): boolean {
-    return this.recipientType === '일반'
-  }
-
-  get disabled(): boolean {
-    return this.recipientType === '장애인'
-  }
-
-  get lowIncome(): boolean {
-    return this.recipientType === '차상위'
-  }
-
-  get unregistered(): boolean {
-    return this.recipientType === '미등록'
   }
 
   copyWith(changes: Partial<User>): UserModel {
