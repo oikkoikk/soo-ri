@@ -2,9 +2,10 @@ import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
 
-import { Header } from '@/presentation/components/components'
+import { ChevronRight } from '@/assets/svgs/svgs'
+import { Header, Tabs } from '@/presentation/components/components'
 
-import { useVehicleSelfCheckViewModel } from './VehicleSelfCheckPageViewModel'
+import { TabId, useVehicleSelfCheckViewModel } from './VehicleSelfCheckPageViewModel'
 
 export const VehicleSelfCheckPageViewMobile = observer(() => {
   const theme = useTheme()
@@ -14,57 +15,77 @@ export const VehicleSelfCheckPageViewMobile = observer(() => {
     <Container>
       <StickyTop theme={theme}>
         <Header title="나의 전동보장구 자가점검" onBack={viewModel.goBack} />
+        <Tabs
+          activeTab={viewModel.activeTab as string}
+          setActiveTab={(tabId: string) => {
+            viewModel.changeTab(tabId as TabId)
+          }}
+          tabs={viewModel.tabItems}
+        />
       </StickyTop>
-      <MainContent>
-        <SelfCheckItemList aria-label="자가점검 항목 목록">
-          {viewModel.selfCheckItems.map((item, index) => (
-            <SelfCheckItem key={item.id} theme={theme}>
-              <SelfCheckItemNumber theme={theme} answered={item.answer !== null}>
-                {index + 1}
-              </SelfCheckItemNumber>
-              <SelfCheckItemRow>
-                <SelfCheckItemQuestion theme={theme} id={`question-${item.id}`}>
-                  {item.question}
-                </SelfCheckItemQuestion>
-                <RadioGroupContainer role="radiogroup" aria-labelledby={`question-${item.id}`}>
-                  <RadioButtonGroup>
-                    <RadioButton
-                      type="radio"
-                      id={`radio-yes-${item.id}`}
-                      name={`radio-${item.id}`}
-                      value="true"
-                      checked={item.answer === true}
-                      onChange={() => {
-                        viewModel.setAnswer(item.id, true)
-                      }}
-                      aria-checked={item.answer === true}
-                    />
-                    <RadioButtonLabel htmlFor={`radio-yes-${item.id}`} theme={theme} selected={item.answer === true}>
-                      그렇다
-                    </RadioButtonLabel>
-                  </RadioButtonGroup>
-                  <RadioButtonGroup>
-                    <RadioButton
-                      type="radio"
-                      id={`radio-no-${item.id}`}
-                      name={`radio-${item.id}`}
-                      value="false"
-                      checked={item.answer === false}
-                      onChange={() => {
-                        viewModel.setAnswer(item.id, false)
-                      }}
-                      aria-checked={item.answer === false}
-                    />
-                    <RadioButtonLabel htmlFor={`radio-no-${item.id}`} theme={theme} selected={item.answer === false}>
-                      아니다
-                    </RadioButtonLabel>
-                  </RadioButtonGroup>
-                </RadioGroupContainer>
-              </SelfCheckItemRow>
-            </SelfCheckItem>
-          ))}
-        </SelfCheckItemList>
-      </MainContent>
+      <MainContent>{viewModel.activeTab === TabId.SELF_CHECK ? <SelfCheckForm /> : <SelfCheckHistory />}</MainContent>
+    </Container>
+  )
+})
+
+const SelfCheckForm = observer(() => {
+  const theme = useTheme()
+  const viewModel = useVehicleSelfCheckViewModel()
+
+  return (
+    <SelfCheckFormContainer>
+      <SelfCheckItemList aria-label="자가점검 항목 목록">
+        {viewModel.selfCheckItems.map((item, index) => (
+          <SelfCheckItem key={item.id} theme={theme}>
+            <SelfCheckItemNumber
+              theme={theme}
+              answered={item.answer !== null}
+              aria-label={`문항 ${(index + 1).toString()}`}
+            >
+              {index + 1}
+            </SelfCheckItemNumber>
+            <SelfCheckItemRow>
+              <SelfCheckItemQuestion theme={theme} id={`question-${item.id}`}>
+                {item.question}
+              </SelfCheckItemQuestion>
+              <RadioGroupContainer role="radiogroup" aria-labelledby={`question-${item.id}`}>
+                <RadioButtonGroup>
+                  <RadioButton
+                    type="radio"
+                    id={`radio-yes-${item.id}`}
+                    name={`radio-${item.id}`}
+                    value="true"
+                    checked={item.answer === true}
+                    onChange={() => {
+                      viewModel.setAnswer(item.id, true)
+                    }}
+                    aria-checked={item.answer === true}
+                  />
+                  <RadioButtonLabel htmlFor={`radio-yes-${item.id}`} theme={theme} selected={item.answer === true}>
+                    그렇다
+                  </RadioButtonLabel>
+                </RadioButtonGroup>
+                <RadioButtonGroup>
+                  <RadioButton
+                    type="radio"
+                    id={`radio-no-${item.id}`}
+                    name={`radio-${item.id}`}
+                    value="false"
+                    checked={item.answer === false}
+                    onChange={() => {
+                      viewModel.setAnswer(item.id, false)
+                    }}
+                    aria-checked={item.answer === false}
+                  />
+                  <RadioButtonLabel htmlFor={`radio-no-${item.id}`} theme={theme} selected={item.answer === false}>
+                    아니다
+                  </RadioButtonLabel>
+                </RadioButtonGroup>
+              </RadioGroupContainer>
+            </SelfCheckItemRow>
+          </SelfCheckItem>
+        ))}
+      </SelfCheckItemList>
       <CTAButtonContainer theme={theme}>
         <CTAButton
           onClick={() => {
@@ -77,7 +98,38 @@ export const VehicleSelfCheckPageViewMobile = observer(() => {
           {viewModel.submitting ? '저장 중...' : '점검사항 저장하기'}
         </CTAButton>
       </CTAButtonContainer>
-    </Container>
+    </SelfCheckFormContainer>
+  )
+})
+
+const SelfCheckHistory = observer(() => {
+  const theme = useTheme()
+  const viewModel = useVehicleSelfCheckViewModel()
+
+  if (viewModel.selfChecks.length === 0) {
+    return (
+      <EmptyContainer>
+        <EmptyText theme={theme}>등록된 자가점검 이력이 없습니다.</EmptyText>
+      </EmptyContainer>
+    )
+  }
+
+  return (
+    <HistoryContainer>
+      {viewModel.selfChecks.map((selfCheck) => (
+        <HistoryItem key={selfCheck.id} theme={theme}>
+          <HistoryItemContent>
+            <HistoryItemTexts>
+              <HistoryDate theme={theme}>{selfCheck.createdAtDisplayString}</HistoryDate>
+              <ResultSummary theme={theme}>{selfCheck.resultDisplayString}</ResultSummary>
+            </HistoryItemTexts>
+            <IconContainer aria-hidden>
+              <ChevronRight width={18} height={18} color={theme.colors.onSurfaceVariant} />
+            </IconContainer>
+          </HistoryItemContent>
+        </HistoryItem>
+      ))}
+    </HistoryContainer>
   )
 })
 
@@ -99,6 +151,10 @@ const StickyTop = styled.div`
 
 const MainContent = styled.section`
   flex: 1;
+  padding: 0;
+`
+
+const SelfCheckFormContainer = styled.div`
   padding: 15px 16px;
 `
 
@@ -152,23 +208,20 @@ const RadioGroupContainer = styled.div`
   gap: 10px;
 `
 
-// 라디오 버튼 그룹 컴포넌트
-const RadioOptionGroup = styled.div`
+const RadioButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0 5px;
 `
 
-// 실제 라디오 버튼
-const RadioInput = styled.input`
+const RadioButton = styled.input`
   margin: 0;
   cursor: pointer;
   accent-color: ${({ theme }: { theme?: Theme }) => theme?.colors.primary ?? '#007AFF'};
 `
 
-// 라디오 버튼 라벨
-const RadioLabel = styled.label<{ theme: Theme; selected?: boolean }>`
+const RadioButtonLabel = styled.label<{ theme: Theme; selected?: boolean }>`
   display: flex;
   padding: 4px 0;
   cursor: pointer;
@@ -179,10 +232,6 @@ const RadioLabel = styled.label<{ theme: Theme; selected?: boolean }>`
   `}
   transition: all 0.2s ease;
 `
-
-const RadioButtonGroup = RadioOptionGroup
-const RadioButton = RadioInput
-const RadioButtonLabel = RadioLabel
 
 const CTAButtonContainer = styled.div`
   position: fixed;
@@ -231,5 +280,67 @@ const CTAButton = styled.button`
   }};
   ${({ theme }: { theme: Theme }) => css`
     ${theme.typography.bodyLarge};
+  `}
+`
+
+const HistoryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const HistoryItem = styled.div`
+  display: flex;
+  flex-direction: row;
+  border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};
+  padding: 8px 18px;
+  background-color: ${({ theme }: { theme: Theme }) => theme.colors.background};
+`
+
+const HistoryItemContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`
+
+const HistoryItemTexts = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const HistoryDate = styled.p`
+  ${({ theme }: { theme: Theme }) => css`
+    ${theme.typography.labelSmall};
+  `}
+  color: ${({ theme }: { theme: Theme }) => theme.colors.primary};
+`
+
+const ResultSummary = styled.p`
+  ${({ theme }: { theme: Theme }) => css`
+    ${theme.typography.labelSmall};
+    color: ${theme.colors.onSurfaceVariant};
+  `}
+`
+
+const EmptyContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+`
+
+const EmptyText = styled.p`
+  ${({ theme }: { theme: Theme }) => css`
+    ${theme.typography.bodyLarge};
+    color: ${theme.colors.onSurfaceVariant};
   `}
 `
