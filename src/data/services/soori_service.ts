@@ -2,6 +2,7 @@ import { AxiosHttpClientAdapter } from '../adapters/adapters'
 import {
   RepairRepositorySoori,
   RepairStationRepositorySoori,
+  SelfCheckRepositorySoori,
   UserRepositorySoori,
   VehicleRepositorySoori,
 } from '../repositories/repositories'
@@ -20,3 +21,4 @@ export const userRepositorySoori = new UserRepositorySoori(httpClient)
 export const repairStationRepositorySoori = new RepairStationRepositorySoori(httpClient)
 export const repairRepositorySoori = new RepairRepositorySoori(httpClient)
 export const vehicleRepositorySoori = new VehicleRepositorySoori(httpClient)
+export const selfCheckRepositorySoori = new SelfCheckRepositorySoori(httpClient)
