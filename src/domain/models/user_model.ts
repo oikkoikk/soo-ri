@@ -1,6 +1,34 @@
 export type UserRole = 'user' | 'admin' | 'repairer' | 'guardian'
 
-export type RecipientType = 'general' | 'disabled' | 'lowIncome'
+export type RecipientType = '일반' | '수급' | '차상위' | '미등록'
+
+export type SupportedDistrict =
+  | '강남구'
+  | '강동구'
+  | '강북구'
+  | '강서구'
+  | '관악구'
+  | '광진구'
+  | '구로구'
+  | '금천구'
+  | '노원구'
+  | '도봉구'
+  | '동대문구'
+  | '동작구'
+  | '마포구'
+  | '서대문구'
+  | '서초구'
+  | '성동구'
+  | '성북구'
+  | '송파구'
+  | '양천구'
+  | '영등포구'
+  | '용산구'
+  | '은평구'
+  | '종로구'
+  | '중구'
+  | '중랑구'
+  | '서울 외'
 
 interface User {
   id?: string
@@ -10,6 +38,7 @@ interface User {
   guardianIds?: string[]
   name?: string
   recipientType?: RecipientType
+  supportedDistrict?: SupportedDistrict
   createdAt?: Date
   updatedAt?: Date
 }
@@ -22,6 +51,7 @@ export class UserModel implements User {
   readonly guardianIds: string[]
   readonly name: string
   readonly recipientType: RecipientType
+  readonly supportedDistrict: SupportedDistrict
   readonly createdAt: Date
   readonly updatedAt: Date
 
@@ -32,7 +62,8 @@ export class UserModel implements User {
     this.role = model.role ?? 'user'
     this.guardianIds = model.guardianIds ?? []
     this.name = model.name ?? ''
-    this.recipientType = model.recipientType ?? 'general'
+    this.recipientType = model.recipientType ?? '일반'
+    this.supportedDistrict = model.supportedDistrict ?? '성동구'
     this.createdAt = new Date(model.createdAt ?? new Date())
     this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
@@ -55,14 +86,6 @@ export class UserModel implements User {
 
   get hasGuardians(): boolean {
     return this.guardianIds.length > 0
-  }
-
-  get isDisabled(): boolean {
-    return this.recipientType === 'disabled'
-  }
-
-  get isLowIncome(): boolean {
-    return this.recipientType === 'lowIncome'
   }
 
   copyWith(changes: Partial<User>): UserModel {

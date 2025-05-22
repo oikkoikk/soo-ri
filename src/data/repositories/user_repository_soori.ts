@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { UserModel } from '@/domain/models/models'
-import { CheckUserResponse, SignUpParams, UserRepository } from '@/domain/repositories/repositories'
+import { UserModel, VehicleModel } from '@/domain/models/models'
+import { CheckUserResponse, UserRepository } from '@/domain/repositories/repositories'
 
 import { HttpClientAdapter } from '../adapters/adapters'
 
@@ -34,12 +34,22 @@ export class UserRepositorySoori implements UserRepository {
     }
   }
 
-  async signUp(token: string, userData: SignUpParams): Promise<UserModel> {
+  async signUp(token: string, user: UserModel, vehicle: VehicleModel, vehicleId?: string): Promise<UserModel> {
     try {
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      }
+
+      const userData = {
+        name: user.name,
+        model: vehicle.model,
+        purchasedAt: vehicle.purchasedAt.toISOString(),
+        registeredAt: vehicle.registeredAt.toISOString(),
+        recipientType: user.recipientType,
+        supportedDistrict: user.supportedDistrict,
+        vehicleId: vehicleId,
       }
 
       const response = await this.httpClient.post<UserModel>(this.baseUrl, userData, config)
