@@ -63,7 +63,7 @@ export class UserModel implements User {
     this.guardianIds = model.guardianIds ?? []
     this.name = model.name ?? ''
     this.recipientType = model.recipientType ?? '일반'
-    this.supportedDistrict = model.supportedDistrict ?? '서울 외'
+    this.supportedDistrict = model.supportedDistrict ?? '성동구'
     this.createdAt = new Date(model.createdAt ?? new Date())
     this.updatedAt = new Date(model.updatedAt ?? new Date())
   }
