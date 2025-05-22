@@ -1,7 +1,9 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
+import { Link } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routers'
 import { ChevronRight } from '@/assets/svgs/svgs'
 import { Header, Tabs } from '@/presentation/components/components'
 
@@ -117,7 +119,11 @@ const SelfCheckHistory = observer(() => {
   return (
     <HistoryContainer>
       {viewModel.selfChecks.map((selfCheck) => (
-        <HistoryItem key={selfCheck.id} theme={theme}>
+        <HistoryItem
+          key={selfCheck.id}
+          theme={theme}
+          to={buildRoute('VEHICLE_SELF_CHECK_DETAIL', { id: selfCheck.id }, { vehicleId: viewModel.vehicleId })}
+        >
           <HistoryItemContent>
             <HistoryItemTexts>
               <HistoryDate theme={theme}>{selfCheck.createdAtDisplayString}</HistoryDate>
@@ -288,7 +294,7 @@ const HistoryContainer = styled.div`
   flex-direction: column;
 `
 
-const HistoryItem = styled.div`
+const HistoryItem = styled(Link)`
   display: flex;
   flex-direction: row;
   border-bottom: 0.8px solid ${({ theme }: { theme: Theme }) => theme.colors.outline};

@@ -14,6 +14,9 @@ const RepairCreatePage = lazy(() => import('@/presentation/pages/RepairCreatePag
 const RepairDetailPage = lazy(() => import('@/presentation/pages/RepairDetailPage/RepairDetailPageView'))
 const RepairStationsPage = lazy(() => import('@/presentation/pages/RepairStationsPage/RepairStationsPageView'))
 const VehicleSelfCheckPage = lazy(() => import('@/presentation/pages/VehicleSelfCheckPage/VehicleSelfCheckPageView'))
+const VehicleSelfCheckDetailPage = lazy(
+  () => import('@/presentation/pages/VehicleSelfCheckDetailPage/VehicleSelfCheckDetailPageView')
+)
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +74,15 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requireAuth={true}>
         <VehicleSelfCheckPage />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: ROUTES.VEHICLE_SELF_CHECK_DETAIL,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <VehicleSelfCheckDetailPage />
       </ProtectedRoute>
     ),
     errorElement: <ErrorBoundary />,

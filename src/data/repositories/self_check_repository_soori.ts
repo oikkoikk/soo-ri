@@ -72,4 +72,25 @@ export class SelfCheckRepositorySoori implements SelfCheckRepository {
       throw error
     }
   }
+
+  async getSelfCheck(vehicleId: string, selfCheckId: string, token: string): Promise<SelfCheckModel> {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+
+      const response = await this.httpClient.get<SelfCheckModel>(
+        `${this.baseUrl}/${vehicleId}/selfCheck/${selfCheckId}`,
+        config
+      )
+
+      return new SelfCheckModel(response)
+    } catch (error) {
+      console.error('자가점검 상세 정보 조회 실패:', error)
+      throw error
+    }
+  }
 }

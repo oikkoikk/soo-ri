@@ -10,15 +10,16 @@ import { useLoading } from './useLoading'
 
 interface UseSelfCheckParams {
   vehicleId: string
+  selfCheckId?: string
 }
 
-export const useSelfCheck = ({ vehicleId }: UseSelfCheckParams) => {
+export const useSelfCheck = ({ vehicleId, selfCheckId }: UseSelfCheckParams) => {
   const { user, loading: authLoading } = useAuthState()
   const { showLoading, hideLoading } = useLoading()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
-  const query = useQuery<SelfCheckModel[]>({
+  const listQuery = useQuery<SelfCheckModel[]>({
     queryKey: ['selfChecks', vehicleId],
     queryFn: async () => {
       if (!user) throw new Error('로그인 후 이용 가능합니다')
@@ -26,13 +27,25 @@ export const useSelfCheck = ({ vehicleId }: UseSelfCheckParams) => {
       const token = await user.getIdToken()
       return await selfCheckRepositorySoori.getSelfChecks(vehicleId, token)
     },
-    enabled: !!vehicleId && !authLoading,
+    enabled: !!vehicleId && !authLoading && !selfCheckId,
+  })
+
+  const detailQuery = useQuery<SelfCheckModel>({
+    queryKey: ['selfCheck', vehicleId, selfCheckId],
+    queryFn: async () => {
+      if (!user) throw new Error('로그인 후 이용 가능합니다')
+      if (!selfCheckId) throw new Error('자가점검 ID가 필요합니다')
+
+      const token = await user.getIdToken()
+      return await selfCheckRepositorySoori.getSelfCheck(vehicleId, selfCheckId, token)
+    },
+    enabled: !!vehicleId && !!selfCheckId && !authLoading,
   })
 
   useEffect(() => {
-    if (query.isLoading) showLoading()
+    if (selfCheckId ? detailQuery.isLoading : listQuery.isLoading) showLoading()
     else hideLoading()
-  }, [query.isLoading, showLoading, hideLoading])
+  }, [listQuery.isLoading, detailQuery.isLoading, showLoading, hideLoading, selfCheckId])
 
   const createSelfCheck = async (selfCheckData: SelfCheckModel): Promise<SelfCheckModel | null> => {
     if (!user || !vehicleId) return null
@@ -54,21 +67,27 @@ export const useSelfCheck = ({ vehicleId }: UseSelfCheckParams) => {
   }
 
   useEffect(() => {
-    if (query.error) throw query.error
-  }, [query.error])
+    const currentError = selfCheckId ? detailQuery.error : listQuery.error
+    if (currentError) throw currentError
+  }, [listQuery.error, detailQuery.error, selfCheckId])
 
   const refreshSelfChecks = () => {
-    void query.refetch()
+    void listQuery.refetch()
+  }
+
+  const refreshSelfCheckDetail = () => {
+    if (selfCheckId) {
+      void detailQuery.refetch()
+    }
   }
 
   return {
     createSelfCheck,
     loading,
     error,
-    selfChecks: query.data ?? [],
-    isSelfChecksLoading: query.isLoading,
-    isSelfChecksError: query.isError,
-    selfChecksError: query.error,
+    selfCheck: detailQuery.data ?? new SelfCheckModel({}),
+    selfChecks: listQuery.data ?? [],
     refreshSelfChecks,
+    refreshSelfCheckDetail,
   }
 }
