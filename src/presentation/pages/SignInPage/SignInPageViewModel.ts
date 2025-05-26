@@ -352,7 +352,7 @@ class SignInStore {
         title: '회원가입 실패',
         description: `이름: ${this.userModel.name}, 전화번호: ${this.phoneNumber}, 모델: ${this.vehicleModel.model}, 구매일: ${this.dateInputFormatString(
           this.vehicleModel.purchasedAt
-        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}, 지원 자치구: ${this.userModel.supportedDistrict}`,
+        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}, 지원 자치구: ${this.userModel.supportedDistrict}, vehicleId: ${vehicleId}`,
         fatal: true,
       })
       void eventCreateUseCase.call(signUpFailEvent)
