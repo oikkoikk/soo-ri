@@ -50,7 +50,6 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
   useEffect(() => {
     if (!userRole || !vehicle || isVehicleLoading) return
 
-    // user 또는 guardian 역할일 때만 vehicleId 업데이트 로직 실행
     if (!isUser && !isGuardian) return
 
     const currentVehicleId = new URLSearchParams(location.search).get('vehicleId')
