@@ -23,7 +23,7 @@ function isLocationState(state: unknown): state is LocationState {
 }
 
 export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) => {
-  const { userRole, isLoading } = useUserRole()
+  const { userRole, isLoading, isUser, isGuardian } = useUserRole()
   const { showLoading, hideLoading } = useLoading()
   const location = useLocation()
   const navigate = useNavigate()
@@ -50,6 +50,8 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
   useEffect(() => {
     if (!userRole || !vehicle || isVehicleLoading) return
 
+    if (!isUser && !isGuardian) return
+
     const currentVehicleId = new URLSearchParams(location.search).get('vehicleId')
 
     if (vehicle.id && (!currentVehicleId || currentVehicleId !== vehicle.id)) {
@@ -62,7 +64,17 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
         { replace: true }
       )
     }
-  }, [userRole, vehicle, location.pathname, location.search, navigate, queryParams, isVehicleLoading])
+  }, [
+    userRole,
+    vehicle,
+    location.pathname,
+    location.search,
+    navigate,
+    queryParams,
+    isVehicleLoading,
+    isUser,
+    isGuardian,
+  ])
 
   if (isLoading) return null
 
