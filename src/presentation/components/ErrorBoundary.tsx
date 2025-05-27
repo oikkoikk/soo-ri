@@ -4,7 +4,7 @@ import { css, useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useRouteError, isRouteErrorResponse } from 'react-router'
 
-import { Error as ErrorIcon } from '@/assets/svgs/svgs'
+import { Info } from '@/assets/svgs/svgs'
 import { EventModel } from '@/domain/models/models'
 import { EventCreateUseCase } from '@/domain/use_cases/use_cases'
 
@@ -34,7 +34,7 @@ export function ErrorBoundary() {
       <Header>오류가 발생했습니다</Header>
       <Content>
         <IconWrapper theme={theme}>
-          <ErrorIcon width={40} height={40} color={theme.colors.error} />
+          <Info width={40} height={40} color={theme.colors.error} />
         </IconWrapper>
         <Message theme={theme}>페이지를 표시하는 도중 오류가 발생했습니다.</Message>
         <Message theme={theme}>잠시 후 다시 시도해 주세요.</Message>
