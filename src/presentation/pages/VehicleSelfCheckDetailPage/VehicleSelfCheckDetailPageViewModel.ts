@@ -16,6 +16,17 @@ interface CategoryItem {
   issues: CategoryIssue[]
 }
 
+const CATEGORY_MAINTENANCE_TIPS: Record<string, string> = {
+  구동장치: '모터 주변 먼지를 매일 털어내고, 가끔 전원을 껐다 켜서 부드럽게 돌아가는지 확인하세요.',
+  전자제어: '조이스틱과 계기판을 손으로 눌러 부드럽게 작동하는지 보고, 비가 오면 덮개로 보호하세요.',
+  제동장치: '브레이크 레버를 몇 번 눌러 밋밋한 느낌이 없나 확인하고, 케이블에 먼지가 끼면 솔로 털어내세요.',
+  '타이어&튜브': '공기압을 손끝으로 눌러보고, 옆면 균열이 보이면 교체를 준비하세요.',
+  배터리: '배터리는 매일 충전하고 완전 방전은 피하세요. 장기간 보관 시 한 달에 한 번 충전해 주세요.',
+  시트: '시트 밑 볼트를 가볍게 조여 흔들림이 없는지 확인하고, 찢어진 곳은 천패치로 덮어 두세요.',
+  발걸이: '발걸이를 앞뒤로 살짝 흔들어 보고, 삐걱거리면 조여 주거나 미끄럼 방지 고무를 교체하세요.',
+  프레임: '차체를 눈으로 살펴 금 간 곳이 없는지 보고, 소리가 나면 볼트를 한 번 꾹꾹 눌러 조여 주세요.',
+}
+
 export function useVehicleSelfCheckDetailViewModel() {
   const navigate = useNavigate()
   const { id: selfCheckId } = useParams<{ id: string }>()
@@ -163,10 +174,20 @@ export function useVehicleSelfCheckDetailViewModel() {
 
   const categoryItems = getCategoryItems()
 
+  const categoriesWithIssues = categoryItems.filter((category) => category.issueCount > 0)
+  const hasIssuesWithGuides = categoriesWithIssues.length > 0
+
+  const getCategoryMaintenanceTip = (categoryName: string): string => {
+    return CATEGORY_MAINTENANCE_TIPS[categoryName]
+  }
+
   return {
     selfCheck,
     goBack,
     vehicleId,
     categoryItems,
+    categoriesWithIssues,
+    hasIssuesWithGuides,
+    getCategoryMaintenanceTip,
   }
 }
