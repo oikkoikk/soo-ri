@@ -1,5 +1,6 @@
 import { FirebaseOptions, initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import firebase from 'firebase/compat/app'
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,5 +13,7 @@ const firebaseConfig: FirebaseOptions = {
 }
 
 export const app = initializeApp(firebaseConfig)
+
+firebase.auth().settings.appVerificationDisabledForTesting = true
 
 export const auth = getAuth(app)
