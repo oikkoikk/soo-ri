@@ -14,3 +14,5 @@ const firebaseConfig: FirebaseOptions = {
 export const app = initializeApp(firebaseConfig)
 
 export const auth = getAuth(app)
+
+auth.settings.appVerificationDisabledForTesting = true
