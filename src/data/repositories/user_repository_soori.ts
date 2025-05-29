@@ -46,7 +46,7 @@ export class UserRepositorySoori implements UserRepository {
         name: user.name,
         model: vehicle.model,
         purchasedAt: vehicle.purchasedAt.toISOString(),
-        registeredAt: vehicle.registeredAt.toISOString(),
+        manufacturedAt: vehicle.manufacturedAt.toISOString(),
         recipientType: user.recipientType,
         supportedDistrict: user.supportedDistrict,
         vehicleId: vehicleId,

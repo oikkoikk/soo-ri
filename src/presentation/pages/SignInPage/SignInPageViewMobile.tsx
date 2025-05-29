@@ -161,7 +161,7 @@ const SignUpFormGroup = observer(() => {
       <NameFormGroup />
       <ModelFormGroup />
       <PurchasedAtFormGroup />
-      <RegisteredAtFormGroup />
+      <ManufacturedAtFormGroup />
       <RecipientTypeFormGroup />
       <SupportedDistrictFormGroup />
     </>
@@ -231,22 +231,22 @@ const PurchasedAtFormGroup = observer(() => {
   )
 })
 
-const RegisteredAtFormGroup = observer(() => {
+const ManufacturedAtFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useSignInViewModel()
 
   return (
     <FormGroup>
-      <FormLabel id="sign-up-registered-at">전동보장구 등록일</FormLabel>
+      <FormLabel id="sign-up-manufactured-at">전동보장구 제조일</FormLabel>
       <DateInputWrapper>
         <DateInput
           type="date"
-          value={viewModel.dateInputFormatString(viewModel.vehicleModel.registeredAt)}
+          value={viewModel.dateInputFormatString(viewModel.vehicleModel.manufacturedAt)}
           onChange={(e) => {
-            viewModel.updateRegisteredAt(e.target.value)
+            viewModel.updateManufacturedAt(e.target.value)
           }}
           theme={theme}
-          aria-labelledby='"sign-up-registered-at"'
+          aria-labelledby='"sign-up-manufactured-at"'
         />
         <CalendarIconWrapper>
           <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
