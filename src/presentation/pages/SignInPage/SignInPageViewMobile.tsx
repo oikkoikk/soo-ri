@@ -237,7 +237,7 @@ const ManufacturedAtFormGroup = observer(() => {
 
   return (
     <FormGroup>
-      <FormLabel id="sign-up-registered-at">전동보장구 제조일</FormLabel>
+      <FormLabel id="sign-up-manufactured-at">전동보장구 제조일</FormLabel>
       <DateInputWrapper>
         <DateInput
           type="date"
