@@ -111,12 +111,12 @@ class SignInStore {
     return this.vehicleModel.purchasedAt instanceof Date
   }
 
-  get validRegisteredAt() {
-    return this.vehicleModel.registeredAt instanceof Date
+  get validManufacturedAt() {
+    return this.vehicleModel.manufacturedAt instanceof Date
   }
 
   get validSignupForm() {
-    return this.validName && this.validModel && this.validPurchasedAt && this.validRegisteredAt
+    return this.validName && this.validModel && this.validPurchasedAt && this.validManufacturedAt
   }
 
   dateInputFormatString = (date: Date): string => {
@@ -216,14 +216,14 @@ class SignInStore {
     this.vehicleModel = this.vehicleModel.copyWith({ purchasedAt: date })
   }
 
-  updateRegisteredAt = (registeredAt: string) => {
-    const date = new Date(registeredAt)
+  updateManufacturedAt = (manufacturedAt: string) => {
+    const date = new Date(manufacturedAt)
     if (isNaN(date.getTime())) {
-      this.vehicleModel = this.vehicleModel.copyWith({ registeredAt: new Date() })
+      this.vehicleModel = this.vehicleModel.copyWith({ manufacturedAt: new Date() })
       return
     }
 
-    this.vehicleModel = this.vehicleModel.copyWith({ registeredAt: date })
+    this.vehicleModel = this.vehicleModel.copyWith({ manufacturedAt: date })
   }
 
   updateRecipientType = (recipientType: string) => {
@@ -352,7 +352,7 @@ class SignInStore {
         title: '회원가입 실패',
         description: `이름: ${this.userModel.name}, 전화번호: ${this.phoneNumber}, 모델: ${this.vehicleModel.model}, 구매일: ${this.dateInputFormatString(
           this.vehicleModel.purchasedAt
-        )}, 등록일: ${this.dateInputFormatString(this.vehicleModel.registeredAt)}, 수급자 유형: ${this.userModel.recipientType}, 지원 자치구: ${this.userModel.supportedDistrict}, vehicleId: ${vehicleId}`,
+        )}, 제조일: ${this.dateInputFormatString(this.vehicleModel.manufacturedAt)}, 수급자 유형: ${this.userModel.recipientType}, 지원 자치구: ${this.userModel.supportedDistrict}, vehicleId: ${vehicleId}`,
         fatal: true,
       })
       void eventCreateUseCase.call(signUpFailEvent)

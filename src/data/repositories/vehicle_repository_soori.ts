@@ -8,7 +8,7 @@ interface VehicleApiResponse {
   userId: string
   model: string
   purchasedAt: string
-  registeredAt: string
+  manufacturedAt: string
 }
 
 export class VehicleRepositorySoori implements VehicleRepository {
@@ -29,7 +29,7 @@ export class VehicleRepositorySoori implements VehicleRepository {
         id: response.vehicleId,
         model: response.model,
         purchasedAt: new Date(response.purchasedAt),
-        registeredAt: new Date(response.registeredAt),
+        manufacturedAt: new Date(response.manufacturedAt),
       })
     } catch (error) {
       console.error('전동보장구 정보 조회 실패:', error)
@@ -51,7 +51,7 @@ export class VehicleRepositorySoori implements VehicleRepository {
         id: response.vehicleId,
         model: response.model,
         purchasedAt: new Date(response.purchasedAt),
-        registeredAt: new Date(response.registeredAt),
+        manufacturedAt: new Date(response.manufacturedAt),
       })
     } catch (error) {
       console.error('전동보장구 정보 조회 실패:', error)

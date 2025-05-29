@@ -203,8 +203,8 @@ const Vehicle = () => {
       </VehicleInfoRow>
       <Divider aria-hidden />
       <VehicleInfoRow>
-        <VehicleInfoLabel>등록일</VehicleInfoLabel>
-        <VehicleInfoValue>{viewModel.vehicle.registeredAtDisplayString}</VehicleInfoValue>
+        <VehicleInfoLabel>제조일</VehicleInfoLabel>
+        <VehicleInfoValue>{viewModel.vehicle.manufacturedAtDisplayString}</VehicleInfoValue>
       </VehicleInfoRow>
       <Divider aria-hidden />
       <VehicleInfoRow>
