@@ -246,7 +246,7 @@ const ManufacturedAtFormGroup = observer(() => {
             viewModel.updateManufacturedAt(e.target.value)
           }}
           theme={theme}
-          aria-labelledby='"sign-up-registered-at"'
+          aria-labelledby='"sign-up-manufactured-at"'
         />
         <CalendarIconWrapper>
           <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} aria-hidden />
