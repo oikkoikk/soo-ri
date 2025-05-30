@@ -8,12 +8,17 @@ import { RepairModel } from '@/domain/models/models'
 import { useAuthState } from './useAuthState'
 import { useLoading } from './useLoading'
 
-export const useRepairs = ({ vehicleId }: { vehicleId: string }) => {
+interface UseRepairsProps {
+  vehicleId: string
+  repairId?: string
+}
+
+export const useRepairs = ({ vehicleId, repairId }: UseRepairsProps) => {
   const { user, loading: authLoading } = useAuthState()
   const { showLoading, hideLoading } = useLoading()
   const queryClient = useQueryClient()
 
-  const query = useQuery<RepairModel[]>({
+  const repairsQuery = useQuery<RepairModel[]>({
     queryKey: ['repairs', vehicleId],
     queryFn: async () => {
       if (!user) throw new Error('로그인 후 이용 가능합니다')
@@ -21,7 +26,19 @@ export const useRepairs = ({ vehicleId }: { vehicleId: string }) => {
       const token = await user.getIdToken()
       return await repairRepositorySoori.getRepairsByVehicleId(token, vehicleId)
     },
-    enabled: !!vehicleId && !authLoading,
+    enabled: !!vehicleId && !authLoading && !repairId,
+  })
+
+  const repairDetailQuery = useQuery<RepairModel>({
+    queryKey: ['repair', vehicleId, repairId],
+    queryFn: async () => {
+      if (!user) throw new Error('로그인 후 이용 가능합니다')
+      if (!repairId) throw new Error('수리내역 ID가 필요합니다')
+
+      const token = await user.getIdToken()
+      return await repairRepositorySoori.getRepairById(token, vehicleId, repairId)
+    },
+    enabled: !!vehicleId && !!repairId && !authLoading,
   })
 
   const createRepairMutation = useMutation({
@@ -36,10 +53,12 @@ export const useRepairs = ({ vehicleId }: { vehicleId: string }) => {
     },
   })
 
+  const activeQuery = repairId ? repairDetailQuery : repairsQuery
+
   useEffect(() => {
-    if (query.isLoading) showLoading()
+    if (activeQuery.isLoading) showLoading()
     else hideLoading()
-  }, [query.isLoading, showLoading, hideLoading])
+  }, [activeQuery.isLoading, showLoading, hideLoading])
 
   useEffect(() => {
     if (createRepairMutation.isPending) showLoading()
@@ -47,18 +66,19 @@ export const useRepairs = ({ vehicleId }: { vehicleId: string }) => {
   }, [createRepairMutation.isPending, showLoading, hideLoading])
 
   useEffect(() => {
-    if (query.error) throw query.error
-  }, [query.error])
+    if (activeQuery.error) throw activeQuery.error
+  }, [activeQuery.error])
 
   useEffect(() => {
     if (createRepairMutation.error) throw createRepairMutation.error
   }, [createRepairMutation.error])
 
   return {
-    repairs: query.data ?? [],
-    isLoading: query.isLoading,
-    isError: query.isError,
-    error: query.error,
+    repairs: repairsQuery.data ?? [],
+    repair: repairDetailQuery.data,
+    isLoading: activeQuery.isLoading,
+    isError: activeQuery.isError,
+    error: activeQuery.error,
     createRepair: createRepairMutation.mutateAsync,
     isCreating: createRepairMutation.isPending,
     createError: createRepairMutation.error,
