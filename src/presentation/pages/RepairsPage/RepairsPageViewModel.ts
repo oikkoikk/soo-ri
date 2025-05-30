@@ -129,7 +129,7 @@ export function useRepairsViewModel() {
   }
 
   const buildRouteForRepairDetailPage = (repairId: string) => {
-    return buildRoute('REPAIR_DETAIL', { repairId: repairId }, { vehicleId: vehicleId })
+    return buildRoute('REPAIR_DETAIL', { id: repairId }, { vehicleId: vehicleId })
   }
 
   const buildRouteForRepairStationsPage = () => {
