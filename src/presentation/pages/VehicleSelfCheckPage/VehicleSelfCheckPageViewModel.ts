@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { makeAutoObservable } from 'mobx'
 import { useNavigate, useSearchParams } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { SelfCheckModel } from '@/domain/models/models'
 import { useSelfCheck, useLoading } from '@/presentation/hooks/hooks'
 
@@ -182,7 +183,7 @@ export function useVehicleSelfCheckViewModel() {
   const { createSelfCheck, error: apiError, selfChecks } = useSelfCheck({ vehicleId })
 
   const goBack = () => {
-    void navigate(-1)
+    void navigate(buildRoute('REPAIRS', {}, { vehicleId: vehicleId }))
   }
 
   const queryClient = useQueryClient()

@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 
+import { buildRoute } from '@/application/routers/routes'
 import { useRepairStations } from '@/presentation/hooks/hooks'
 
 export enum SortType {
@@ -23,6 +24,8 @@ const store = new RepairStationsStore()
 export function useRepairStationsViewModel() {
   const navigate = useNavigate()
   const { data: repairStations } = useRepairStations()
+  const [searchParams] = useSearchParams()
+  const vehicleId = searchParams.get('vehicleId') ?? ''
 
   const sortedRepairStations = (() => {
     if (!repairStations) return []
@@ -49,7 +52,7 @@ export function useRepairStationsViewModel() {
   }
 
   const goBack = () => {
-    void navigate(-1)
+    void navigate(buildRoute('REPAIRS', {}, { vehicleId: vehicleId }))
   }
 
   return {
