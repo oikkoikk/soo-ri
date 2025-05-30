@@ -12,14 +12,14 @@ export const RepairDetailPageViewMobile = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
+  if (!viewModel.repairModel) {
+    return <></>
+  }
+
   return (
     <Container>
       <StickyTop theme={theme}>
-        <Header
-          title="전동보장구 정비이력 확인"
-          description={`${viewModel.repairModel.id} • 라이언`}
-          onBack={viewModel.goBack}
-        />
+        <Header title="전동보장구 정비이력 확인" description={viewModel.repairModel.id} onBack={viewModel.goBack} />
       </StickyTop>
       <MainContent>
         <BasicInfoSection />
@@ -53,6 +53,8 @@ const RepairTypeFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
+  if (!viewModel.repairModel) return null
+
   return (
     <FormGroup>
       <FormLabel id="repair-type-title">수리 이유</FormLabel>
@@ -76,7 +78,7 @@ const RepairDateFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-date-title">점검일</FormLabel>
       <ReadonlyValue theme={theme} aria-labelledby="repair-date-title">
-        {viewModel.repairModel.repairedAtDisplayString}
+        {viewModel.repairModel?.repairedAtDisplayString}
       </ReadonlyValue>
     </FormGroup>
   )
@@ -90,7 +92,7 @@ const RepairStationFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-station-title">담당기관</FormLabel>
       <ReadonlyValue theme={theme} aria-labelledby="repair-station-title">
-        {viewModel.repairModel.repairStationLabel}
+        {viewModel.repairModel?.repairStationLabel}
       </ReadonlyValue>
     </FormGroup>
   )
@@ -104,7 +106,7 @@ const RepairerFormGroup = observer(() => {
     <FormGroup>
       <FormLabel id="repair-repairer-title">담당수리자</FormLabel>
       <ReadonlyValue theme={theme} aria-labelledby="repair-repairer-title">
-        {viewModel.repairModel.repairer}
+        {viewModel.repairModel?.repairer}
       </ReadonlyValue>
     </FormGroup>
   )
@@ -126,6 +128,7 @@ const RepairBillingPriceFormGroup = observer(() => {
 
 const RepairInfoSection = observer(() => {
   const theme = useTheme()
+  const viewModel = useRepairDetailViewModel()
 
   return (
     <SectionBox>
@@ -136,9 +139,21 @@ const RepairInfoSection = observer(() => {
         <SectionTitle>수리정보</SectionTitle>
       </SectionHeader>
       <RepairCategoryFormGroup />
-      <BatteryVoltageFormGroup />
-      <EtcRepairPartsFormGroup />
-      <RepairMemoFormGroup />
+      {(() => {
+        if (viewModel.repairModel?.batteryVoltage) {
+          return <BatteryVoltageFormGroup />
+        }
+      })()}
+      {(() => {
+        if (viewModel.repairModel?.etcRepairParts) {
+          return <EtcRepairPartsFormGroup />
+        }
+      })()}
+      {(() => {
+        if (viewModel.repairModel?.memo) {
+          return <RepairMemoFormGroup />
+        }
+      })()}
     </SectionBox>
   )
 })
@@ -154,7 +169,7 @@ const RepairCategoryFormGroup = observer(() => {
         {REPAIR_CATEGORIES.map((category) => (
           <CategoryBadge
             key={category}
-            selected={viewModel.repairModel.repairCategories.includes(category)}
+            selected={viewModel.repairModel!.repairCategories.includes(category)}
             theme={theme}
           >
             {category}
@@ -169,11 +184,9 @@ const BatteryVoltageFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
-  if (!viewModel.repairModel.batteryVoltage) return null
-
   return (
     <FormGroup aria-label="배터리 전압">
-      <ReadonlyValue theme={theme}>{viewModel.repairModel.batteryVoltage}</ReadonlyValue>
+      <ReadonlyValue theme={theme}>{viewModel.repairModel?.batteryVoltage}</ReadonlyValue>
     </FormGroup>
   )
 })
@@ -182,11 +195,9 @@ const EtcRepairPartsFormGroup = observer(() => {
   const theme = useTheme()
   const viewModel = useRepairDetailViewModel()
 
-  if (!viewModel.repairModel.etcRepairParts) return null
-
   return (
     <FormGroup aria-label="기타 수리 부위">
-      <ReadonlyValue theme={theme}>{viewModel.repairModel.etcRepairParts}</ReadonlyValue>
+      <ReadonlyValue theme={theme}>{viewModel.repairModel?.etcRepairParts}</ReadonlyValue>
     </FormGroup>
   )
 })
@@ -197,7 +208,7 @@ const RepairMemoFormGroup = observer(() => {
 
   return (
     <FormGroup aria-label="수리 사항">
-      <ReadonlyTextArea value={viewModel.repairModel.memo} readOnly rows={5} theme={theme} aria-readonly="true" />
+      <ReadonlyTextArea value={viewModel.repairModel?.memo} readOnly rows={5} theme={theme} aria-readonly="true" />
     </FormGroup>
   )
 })
