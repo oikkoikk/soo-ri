@@ -7,7 +7,7 @@ import { Link } from 'react-router'
 
 import { Calendar, Cancel, Check, ChevronRight, Map, Menu, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
-import { Header, Tabs } from '@/presentation/components/components'
+import { Header, Tabs, VehicleQRCode } from '@/presentation/components/components'
 
 import { TabId, useRepairsViewModel } from './RepairsPageViewModel'
 
@@ -40,7 +40,12 @@ export const RepairsPageViewMobile = observer(() => {
           if (viewModel.activeTab === TabId.REPAIRS) {
             return <RepairHistoryList />
           } else {
-            return <Vehicle />
+            return (
+              <>
+                <VehicleInfo />
+                <VehicleQRCode vehicleId={viewModel.vehicleId} />
+              </>
+            )
           }
         })()}
       </MainContent>
@@ -191,7 +196,7 @@ const RepairHistoryItem = ({ repair }: RepairItemProps) => {
   )
 }
 
-const Vehicle = () => {
+const VehicleInfo = () => {
   const theme = useTheme()
   const viewModel = useRepairsViewModel()
 
