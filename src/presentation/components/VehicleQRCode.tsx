@@ -1,4 +1,4 @@
-import { css, useTheme, Theme } from '@emotion/react'
+import { css, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -7,7 +7,6 @@ interface VehicleQRCodeProps {
 }
 
 export function VehicleQRCode({ vehicleId }: VehicleQRCodeProps) {
-  const theme = useTheme()
   const qrCodeUrl = `https://soo-ri.web.app/?vehicleId=${vehicleId}`
 
   return (
