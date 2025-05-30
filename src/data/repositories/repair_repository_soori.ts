@@ -21,4 +21,30 @@ export class RepairRepositorySoori implements RepairRepository {
       throw error
     }
   }
+
+  async createRepair(token: string, vehicleId: string, repair: RepairModel): Promise<void> {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+
+      const requestData = {
+        repairedAt: repair.repairedAt.toISOString(),
+        billingPrice: repair.billingPrice,
+        isAccident: repair.isAccident,
+        repairCategories: repair.repairCategories,
+        batteryVoltage: repair.batteryVoltage || undefined,
+        etcRepairParts: repair.etcRepairParts || undefined,
+        memo: repair.memo || undefined,
+      }
+
+      await this.httpClient.post<RepairModel>(`/vehicles/${vehicleId}/repairs`, requestData, config)
+    } catch (error) {
+      console.error('수리 내역 등록 실패:', error)
+      throw error
+    }
+  }
 }

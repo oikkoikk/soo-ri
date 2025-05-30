@@ -49,7 +49,6 @@ const BasicInfoSection = observer(() => {
       </SectionHeader>
       <RepairTypeFormGroup />
       <RepairDateFormGroup />
-      <RepairerFormGroup />
       <RepairBillingPriceFormGroup />
     </SectionBox>
   )
@@ -111,27 +110,6 @@ const RepairDateFormGroup = observer(() => {
           <Calendar width={15} height={15} color={theme.colors.onSurfaceVariant} />
         </CalendarIconWrapper>
       </DateInputWrapper>
-    </FormGroup>
-  )
-})
-
-const RepairerFormGroup = observer(() => {
-  const theme = useTheme()
-  const viewModel = useRepairCreateViewModel()
-
-  return (
-    <FormGroup>
-      <FormLabel id="repair-repairer-title">담당수리자</FormLabel>
-      <FormInput
-        type="text"
-        value={viewModel.repairModel.repairer}
-        onChange={(e) => {
-          viewModel.updateRepairer(e.target.value)
-        }}
-        theme={theme}
-        placeholder="담당수리자 이름을 입력해주세요"
-        aria-labelledby="repair-repairer-title"
-      />
     </FormGroup>
   )
 })
@@ -213,7 +191,7 @@ const BatteryVoltageFormGroup = observer(() => {
   return (
     <FormGroup>
       <FormInput
-        type="text"
+        type="number"
         value={viewModel.repairModel.batteryVoltage}
         onChange={(e) => {
           viewModel.updateBatteryVoltage(e.target.value)

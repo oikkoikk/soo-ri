@@ -29,7 +29,7 @@ interface Repair {
   repairStationCode?: string
   repairCategories?: RepairCategory[]
   repairer?: string
-  batteryVoltage?: string
+  batteryVoltage?: number
   etcRepairParts?: string
   memo?: string
   isAccident?: boolean
@@ -46,7 +46,7 @@ export class RepairModel implements Repair {
   readonly repairStationCode: string
   readonly repairCategories: RepairCategory[]
   readonly repairer: string
-  readonly batteryVoltage: string
+  readonly batteryVoltage: number
   readonly etcRepairParts: string
   readonly memo: string
   readonly isAccident: boolean
@@ -62,7 +62,7 @@ export class RepairModel implements Repair {
     this.repairStationCode = model.repairStationCode ?? ''
     this.repairCategories = model.repairCategories ?? []
     this.repairer = model.repairer ?? ''
-    this.batteryVoltage = model.batteryVoltage ?? ''
+    this.batteryVoltage = model.batteryVoltage ?? 0
     this.etcRepairParts = model.etcRepairParts ?? ''
     this.memo = model.memo ?? ''
     this.isAccident = model.isAccident ?? false
