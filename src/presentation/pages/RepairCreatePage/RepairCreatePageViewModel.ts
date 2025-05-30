@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { RepairCategory, RepairModel } from '@/domain/models/models'
-import { useUserRole } from '@/presentation/hooks/hooks'
+import { useRepairs, useUserRole } from '@/presentation/hooks/hooks'
 
 class RepairCreateStore {
   repairModel: RepairModel = new RepairModel({})
@@ -28,13 +28,11 @@ class RepairCreateStore {
   }
 
   get valid(): boolean {
-    const batteryFieldValid = !this.hasBattery || this.repairModel.batteryVoltage.trim() !== ''
+    const batteryFieldValid = !this.hasBattery || this.repairModel.batteryVoltage > 0
     const etcFieldValid = !this.hasEtc || this.repairModel.etcRepairParts.trim() !== ''
 
     return Boolean(
       this.repairModel.type !== '' &&
-        this.repairModel.repairStationLabel.trim() !== '' &&
-        this.repairModel.repairer.trim() !== '' &&
         this.repairModel.billingPrice >= 0 &&
         this.repairModel.repairCategories.length > 0 &&
         batteryFieldValid &&
@@ -69,12 +67,6 @@ class RepairCreateStore {
     })
   }
 
-  updateRepairer = (value: string) => {
-    this.repairModel = this.repairModel.copyWith({
-      repairer: value,
-    })
-  }
-
   updateBillingPrice = (value: string) => {
     const cleanValue = value.replace(/[^0-9]/g, '')
     const numericValue = cleanValue ? parseInt(cleanValue, 10) : 0
@@ -85,8 +77,9 @@ class RepairCreateStore {
   }
 
   updateBatteryVoltage = (value: string) => {
+    const numericValue = value.trim() ? parseFloat(value) : 0
     this.repairModel = this.repairModel.copyWith({
-      batteryVoltage: value,
+      batteryVoltage: numericValue,
     })
   }
 
@@ -132,17 +125,28 @@ export function useRepairCreateViewModel() {
   const [searchParams] = useSearchParams()
   const { isUser, isGuardian } = useUserRole()
   const vehicleId = searchParams.get('vehicleId') ?? ''
+  const { createRepair, isCreating } = useRepairs({ vehicleId })
 
-  const submitRepair = () => {
+  const submitRepair = async () => {
     if (!store.valid) return
     if (isUser || isGuardian) {
       alert('정비사항은 관리자만 등록할 수 있습니다.')
       return
     }
 
-    alert('정비사항이 저장되었습니다.')
-    store.resetForm()
-    goBack()
+    try {
+      const repairToCreate = store.repairModel.copyWith({
+        vehicleId: vehicleId,
+      })
+
+      await createRepair(repairToCreate)
+      alert('정비사항이 저장되었습니다.')
+      store.resetForm()
+      goBack()
+    } catch (error) {
+      console.error('수리 등록 실패:', error)
+      alert('정비사항 저장에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
   const goBack = () => {
@@ -157,5 +161,6 @@ export function useRepairCreateViewModel() {
     hasEtc: store.hasEtc,
     submitRepair,
     goBack,
+    isSubmitting: isCreating,
   }
 }
