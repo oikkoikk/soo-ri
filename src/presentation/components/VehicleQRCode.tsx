@@ -11,9 +11,9 @@ export function VehicleQRCode({ vehicleId }: VehicleQRCodeProps) {
   const qrCodeUrl = `https://soo-ri.web.app/?vehicleId=${vehicleId}`
 
   return (
-    <QRContainer theme={theme}>
-      <QRHeader theme={theme}>
-        <QRTitle theme={theme}>식별 QR 확인하기</QRTitle>
+    <QRContainer>
+      <QRHeader>
+        <QRTitle>식별 QR 확인하기</QRTitle>
       </QRHeader>
       <QRCodeWrapper>
         <QRCodeSVG role="img" value={qrCodeUrl} size={200} aria-label={`현재 전동보장구에 대한 QR 코드입니다.`} />
