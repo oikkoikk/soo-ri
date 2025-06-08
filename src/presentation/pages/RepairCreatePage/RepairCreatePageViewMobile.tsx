@@ -15,7 +15,7 @@ export const RepairCreatePageViewMobile = observer(() => {
   return (
     <Container>
       <StickyTop theme={theme}>
-        <Header title="전동보장구 정비사항 작성" description="PM2024007 • 라이언" onBack={viewModel.goBack} />
+        <Header title="전동보장구 정비사항 작성" onBack={viewModel.goBack} />
       </StickyTop>
       <MainContent>
         <BasicInfoSection />
