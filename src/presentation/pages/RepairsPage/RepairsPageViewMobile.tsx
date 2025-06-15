@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
-import { Link } from 'react-router'
+import { Link, ScrollRestoration } from 'react-router'
 
 import { Calendar, Cancel, Check, ChevronRight, Map, Menu, Search } from '@/assets/svgs/svgs'
 import { RepairModel } from '@/domain/models/models'
@@ -24,6 +24,7 @@ export const RepairsPageViewMobile = observer(() => {
 
   return (
     <Container shouldShowCTA={viewModel.shouldShowCTA}>
+      <ScrollRestoration />
       <StickyTop theme={theme}>
         <Header title="전동보장구 정비이력" description={viewModel.vehicle.model} />
         <Tabs
@@ -236,6 +237,7 @@ const VehicleInfo = () => {
 const Container = styled.div`
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: ${({ shouldShowCTA }: { shouldShowCTA: boolean }) =>

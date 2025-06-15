@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
+import { ScrollRestoration } from 'react-router'
 
 import { Calendar } from '@/assets/svgs/svgs'
 import { RECAPTCHA_VERIFIER_ID } from '@/domain/use_cases/use_cases'
@@ -24,6 +25,7 @@ export const SignInPageViewMobile = observer(() => {
 
   return (
     <Container>
+      <ScrollRestoration />
       <Header title="번호 인증" onBack={viewModel.goBack} />
       <MainContent>
         <PhoneInputFormGroup />
@@ -309,7 +311,8 @@ const SupportedDistrictFormGroup = observer(() => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
 `
 
 const MainContent = styled.main`

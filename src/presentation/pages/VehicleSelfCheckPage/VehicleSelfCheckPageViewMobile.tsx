@@ -1,7 +1,7 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
-import { Link } from 'react-router'
+import { Link, ScrollRestoration } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routers'
 import { ChevronRight } from '@/assets/svgs/svgs'
@@ -15,6 +15,7 @@ export const VehicleSelfCheckPageViewMobile = observer(() => {
 
   return (
     <Container>
+      <ScrollRestoration />
       <StickyTop theme={theme}>
         <Header title="나의 전동보장구 자가점검" onBack={viewModel.goBack} />
         <Tabs
@@ -142,6 +143,7 @@ const SelfCheckHistory = observer(() => {
 const Container = styled.main`
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */

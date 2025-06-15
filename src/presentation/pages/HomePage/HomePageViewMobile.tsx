@@ -1,6 +1,6 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { Link, useSearchParams } from 'react-router'
+import { Link, ScrollRestoration, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
 import { WordMark } from '@/assets/images/images'
@@ -13,6 +13,7 @@ export function HomePageViewMobile() {
 
   return (
     <Container theme={theme}>
+      <ScrollRestoration />
       <MainContent>
         <LogoTitle>
           <LogoWordMark src={WordMark} alt="수리수리 마수리" />
@@ -30,7 +31,8 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   padding: 100px 25px;
   gap: 24px 0px;
   background-color: ${({ theme }: { theme: Theme }) => theme.colors.secondary};

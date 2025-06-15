@@ -1,6 +1,7 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
+import { ScrollRestoration } from 'react-router'
 
 import { Link as LinkIcon } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/components'
@@ -13,6 +14,7 @@ export const RepairStationsPageViewMobile = observer(() => {
 
   return (
     <Container>
+      <ScrollRestoration />
       <StickyTop theme={theme}>
         <Header title="전동보장구 정비소" onBack={viewModel.goBack} />
       </StickyTop>
