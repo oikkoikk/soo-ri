@@ -1,6 +1,7 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
+import { ScrollRestoration } from 'react-router'
 
 import { Calendar, Setting, User } from '@/assets/svgs/svgs'
 import { REPAIR_CATEGORIES } from '@/domain/models/models'
@@ -14,6 +15,7 @@ export const RepairCreatePageViewMobile = observer(() => {
 
   return (
     <Container>
+      <ScrollRestoration />
       <StickyTop theme={theme}>
         <Header title="전동보장구 정비사항 작성" onBack={viewModel.goBack} />
       </StickyTop>
@@ -257,6 +259,7 @@ const RepairMemoFormGroup = observer(() => {
 const Container = styled.div`
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: 80px; /* 하단 버튼 높이만큼 패딩 추가 */

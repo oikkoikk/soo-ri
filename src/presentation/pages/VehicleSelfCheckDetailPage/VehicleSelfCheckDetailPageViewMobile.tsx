@@ -1,6 +1,7 @@
 import { css, useTheme, Theme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { observer } from 'mobx-react-lite'
+import { ScrollRestoration } from 'react-router'
 
 import { Info } from '@/assets/svgs/svgs'
 import { Header } from '@/presentation/components/components'
@@ -13,6 +14,7 @@ export const VehicleSelfCheckDetailPageViewMobile = observer(() => {
 
   return (
     <Container>
+      <ScrollRestoration />
       <Header title="자가점검 상세 내역" onBack={viewModel.goBack} />
       <MainContent>
         <DateSection>
@@ -115,6 +117,7 @@ const IssueListView = observer(() => {
 const Container = styled.main`
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
 `
