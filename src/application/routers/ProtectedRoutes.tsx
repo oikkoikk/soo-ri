@@ -54,7 +54,7 @@ export const ProtectedRoute = ({ children, requireAuth }: ProtectedRouteProps) =
 
     const currentVehicleId = new URLSearchParams(location.search).get('vehicleId')
 
-    if (vehicle.id && (!currentVehicleId || currentVehicleId !== vehicle.id)) {
+    if (vehicle.id && isUser && (!currentVehicleId || currentVehicleId !== vehicle.id)) {
       const updatedParams = { ...queryParams, vehicleId: vehicle.id }
       void navigate(
         {
