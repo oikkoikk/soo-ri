@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Link, ScrollRestoration, useSearchParams } from 'react-router'
 
 import { buildRoute } from '@/application/routers/routes'
-import { WordMark } from '@/assets/images/images'
+import { Wordmark } from '@/assets/images/images'
 
 export function HomePageViewMobile() {
   const theme = useTheme()
@@ -16,7 +16,7 @@ export function HomePageViewMobile() {
       <ScrollRestoration />
       <MainContent>
         <LogoTitle>
-          <LogoWordMark src={WordMark} alt="수리수리 마수리" />
+          <LogoWordMark src={Wordmark} alt="수리수리 마수리" />
         </LogoTitle>
         <LoginButton to={buildRoute('SIGN_IN', {}, { vehicleId: vehicleId })} theme={theme}>
           전화번호로 로그인
