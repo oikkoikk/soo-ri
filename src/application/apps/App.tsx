@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router'
 import { EventModel } from '@/domain/models/models'
 import { EventCreateUseCase } from '@/domain/use_cases/use_cases'
 import { ProgressIndicator } from '@/presentation/components/components'
+import { Footer } from '@/presentation/components/Footer'
 import { useLoading } from '@/presentation/hooks/hooks'
 import { SOORITheme, GlobalStyle } from '@/theme/theme'
 
@@ -59,7 +60,7 @@ export function AppContent() {
   return (
     <>
       <RouterProvider router={router} />
-      {loading && <ProgressIndicator />}
+      {loading ? <ProgressIndicator /> : <Footer />}
     </>
   )
 }
