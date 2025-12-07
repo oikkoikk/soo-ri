@@ -84,14 +84,18 @@ const FloatingActionMenu = observer(() => {
           return (
             <>
               <MenuItemContainer>
-                <MenuItemContainer>
-                  <MenuItem to={viewModel.buildRouteForRepairStationsPage()} theme={theme}>
-                    <MenuItemIconContainer theme={theme}>
-                      <Map width={25} height={25} color={theme.colors.onSurface} aria-hidden />
-                    </MenuItemIconContainer>
-                    <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
-                  </MenuItem>
-                </MenuItemContainer>
+                <MenuItem to={viewModel.buildRouteForWelfareReportPage()} theme={theme}>
+                  <MenuItemIconContainer theme={theme}>
+                    <Calendar width={20} height={20} color={theme.colors.onSurface} aria-hidden />
+                  </MenuItemIconContainer>
+                  <MenuItemText theme={theme}>맞춤형 복지 리포트</MenuItemText>
+                </MenuItem>
+                <MenuItem to={viewModel.buildRouteForRepairStationsPage()} theme={theme}>
+                  <MenuItemIconContainer theme={theme}>
+                    <Map width={25} height={25} color={theme.colors.onSurface} aria-hidden />
+                  </MenuItemIconContainer>
+                  <MenuItemText theme={theme}>근처 정비소 찾기</MenuItemText>
+                </MenuItem>
                 <MenuItem to={viewModel.buildRouteForVehicleSelfCheckPage()} theme={theme}>
                   <MenuItemIconContainer theme={theme}>
                     <Check width={20} height={20} color={theme.colors.onSurface} aria-hidden />

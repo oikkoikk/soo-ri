@@ -17,6 +17,7 @@ const VehicleSelfCheckPage = lazy(() => import('@/presentation/pages/VehicleSelf
 const VehicleSelfCheckDetailPage = lazy(
   () => import('@/presentation/pages/VehicleSelfCheckDetailPage/VehicleSelfCheckDetailPageView')
 )
+const WelfareReportPage = lazy(() => import('@/presentation/pages/WelfareReportPage/WelfareReportPageView'))
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +84,15 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requireAuth={true}>
         <VehicleSelfCheckDetailPage />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: ROUTES.WELFARE_REPORT,
+    element: (
+      <ProtectedRoute requireAuth={true}>
+        <WelfareReportPage />
       </ProtectedRoute>
     ),
     errorElement: <ErrorBoundary />,

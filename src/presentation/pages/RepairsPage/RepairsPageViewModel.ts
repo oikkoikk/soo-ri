@@ -140,6 +140,10 @@ export function useRepairsViewModel() {
     return buildRoute('VEHICLE_SELF_CHECK', {}, { vehicleId: vehicleId })
   }
 
+  const buildRouteForWelfareReportPage = () => {
+    return buildRoute('WELFARE_REPORT', {}, { vehicleId: vehicleId })
+  }
+
   const shouldShowCTA = isAdmin || isRepairer
   const shouldShowFAB = isUser || isGuardian
 
@@ -154,6 +158,7 @@ export function useRepairsViewModel() {
     buildRouteForRepairDetailPage,
     buildRouteForRepairStationsPage,
     buildRouteForVehicleSelfCheckPage,
+    buildRouteForWelfareReportPage,
     isUser,
     shouldShowCTA,
     shouldShowFAB,

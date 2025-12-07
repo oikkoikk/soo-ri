@@ -5,6 +5,7 @@ import {
   SelfCheckRepositorySoori,
   UserRepositorySoori,
   VehicleRepositorySoori,
+  WelfareReportRepositorySoori,
 } from '../repositories/repositories'
 
 const SOORI_BASE_URL = import.meta.env.VITE_SOORI_BASE_URL
@@ -22,3 +23,4 @@ export const repairStationRepositorySoori = new RepairStationRepositorySoori(htt
 export const repairRepositorySoori = new RepairRepositorySoori(httpClient)
 export const vehicleRepositorySoori = new VehicleRepositorySoori(httpClient)
 export const selfCheckRepositorySoori = new SelfCheckRepositorySoori(httpClient)
+export const welfareReportRepositorySoori = new WelfareReportRepositorySoori()
