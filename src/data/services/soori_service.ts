@@ -8,7 +8,16 @@ import {
   WelfareReportRepositorySoori,
 } from '../repositories/repositories'
 
-const SOORI_BASE_URL = import.meta.env.VITE_SOORI_BASE_URL
+// Fallback to correct Cloud Functions URL if env var is missing or incorrect
+const getApiUrl = (envUrl: string | undefined): string => {
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  if (envUrl && envUrl.includes('cloudfunctions.net')) {
+    return envUrl
+  }
+  return 'https://asia-northeast3-soo-ri.cloudfunctions.net/api'
+}
+
+const SOORI_BASE_URL = getApiUrl(import.meta.env.VITE_SOORI_BASE_URL as string | undefined)
 const SECOND = 1000
 
 export const httpClient = new AxiosHttpClientAdapter(SOORI_BASE_URL, {

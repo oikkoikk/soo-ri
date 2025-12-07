@@ -25,7 +25,14 @@ export function useWelfareReportViewModel() {
 
     setGenerating(true)
     try {
-      const API_URL = import.meta.env.VITE_SOORI_BASE_URL
+      const getApiUrl = (envUrl: string | undefined): string => {
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        if (envUrl && envUrl.includes('cloudfunctions.net')) {
+          return envUrl
+        }
+        return 'https://asia-northeast3-soo-ri.cloudfunctions.net/api'
+      }
+      const API_URL = getApiUrl(import.meta.env.VITE_SOORI_BASE_URL as string | undefined)
       console.log('🌐 API URL:', API_URL)
       console.log('📝 Generating report for user:', user.uid)
 
