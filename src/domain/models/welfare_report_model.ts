@@ -2,6 +2,7 @@ interface WelfareReport {
   userId?: string
   summary?: string
   risk?: string
+  advice?: string
   services?: {
     name: string
     reason: string
@@ -22,6 +23,7 @@ export class WelfareReportModel implements WelfareReport {
   readonly userId: string
   readonly summary: string
   readonly risk: string
+  readonly advice: string
   readonly services: { name: string; reason: string; link?: string }[]
   readonly metadata: {
     weeklyKm: number
@@ -37,6 +39,7 @@ export class WelfareReportModel implements WelfareReport {
     this.userId = model.userId ?? ''
     this.summary = model.summary ?? ''
     this.risk = model.risk ?? ''
+    this.advice = model.advice ?? '정기적인 점검으로 안전한 이동을 유지하세요.'
     this.services = model.services ?? []
     this.metadata = {
       weeklyKm: model.metadata?.weeklyKm ?? 0,
