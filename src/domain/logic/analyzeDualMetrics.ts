@@ -55,11 +55,11 @@ function analyzeUserMobility(stats: UserStats): UserMobilityIndex {
   if (weeklyKm === 0) {
     evidence = '이번 주 이동 기록이 없습니다. GPS 센서 연결을 확인해주세요.'
   } else if (weeklyKmDelta > 0) {
-    evidence = `이번 주 ${String(weeklyKm.toFixed(1))}km 이동 (지난주 대비 +${String(weeklyKmDelta.toFixed(1))}km)`
+    evidence = `이번 주 ${String(weeklyKm.toFixed(1))}km 이동`
   } else if (weeklyKmDelta < 0) {
-    evidence = `이번 주 ${String(weeklyKm.toFixed(1))}km 이동 (지난주 대비 ${String(weeklyKmDelta.toFixed(1))}km)`
+    evidence = `이번 주 ${String(weeklyKm.toFixed(1))}km 이동`
   } else {
-    evidence = `이번 주 ${weeklyKm.toFixed(1)}km 이동 (지난주와 동일)`
+    evidence = `이번 주 ${weeklyKm.toFixed(1)}km 이동`
   }
 
   return {

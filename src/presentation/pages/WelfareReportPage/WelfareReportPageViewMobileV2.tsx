@@ -16,6 +16,19 @@ import { ScrollRestoration } from 'react-router'
 import { convertLegacyToDualAxis } from '@/domain/logic/analyzeDualMetrics'
 import type { ServiceRecommendation } from '@/domain/models/dual_axis_report_model'
 import { Header } from '@/presentation/components/components'
+import { ActivityIcon } from '@/presentation/components/icons/ActivityIcon'
+import { CalendarIcon } from '@/presentation/components/icons/CalendarIcon'
+import { ChartIcon } from '@/presentation/components/icons/ChartIcon'
+import { CheckIcon } from '@/presentation/components/icons/CheckIcon'
+import { HeartIcon } from '@/presentation/components/icons/HeartIcon'
+import { LightbulbIcon } from '@/presentation/components/icons/LightbulbIcon'
+import { MapPinIcon } from '@/presentation/components/icons/MapPinIcon'
+import { MobilityAidIcon } from '@/presentation/components/icons/MobilityAidIcon'
+import { RouteIcon } from '@/presentation/components/icons/RouteIcon'
+import { SatelliteIcon } from '@/presentation/components/icons/SatelliteIcon'
+import { SparklesIcon } from '@/presentation/components/icons/SparklesIcon'
+import { TransitIcon } from '@/presentation/components/icons/TransitIcon'
+import { WrenchIcon } from '@/presentation/components/icons/WrenchIcon'
 
 import { useWelfareReportViewModel } from './WelfareReportPageViewModel'
 
@@ -55,7 +68,7 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
     <Container>
       <ScrollRestoration />
       <StickyTop theme={theme}>
-        <Header title="내 휠체어 리포트" onBack={viewModel.goBack} />
+        <Header title="내 이동보조기기 리포트" onBack={viewModel.goBack} />
       </StickyTop>
 
       <MainContent>
@@ -67,7 +80,7 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
               <StatusCard theme={theme} statusColor={dualAxisData.userMobility.statusColor}>
                 <CardLabel theme={theme}>나의 활동</CardLabel>
                 <StatusBadge color={dualAxisData.userMobility.statusColor}>
-                  {dualAxisData.userMobility.statusIcon} {dualAxisData.userMobility.statusLabel}
+                  {dualAxisData.userMobility.statusLabel}
                 </StatusBadge>
                 <CardValue theme={theme}>
                   {dualAxisData.userMobility.weeklyKm > 0
@@ -79,9 +92,9 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
 
               {/* 기기 상태 카드 */}
               <StatusCard theme={theme} statusColor={dualAxisData.deviceCondition.gradeColor}>
-                <CardLabel theme={theme}>휠체어 상태</CardLabel>
+                <CardLabel theme={theme}>이동보조기기 상태</CardLabel>
                 <StatusBadge color={dualAxisData.deviceCondition.gradeColor}>
-                  {dualAxisData.deviceCondition.gradeIcon} {dualAxisData.deviceCondition.gradeLabel}
+                  {dualAxisData.deviceCondition.gradeLabel}
                 </StatusBadge>
                 <CardValue theme={theme}>등급 {dualAxisData.deviceCondition.grade}</CardValue>
                 <CardSubtext theme={theme}>
@@ -96,12 +109,15 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
 
             {/* Section B: Contextual Evidence */}
             <EvidenceSection theme={theme}>
-              <SectionTitle theme={theme}>📊 분석 근거</SectionTitle>
+              <SectionTitleWithIcon>
+                <ChartIcon size={20} color="#1A1A1A" />
+                <SectionTitle theme={theme}>분석 근거</SectionTitle>
+              </SectionTitleWithIcon>
 
               {/* 활동성 근거 */}
               <EvidenceCard theme={theme}>
                 <EvidenceHeader>
-                  <EvidenceIcon>🚶</EvidenceIcon>
+                  <ActivityIcon size={18} color="#424242" />
                   <EvidenceLabel theme={theme}>활동 분석</EvidenceLabel>
                 </EvidenceHeader>
                 <EvidenceText theme={theme}>{dualAxisData.userMobility.evidence}</EvidenceText>
@@ -116,16 +132,19 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
               {/* 기기 상태 근거 */}
               <EvidenceCard theme={theme}>
                 <EvidenceHeader>
-                  <EvidenceIcon>🔧</EvidenceIcon>
+                  <MobilityAidIcon size={18} color="#424242" />
                   <EvidenceLabel theme={theme}>기기 상태</EvidenceLabel>
                 </EvidenceHeader>
                 <EvidenceText theme={theme}>{dualAxisData.deviceCondition.evidence}</EvidenceText>
-                <RecommendationText theme={theme}>💡 {dualAxisData.deviceCondition.recommendation}</RecommendationText>
+                <RecommendationText theme={theme}>
+                  <LightbulbIcon size={14} color="#1565C0" />
+                  {dualAxisData.deviceCondition.recommendation}
+                </RecommendationText>
               </EvidenceCard>
 
               {/* 등급 기준 설명 */}
               <GradeGuideCard theme={theme}>
-                <GradeGuideTitle theme={theme}>📋 등급 산정 기준 (최근 30일)</GradeGuideTitle>
+                <GradeGuideTitle theme={theme}>등급 산정 기준 (최근 30일)</GradeGuideTitle>
                 <GradeGuideList>
                   <GradeGuideItem theme={theme}>
                     <GradeBadge color="green">A</GradeBadge>
@@ -145,7 +164,7 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
               {/* GPS 센서 안내 */}
               {viewModel.report.metadata.weeklyKm === 0 && (
                 <SensorGuideCard theme={theme}>
-                  <SensorGuideIcon>📡</SensorGuideIcon>
+                  <SatelliteIcon size={24} color="#1565C0" />
                   <SensorGuideContent>
                     <SensorGuideTitle theme={theme}>GPS 센서를 부착하면</SensorGuideTitle>
                     <SensorGuideText theme={theme}>
@@ -158,22 +177,22 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
               {/* 상세 통계 */}
               <StatsGrid>
                 <StatItem theme={theme}>
-                  <StatIcon>📍</StatIcon>
+                  <RouteIcon size={20} color="#757575" />
                   <StatValue theme={theme}>{viewModel.report.metadata.weeklyKm.toFixed(0)}km</StatValue>
                   <StatLabel theme={theme}>주간 이동</StatLabel>
                 </StatItem>
                 <StatItem theme={theme}>
-                  <StatIcon>🔧</StatIcon>
+                  <WrenchIcon size={22} color="#757575" />
                   <StatValue theme={theme}>{viewModel.report.metadata.recentRepairs}회</StatValue>
                   <StatLabel theme={theme}>최근 수리</StatLabel>
                 </StatItem>
                 <StatItem theme={theme}>
-                  <StatIcon>✅</StatIcon>
+                  <CheckIcon size={20} color="#757575" />
                   <StatValue theme={theme}>{viewModel.report.metadata.recentSelfChecks}회</StatValue>
                   <StatLabel theme={theme}>자가점검</StatLabel>
                 </StatItem>
                 <StatItem theme={theme}>
-                  <StatIcon>📍</StatIcon>
+                  <MapPinIcon size={20} color="#757575" />
                   <StatValue theme={theme} style={{ fontSize: '14px' }}>
                     {viewModel.report.metadata.supportedDistrict}
                   </StatValue>
@@ -186,7 +205,9 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
             {categorizedServices.forMobility.length > 0 && (
               <RecommendationSection theme={theme}>
                 <SectionHeader>
-                  <SectionIcon bgColor="#2196F3">🚌</SectionIcon>
+                  <IconWrapper bgColor="#2196F3">
+                    <TransitIcon size={18} color="#2196F3" />
+                  </IconWrapper>
                   <SectionTitle theme={theme}>이동지원 관련 복지서비스</SectionTitle>
                 </SectionHeader>
                 <ServiceList>
@@ -212,7 +233,9 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
             {categorizedServices.forWelfare.length > 0 && (
               <RecommendationSection theme={theme}>
                 <SectionHeader>
-                  <SectionIcon bgColor="#4CAF50">🏥</SectionIcon>
+                  <IconWrapper bgColor="#4CAF50">
+                    <HeartIcon size={18} color="#4CAF50" />
+                  </IconWrapper>
                   <SectionTitle theme={theme}>생활지원 관련 복지서비스</SectionTitle>
                 </SectionHeader>
                 <ServiceList>
@@ -239,7 +262,9 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
             {categorizedServices.forWelfare.length === 0 && categorizedServices.forMobility.length === 0 && (
               <RecommendationSection theme={theme}>
                 <SectionHeader>
-                  <SectionIcon bgColor="#2196F3">🚌</SectionIcon>
+                  <IconWrapper bgColor="#2196F3">
+                    <TransitIcon size={18} color="#2196F3" />
+                  </IconWrapper>
                   <SectionTitle theme={theme}>이동지원 관련 복지서비스</SectionTitle>
                 </SectionHeader>
                 <ServiceList>
@@ -266,7 +291,7 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
             {viewModel.report.summary && (
               <AISummaryCard theme={theme}>
                 <AISummaryHeader>
-                  <AIIcon>🤖</AIIcon>
+                  <SparklesIcon size={20} color="#667eea" />
                   <AILabel>AI 분석 요약</AILabel>
                 </AISummaryHeader>
                 <AISummaryText theme={theme}>
@@ -280,7 +305,7 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
                 </AISummaryText>
                 {viewModel.report.advice && (
                   <AdviceBox theme={theme}>
-                    <AdviceIcon>💡</AdviceIcon>
+                    <LightbulbIcon size={16} color="#616161" />
                     <AdviceText theme={theme}>{viewModel.report.advice}</AdviceText>
                   </AdviceBox>
                 )}
@@ -289,13 +314,18 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
 
             {/* 푸터 */}
             <Footer theme={theme}>
-              <FooterText theme={theme}>📅 {viewModel.report.createdAtDisplayString} 생성</FooterText>
+              <FooterRow>
+                <CalendarIcon size={14} color="#9E9E9E" />
+                <FooterText theme={theme}>{viewModel.report.createdAtDisplayString} 생성</FooterText>
+              </FooterRow>
             </Footer>
           </>
         ) : (
           /* Empty State */
           <EmptyState theme={theme}>
-            <EmptyIcon>📊</EmptyIcon>
+            <EmptyIconWrapper>
+              <ChartIcon size={64} color="#BDBDBD" />
+            </EmptyIconWrapper>
             <EmptyTitle theme={theme}>아직 생성된 리포트가 없습니다</EmptyTitle>
             <EmptySubtext theme={theme}>
               AI가 당신의 이동 패턴을 분석하고
@@ -306,20 +336,15 @@ export const WelfareReportPageViewMobileV2 = observer(() => {
             {/* V2 비동기 상태 표시 */}
             {viewModel.generating && viewModel.statusMessage && (
               <AsyncStatusCard theme={theme}>
-                <AsyncStatusIcon>
-                  {viewModel.asyncStatus === 'queued' && '⏳'}
-                  {viewModel.asyncStatus === 'processing' && '🤖'}
-                  {viewModel.asyncStatus === 'completed' && '✅'}
-                  {viewModel.asyncStatus === 'failed' && '❌'}
-                  {viewModel.asyncStatus === 'idle' && '📤'}
-                </AsyncStatusIcon>
+                {viewModel.asyncStatus === 'processing' && <SparklesIcon size={24} color="#667eea" />}
                 <AsyncStatusText theme={theme}>{viewModel.statusMessage}</AsyncStatusText>
                 {(viewModel.asyncStatus === 'queued' || viewModel.asyncStatus === 'processing') && <AsyncSpinner />}
               </AsyncStatusCard>
             )}
 
             <GenerateButton theme={theme} onClick={viewModel.generateReportAsync} disabled={viewModel.generating}>
-              {viewModel.generating ? '✨ 분석 중...' : '✨ AI 리포트 생성하기'}
+              <SparklesIcon size={18} color="white" />
+              {viewModel.generating ? '분석 중...' : 'AI 리포트 생성하기'}
             </GenerateButton>
           </EmptyState>
         )}
@@ -363,10 +388,10 @@ const DualStatusSection = styled.div`
 `
 
 const COLOR_MAP = {
-  green: { bg: '#E8F5E9', border: '#4CAF50', text: '#2E7D32' },
-  blue: { bg: '#E3F2FD', border: '#2196F3', text: '#1565C0' },
-  yellow: { bg: '#FFF8E1', border: '#FFC107', text: '#F57F17' },
-  red: { bg: '#FFEBEE', border: '#F44336', text: '#C62828' },
+  green: { bg: '#E8F5E9', border: '#A5D6A7', text: '#2E7D32' },
+  blue: { bg: '#E3F2FD', border: '#90CAF9', text: '#1565C0' },
+  yellow: { bg: '#FFF8E1', border: '#FFD54F', text: '#F57F17' },
+  red: { bg: '#FFEBEE', border: '#EF9A9A', text: '#C62828' },
 }
 
 const StatusCard = styled.div<{ theme: Theme; statusColor: 'green' | 'blue' | 'yellow' | 'red' }>`
@@ -390,7 +415,8 @@ const CardLabel = styled.span<{ theme: Theme }>`
 
 const StatusBadge = styled.span<{ color: 'green' | 'blue' | 'yellow' | 'red' }>`
   align-self: flex-start;
-  background: ${({ color }) => COLOR_MAP[color].border};
+  background: ${({ color }) =>
+    color === 'green' ? '#4CAF50' : color === 'blue' ? '#2196F3' : color === 'yellow' ? '#FFC107' : '#F44336'};
   color: white;
   padding: 4px 10px;
   border-radius: 12px;
@@ -424,6 +450,12 @@ const EvidenceSection = styled.div<{ theme: Theme }>`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 `
 
+const SectionTitleWithIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
 const SectionTitle = styled.h3<{ theme: Theme }>`
   ${({ theme }) => css`
     ${theme.typography.subtitleMedium};
@@ -446,10 +478,6 @@ const EvidenceHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`
-
-const EvidenceIcon = styled.span`
-  font-size: 18px;
 `
 
 const EvidenceLabel = styled.span<{ theme: Theme }>`
@@ -488,6 +516,9 @@ const RecommendationText = styled.p<{ theme: Theme }>`
   padding: 8px 12px;
   background: #e3f2fd;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `
 
 const StatsGrid = styled.div`
@@ -504,10 +535,6 @@ const StatItem = styled.div<{ theme: Theme }>`
   padding: 12px 8px;
   background: #f5f5f5;
   border-radius: 12px;
-`
-
-const StatIcon = styled.span`
-  font-size: 20px;
 `
 
 const StatValue = styled.span<{ theme: Theme }>`
@@ -543,7 +570,7 @@ const SectionHeader = styled.div`
   gap: 10px;
 `
 
-const SectionIcon = styled.span<{ bgColor: string }>`
+const IconWrapper = styled.div<{ bgColor: string }>`
   width: 32px;
   height: 32px;
   display: flex;
@@ -551,7 +578,6 @@ const SectionIcon = styled.span<{ bgColor: string }>`
   justify-content: center;
   background: ${({ bgColor }) => bgColor}20;
   border-radius: 8px;
-  font-size: 16px;
 `
 
 // Grade Guide Card (피드백 #1: 등급 기준 설명)
@@ -609,10 +635,6 @@ const SensorGuideCard = styled.div<{ theme: Theme }>`
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   border-radius: 12px;
   border: 1px solid #90caf9;
-`
-
-const SensorGuideIcon = styled.span`
-  font-size: 24px;
 `
 
 const SensorGuideContent = styled.div`
@@ -717,10 +739,6 @@ const AISummaryHeader = styled.div`
   gap: 8px;
 `
 
-const AIIcon = styled.span`
-  font-size: 20px;
-`
-
 const AILabel = styled.span`
   color: #667eea;
   font-weight: 700;
@@ -745,10 +763,6 @@ const AdviceBox = styled.div<{ theme: Theme }>`
   border-radius: 12px;
 `
 
-const AdviceIcon = styled.span`
-  font-size: 16px;
-`
-
 const AdviceText = styled.p<{ theme: Theme }>`
   ${({ theme }) => css`
     ${theme.typography.bodySmall};
@@ -762,6 +776,13 @@ const AdviceText = styled.p<{ theme: Theme }>`
 const Footer = styled.div<{ theme: Theme }>`
   text-align: center;
   padding: 16px;
+`
+
+const FooterRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 `
 
 const FooterText = styled.span<{ theme: Theme }>`
@@ -781,8 +802,7 @@ const EmptyState = styled.div<{ theme: Theme }>`
   gap: 16px;
 `
 
-const EmptyIcon = styled.div`
-  font-size: 64px;
+const EmptyIconWrapper = styled.div`
   margin-bottom: 8px;
 `
 
@@ -816,10 +836,6 @@ const AsyncStatusCard = styled.div<{ theme: Theme }>`
   margin-top: 8px;
   width: 100%;
   max-width: 300px;
-`
-
-const AsyncStatusIcon = styled.span`
-  font-size: 24px;
 `
 
 const AsyncStatusText = styled.span<{ theme: Theme }>`
@@ -859,6 +875,9 @@ const GenerateButton = styled.button<{ theme: Theme }>`
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);

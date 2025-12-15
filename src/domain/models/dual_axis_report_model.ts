@@ -135,10 +135,10 @@ export const MOBILITY_STATUS_CONFIG: Record<
     label: string
   }
 > = {
-  active: { color: 'green', icon: '🟢', label: '활발' },
-  stable: { color: 'blue', icon: '🔵', label: '안정' },
-  declining: { color: 'yellow', icon: '🟡', label: '감소 중' },
-  inactive: { color: 'red', icon: '🔴', label: '비활동' },
+  active: { color: 'green', icon: '', label: '활발' },
+  stable: { color: 'blue', icon: '', label: '안정' },
+  declining: { color: 'yellow', icon: '', label: '감소 중' },
+  inactive: { color: 'red', icon: '', label: '비활동' },
 }
 
 export const DEVICE_GRADE_CONFIG: Record<
@@ -149,7 +149,7 @@ export const DEVICE_GRADE_CONFIG: Record<
     label: string
   }
 > = {
-  A: { color: 'green', icon: '✅', label: '양호' },
-  B: { color: 'yellow', icon: '⚠️', label: '점검 권장' },
-  C: { color: 'red', icon: '🔧', label: '주의 필요' },
+  A: { color: 'green', icon: '', label: '양호' },
+  B: { color: 'yellow', icon: '', label: '점검 권장' },
+  C: { color: 'red', icon: '', label: '주의 필요' },
 }
